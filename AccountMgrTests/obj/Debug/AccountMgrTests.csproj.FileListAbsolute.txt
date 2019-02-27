@@ -1,0 +1,2 @@
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgrTests\obj\Debug\AccountMgrTests.csprojAssemblyReference.cache
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgrTests\obj\Debug\AccountMgrTests.csproj.CoreCompileInputs.cache

@@ -1,0 +1,12 @@
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\bin\Debug\AccountMgr.exe.config
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\bin\Debug\AccountMgr.exe
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\bin\Debug\AccountMgr.pdb
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\obj\Debug\AccountMgr.csprojAssemblyReference.cache
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\obj\Debug\AccountMgr.Form1.resources
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\obj\Debug\AccountMgr.InputGTFee.resources
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\obj\Debug\AccountMgr.Properties.Resources.resources
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\obj\Debug\AccountMgr.csproj.GenerateResource.cache
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\obj\Debug\AccountMgr.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\obj\Debug\AccountMgr.exe
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\obj\Debug\AccountMgr.pdb
+C:\Users\Administrator\Desktop\Test\AccountMgr\AccountMgr\obj\Debug\AccountMgr.Login.resources

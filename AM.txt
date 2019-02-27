@@ -1,0 +1,64 @@
+++固定费用数据表	AM_Static_Fee(ItemID(INT) p,Fee(DOUBLE))
+	垃圾转运费、店面电费单价、店面物业费单价		
+
+
+++用户类型表		AM_SYSUser_Type(UserCode(VARCHAR20) p-Type(INT))
+
+++户主信息表		AM_User1_Info(BN(INT)p-RN(INT)p-Area(DOUBLE)-Tel(VARCHAR20)-Name(VARCHAR20))
+	栋号-户号-面积-电话-姓名
+
+++户主车辆表		AM_User1Car_Info(BN(INT)-RN(INT)-CarID(VARCHAR20) p)
+	栋号-户号-车牌号
+
+++楼栋单价表		AM_User1UFee_Info(BN(INT) p-UPC(DOUBLE)-PUBC(DOUBLE))
+	栋号-物业费单价-公摊费
+
+
+++户主对应月份标志表	AM_User1Fee_Flag(BN p-RN p-Year p-Month p-PCFlag-PUBCFlag-GTFeeFlag-CarFeeFlag-NeedCarF(INT))
+	栋号-户号-年份-月份-物业费标志-公摊费标志-垃圾转运费标志-车费标志-是否需要停车费
+++户主物业收费表	AM_User1PC_Fee(BN(INT) p-RN(INT) p-Date(DATE) p-Fee(DOUBLE)-Bonus(DOUBLE))
+	栋号-户号-收取日期-收取的物业费-优惠金额
+++户主公摊收费表	AM_User1PUBC_Fee(BN(INT) p-RN(INT) p-Date(DATE) p-Fee(DOUBLE))
+	栋号-户号-收取日期-收取的公摊费
+++户主垃圾转运收费表	AM_User1GT_Fee(BN(INT) p-RN(INT) p-Date(DATE) p-Fee(DOUBLE))
+	栋号-户号-收取日期-收取的垃圾转运费
+
+
+
+++店面信息表		AM_User2_Info(SN(INT) p-Area(DOUBLE)-SName(VARCHAR20)-Name(VARCHAR20)-TEL(VARCHAR20))
+	店面编号-面积-店名-姓名-电话
+
+++店对应月份标志表	AM_User2Fee_Flag(SN(INT) p-Year(INT) p-Month(INT) p-PCFlag(INT)-ELEFeeFlag(INT)-GTFeeFlag(INT)-NeedELEF(INT))
+	店面编号-年份-月份-物业费标志-电费标志-垃圾转运费标志-是否需要电费
+++店面物业收费表	AM_User2PC_Fee(SN(INT) p-Date(DATE) p-Fee)
+	店面编号-收取日期-收取的物业费
+++店面电费收费表	AM_User2ELE_Fee(SN(INT) p-Date(DATE) p-Fee)
+	店面编号-收取日期-收取的电费
+++店面垃圾转运费收费表	AM_User2GT_Fee(SN(INT) p-Date(DATE) p-Fee)
+	店面编号-收取日期-收取的垃圾转运费
+
+++外租车主信息		AM_User3Car_Info(CarID(VARCHAR) p-Name(VARCHAR)-TEL(VARCHAR))
+	车牌号-姓名-电话
+++车费对应月份标志表	AM_CarFee_Flag(CarID(VARCHAR) p-Year(INT) p-Month(INT) p-CarFee_Flag(INT))
+	车牌号-年份-月份-车费标志
+++车费收费表		AM_Car_Fee(CarID(VARCHAR) p-Date(DATE) p-Fee(DOUBLE))
+	车牌号-收取日期-收取的车费
+
+
+//店面收费表
+	店面编号-年份-月份-实际收取物业费-物业费收取日期-实际收取电费-电费收取日期-实际收取垃圾转运费-收取垃圾转运费日期-
+//车辆信息表		AM_Car_Info(CarID p-BelongToUser1)+
+	车牌号-是否户主
+
+//户主收费表
+	栋号-户号-年份-月份-收取的物业费（计算后显示，提供手动输入）-物业费收取日期-收取的公摊费-公摊费收取日期-收取的垃圾转运费-垃圾转运费收取日期-车费-总优惠金额
+
+
+查找功能：
+	用 车牌号 				查 各月份交费情况、姓名、电话
+	用 年份-月份 				查 某月份总交费金额（分 户主总交费金额、店面总交费金额、外租车主总交费金额）
+	用 年份-月份-栋号-户号 			查 某月某个户主交费情况、姓名、电话
+	用 年份-月份-店面编号		 	查 某月某个店面交费情况、姓名、电话、店名
+	用 年份-月份-车牌号 			查 某月某个外租车主交费情况、姓名、电话
+	用 栋号-户号 				查 某户主各月份交费情况、姓名、电话
+	用 最早年份-月份和最晚年份-月份 	查 有未交费记录的户主、店面及其交费情况、姓名、电话
