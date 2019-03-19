@@ -2,7 +2,7 @@
 	垃圾转运费、店面电费单价、店面物业费单价		
 
 
-++用户类型表		AM_SYSUser_Type(UserCode(VARCHAR20) p-Type(INT))
+++用户类型表		AM_SYSUser_Type(UserCode(VARCHAR20) p-Type(INT)-MaxConnect(INT))
 
 ++户主信息表		AM_User1_Info(BN(INT)p-RN(INT)p-Area(DOUBLE)-Tel(VARCHAR20)-Name(VARCHAR20))
 	栋号-户号-面积-电话-姓名
