@@ -1226,7 +1226,7 @@ namespace AccountMgr
             }
             catch (Exception)
             {
-                return false;//新增户主物业费收费则失败则返回假
+                return false;//新增户主物业费收费细则失败则返回假
             }
             finally
             {
@@ -1350,7 +1350,6 @@ namespace AccountMgr
             {
                 Connect.Close();//最后必须关闭数据库连接
             }
-
         }
         /// <summary> 查询户主物业费收费细则
         /// </summary>
@@ -1365,7 +1364,7 @@ namespace AccountMgr
         /// </param>
         /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>符合条件的行</returns>
-        public static List<String[]> GetUser1PCFee(int BN, int RN, int Year, int Month, int Day, int SearchType, int LikeQuery)
+        public static List<String[]> GetUser1PCFee(int BN, int RN, int Year, int Month, int Day, int SearchType, Boolean LikeQuery)
         {
             String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
             List<String[]> User1PCFeeList = new List<String[]>();//待返回的户主物业费缴费细则列表
@@ -1396,7 +1395,7 @@ namespace AccountMgr
                 Parm[5].Value = SearchType;
                 Parm[6] = new OracleParameter("v_LikeQuery", OracleType.Int16);//LikeQuery参数
                 Parm[6].Direction = ParameterDirection.Input;//输入
-                Parm[6].Value = LikeQuery;
+                Parm[6].Value = Convert.ToInt16(LikeQuery);
                 Parm[7] = new OracleParameter("p_cur", OracleType.Cursor);
                 Parm[7].Direction = ParameterDirection.Output;//定义引用游标输出参数
 
@@ -1439,46 +1438,252 @@ namespace AccountMgr
         /// <param name="BN">栋号</param>
         /// <param name="RN">户号</param>
         /// <param name="PUBCFee">公摊费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>新增成功返回真，否则返回假</returns>
-        public static Boolean AddUser1PUBCFee(int BN, int RN, Double PUBCFee, String Date)
+        public static Boolean AddUser1PUBCFee(int BN, int RN, Double PUBCFee, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[6];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_RN", OracleType.Int32);//RN参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = RN;
+                Parm[2] = new OracleParameter("v_PUBCFee", OracleType.Double);//PUBCFee参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = PUBCFee;
+                Parm[3] = new OracleParameter("v_Year", OracleType.Int16);//Year参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Year;
+                Parm[4] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Month;
+                Parm[5] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Day;
+
+                OracleCommand AddUser1PUBCFee = new OracleCommand("proc_AddUser1PUBCFee", Connect);//指定存储过程
+                AddUser1PUBCFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddUser1PUBCFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddUser1PUBCFee.Parameters.Add(tP);
+                }
+                if (AddUser1PUBCFee.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增户主公摊费收费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 删除户主公摊费收费细则
         /// </summary>
         /// <param name="BN">栋号</param>
         /// <param name="RN">户号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>删除成功返回真，否则返回假</returns>
-        public static Boolean DeleteUser1PUBCFee(int BN, int RN, String Date)
+        public static Boolean DeleteUser1PUBCFee(int BN, int RN, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[5];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_RN", OracleType.Int32);//RN参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = RN;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+
+                OracleCommand DelUser1PUBCFee = new OracleCommand("proc_DelUser1PUBCFee", Connect);//指定存储过程
+                DelUser1PUBCFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelUser1PUBCFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelUser1PUBCFee.Parameters.Add(tP);
+                }
+                if (DelUser1PUBCFee.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除户主公摊费缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 修改户主公摊费收费细则
         /// </summary>
         /// <param name="BN">栋号</param>
         /// <param name="RN">户号</param>
         /// <param name="PUBCFee">公摊费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>设置成功返回真，否则返回假</returns>
-        public static Boolean SetUser1PUBCFee(int BN, int RN, Double PUBCFee, String Date)
+        public static Boolean SetUser1PUBCFee(int BN, int RN, Double PUBCFee, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[6];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_RN", OracleType.Int32);//RN参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = RN;
+                Parm[2] = new OracleParameter("v_PUBCFee", OracleType.Double);//PUBCFee参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = PUBCFee;
+                Parm[3] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Year;
+                Parm[4] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Month;
+                Parm[5] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Day;
+
+                OracleCommand SetUser1PUBCFee = new OracleCommand("proc_SetUser1PUBCFee", Connect);//指定存储过程
+                SetUser1PUBCFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetUser1PUBCFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetUser1PUBCFee.Parameters.Add(tP);
+                }
+                if (SetUser1PUBCFee.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置户主公摊费缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 查询户主公摊费收费细则
         /// </summary>
         /// <param name="BN">栋号</param>
         /// <param name="RN">户号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <param name="SearchType">查询类型：
         ///     1：根据栋号户号查询
         ///     2：根据缴费日期查询
         /// </param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>符号条件的行</returns>
-        public static List<String[]> GetUser1PUBCFee(int BN, int RN, String Date, int SearchType)
+        public static List<String[]> GetUser1PUBCFee(int BN, int RN, int Year, int Month, int Day, int SearchType, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> User1PCFeeList = new List<String[]>();//待返回的户主公摊费缴费细则列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[8];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_RN", OracleType.Int32);//RN参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = RN;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int32);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+                Parm[5] = new OracleParameter("v_SearchType", OracleType.Int32);//SearchType参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = SearchType;
+                Parm[6] = new OracleParameter("v_LikeQuery", OracleType.Int16);//LikeQuery参数
+                Parm[6].Direction = ParameterDirection.Input;//输入
+                Parm[6].Value = Convert.ToInt16(LikeQuery);
+                Parm[7] = new OracleParameter("p_cur", OracleType.Cursor);
+                Parm[7].Direction = ParameterDirection.Output;//定义引用游标输出参数
+
+                OracleCommand GetUser1PUBCFee = new OracleCommand("proc_GetUser1PUBCFee", Connect);//指定存储过程
+                GetUser1PUBCFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                GetUser1PUBCFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    GetUser1PUBCFee.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(GetUser1PUBCFee);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    User1PCFeeList.Add(new String[] {datatable.Rows[i][0].ToString(),//栋号
+                                                        datatable.Rows[i][1].ToString(),//户号
+                                                        datatable.Rows[i][2].ToString(),//公摊费
+                                                        datatable.Rows[i][3].ToString(),//缴费年份
+                                                        datatable.Rows[i][4].ToString(),//缴费月份
+                                                        datatable.Rows[i][5].ToString()});//缴费日期
+                }
+                return User1PCFeeList;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询户主公摊费缴费细则失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
 
         //户主垃圾转运费收费细则处理
@@ -1487,46 +1692,252 @@ namespace AccountMgr
         /// <param name="BN">栋号</param>
         /// <param name="RN">户号</param>
         /// <param name="GTFee">垃圾转运费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>新增成功返回真，否则返回假</returns>
-        public static Boolean AddUser1GTFee(int BN, int RN, Double GTFee, String Date)
+        public static Boolean AddUser1GTFee(int BN, int RN, Double GTFee, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[6];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_RN", OracleType.Int32);//RN参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = RN;
+                Parm[2] = new OracleParameter("v_GTFee", OracleType.Double);//GTFee参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = GTFee;
+                Parm[3] = new OracleParameter("v_Year", OracleType.Int16);//Year参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Year;
+                Parm[4] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Month;
+                Parm[5] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Day;
+
+                OracleCommand AddUser1GTFee = new OracleCommand("proc_AddUser1GTFee", Connect);//指定存储过程
+                AddUser1GTFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddUser1GTFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddUser1GTFee.Parameters.Add(tP);
+                }
+                if (AddUser1GTFee.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增户主垃圾转运费收费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 删除户主垃圾转运费收费细则
         /// </summary>
         /// <param name="BN">栋号</param>
         /// <param name="RN">户号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>删除成功返回真，否则返回假</returns>
-        public static Boolean DeleteUser1GTFee(int BN, int RN, String Date)
+        public static Boolean DeleteUser1GTFee(int BN, int RN, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[5];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_RN", OracleType.Int32);//RN参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = RN;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+
+                OracleCommand DelUser1GTFee = new OracleCommand("proc_DelUser1GTFee", Connect);//指定存储过程
+                DelUser1GTFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelUser1GTFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelUser1GTFee.Parameters.Add(tP);
+                }
+                if (DelUser1GTFee.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除户主垃圾转运费缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 修改户主垃圾转运费收费细则
         /// </summary>
         /// <param name="BN">栋号</param>
         /// <param name="RN">户号</param>
         /// <param name="GTFee">垃圾转运费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>设置成功返回真，否则返回假</returns>
-        public static Boolean SetUser1GTFee(int BN, int RN, Double GTFee, String Date)
+        public static Boolean SetUser1GTFee(int BN, int RN, Double GTFee, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[6];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_RN", OracleType.Int32);//RN参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = RN;
+                Parm[2] = new OracleParameter("v_GTFee", OracleType.Double);//GTFee参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = GTFee;
+                Parm[3] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Year;
+                Parm[4] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Month;
+                Parm[5] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Day;
+
+                OracleCommand SetUser1GTFee = new OracleCommand("proc_SetUser1GTFee", Connect);//指定存储过程
+                SetUser1GTFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetUser1GTFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetUser1GTFee.Parameters.Add(tP);
+                }
+                if (SetUser1GTFee.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置户主垃圾转运费缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 查询户主垃圾转运费收费细则
         /// </summary>
         /// <param name="BN">栋号</param>
         /// <param name="RN">户号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <param name="SearchType">查询类型：
         ///     1：根据栋号户号查询
         ///     2：根据缴费日期查询
         /// </param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>符号条件的行</returns>
-        public static List<String[]> GetUser1GTFee(int BN, int RN, String Date, int SearchType)
+        public static List<String[]> GetUser1GTFee(int BN, int RN, int Year, int Month, int Day, int SearchType, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> User1GTFeeList = new List<String[]>();//待返回的户主垃圾转运费缴费细则列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[8];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_RN", OracleType.Int32);//RN参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = RN;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int32);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+                Parm[5] = new OracleParameter("v_SearchType", OracleType.Int32);//SearchType参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = SearchType;
+                Parm[6] = new OracleParameter("v_LikeQuery", OracleType.Int16);//LikeQuery参数
+                Parm[6].Direction = ParameterDirection.Input;//输入
+                Parm[6].Value = Convert.ToInt16(LikeQuery);
+                Parm[7] = new OracleParameter("p_cur", OracleType.Cursor);
+                Parm[7].Direction = ParameterDirection.Output;//定义引用游标输出参数
+
+                OracleCommand GetUser1GTFee = new OracleCommand("proc_GetUser1GTFee", Connect);//指定存储过程
+                GetUser1GTFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                GetUser1GTFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    GetUser1GTFee.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(GetUser1GTFee);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    User1GTFeeList.Add(new String[] {datatable.Rows[i][0].ToString(),//栋号
+                                                        datatable.Rows[i][1].ToString(),//户号
+                                                        datatable.Rows[i][2].ToString(),//垃圾转运费
+                                                        datatable.Rows[i][3].ToString(),//缴费年份
+                                                        datatable.Rows[i][4].ToString(),//缴费月份
+                                                        datatable.Rows[i][5].ToString()});//缴费日期
+                }
+                return User1GTFeeList;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询户主垃圾转运费缴费细则失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
 
         //户主车辆信息处理
@@ -1538,16 +1949,83 @@ namespace AccountMgr
         /// <returns>新增成功返回真，否则返回假</returns>
         public static Boolean AddUser1Car(int BN, int RN, String CarID)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[3];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_RN", OracleType.Int32);//RN参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = RN;
+                Parm[2] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = CarID;
+
+                OracleCommand AddUser1Car = new OracleCommand("proc_AddUser1Car", Connect);//指定存储过程
+                AddUser1Car.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddUser1Car.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddUser1Car.Parameters.Add(tP);
+                }
+                if (AddUser1Car.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增户主车辆信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 根据车牌号删除
         /// </summary>
         /// <param name="CarID">车牌号</param>
-        /// <param name="AllClear">是否关联删除该车辆所有记录</param>
         /// <returns></returns>
-        public static Boolean DeleteUser1Car(String CarID, Boolean AllClear)
+        public static Boolean DeleteUser1Car(String CarID)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[1];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+
+                OracleCommand DelUser1Car = new OracleCommand("proc_DelUser1Car", Connect);//指定存储过程
+                DelUser1Car.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelUser1Car.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelUser1Car.Parameters.Add(tP);
+                }
+                if (DelUser1Car.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除户主车辆信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 设置某车辆对应的户主栋号户号
         /// </summary>
@@ -1557,16 +2035,101 @@ namespace AccountMgr
         /// <returns>设置成功返回真，否则返回假</returns>
         public static Boolean SetUser1Car(int BN, int RN, String CarID)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[3];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_RN", OracleType.Int32);//RN参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = RN;
+                Parm[2] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = CarID;
+
+                OracleCommand SetUser1Car = new OracleCommand("proc_SetUser1Car", Connect);//指定存储过程
+                SetUser1Car.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetUser1Car.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetUser1Car.Parameters.Add(tP);
+                }
+                if (SetUser1Car.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置户主车辆信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 根据栋号户号获取某户主的所有车辆信息
         /// </summary>
         /// <param name="BN">栋号</param>
         /// <param name="RN">户号</param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>表中符合条件的行</returns>
-        public static List<String> GetUser1Car(int BN, int RN)
+        public static List<String[]> GetUser1Car(int BN, int RN, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> User1CarList = new List<String[]>();//待返回的户主车辆信息列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[4];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_RN", OracleType.Int32);//RN参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = RN;
+                Parm[2] = new OracleParameter("v_LikeQuery", OracleType.Int32);//LikeQuery参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Convert.ToInt16(LikeQuery);
+                Parm[3] = new OracleParameter("p_cur", OracleType.Cursor);
+                Parm[3].Direction = ParameterDirection.Output;//定义引用游标输出参数
+
+                OracleCommand GetUser1Car = new OracleCommand("proc_GetUser1Car", Connect);//指定存储过程
+                GetUser1Car.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                GetUser1Car.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    GetUser1Car.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(GetUser1Car);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    User1CarList.Add(new String[] {datatable.Rows[i][0].ToString(),//栋号
+                                                   datatable.Rows[i][1].ToString(),//户号
+                                                   datatable.Rows[i][2].ToString()});//车牌号
+                }
+                return User1CarList;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询户主车辆信息失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
 
         //楼栋统一价格信息处理
@@ -1578,7 +2141,44 @@ namespace AccountMgr
         /// <returns>新增成功返回真，否则返回假</returns>
         public static Boolean AddUser1UFee(int BN, Double UPC, Double PUBC)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[3];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_UPC", OracleType.Double);//UPC参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = UPC;
+                Parm[2] = new OracleParameter("v_PUBC", OracleType.Double);//PUBC参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = PUBC;
+
+                OracleCommand AddUser1UFee = new OracleCommand("proc_AddUser1UFee", Connect);//指定存储过程
+                AddUser1UFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddUser1UFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddUser1UFee.Parameters.Add(tP);
+                }
+                if (AddUser1UFee.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增楼栋价格失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 删除某楼栋统一价格
         /// </summary>
@@ -1586,7 +2186,38 @@ namespace AccountMgr
         /// <returns>删除成功返回真，否则返回假</returns>
         public static Boolean DeleteUser1UFee(int BN)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[1];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+
+                OracleCommand DelUser1UFee = new OracleCommand("proc_DelUser1UFee", Connect);//指定存储过程
+                DelUser1UFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelUser1UFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelUser1UFee.Parameters.Add(tP);
+                }
+                if (DelUser1UFee.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除楼栋价格失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 设置某楼栋统一价格
         /// </summary>
@@ -1596,15 +2227,97 @@ namespace AccountMgr
         /// <returns>设置成功返回真，否则返回假</returns>
         public static Boolean SetUser1UFee(int BN, Double UPC, Double PUBC)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[3];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_UPC", OracleType.Double);//UPC参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = UPC;
+                Parm[2] = new OracleParameter("v_PUBC", OracleType.Double);//PUBC参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = PUBC;
+
+                OracleCommand SetUser1UFee = new OracleCommand("proc_SetUser1UFee", Connect);//指定存储过程
+                SetUser1UFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetUser1UFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetUser1UFee.Parameters.Add(tP);
+                }
+                if (SetUser1UFee.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置楼栋价格信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 获取某楼栋统一价格
         /// </summary>
         /// <param name="BN">栋号</param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>表中符合条件的行</returns>
-        public static List<Double[]> GetUser1UFee(int BN)
+        public static List<String[]> GetUser1UFee(int BN, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> User1UFeeList = new List<String[]>();//待返回的楼栋统一价格信息列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[3];//实例化参数列表
+                Parm[0] = new OracleParameter("v_BN", OracleType.Int32);//BN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = BN;
+                Parm[1] = new OracleParameter("v_LikeQuery", OracleType.Int32);//LikeQuery参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Convert.ToInt16(LikeQuery);
+                Parm[2] = new OracleParameter("p_cur", OracleType.Cursor);
+                Parm[2].Direction = ParameterDirection.Output;//定义引用游标输出参数
+
+                OracleCommand GetUser1UFee = new OracleCommand("proc_GetUser1UFee", Connect);//指定存储过程
+                GetUser1UFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                GetUser1UFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    GetUser1UFee.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(GetUser1UFee);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    User1UFeeList.Add(new String[] {datatable.Rows[i][0].ToString(),//栋号
+                                                   datatable.Rows[i][1].ToString(),//物业费每平米单价
+                                                   datatable.Rows[i][2].ToString()});//公摊费
+                }
+                return User1UFeeList;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询楼栋统一价格信息失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
 
         //店面信息处理
@@ -1612,48 +2325,223 @@ namespace AccountMgr
         /// </summary>
         /// <param name="SearchType">查询类型 0：根据店面编号 1：根据店名 2：根据店主姓名 3：根据电话</param>
         /// <param name="SN">店面编号</param>
-        /// <param name="Area">面积</param>
-        /// <param name="SName">店面</param>
+        /// <param name="SName">店名</param>
         /// <param name="Name">店主姓名</param>
         /// <param name="Tel">电话</param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>表中符合条件的行</returns>
-        public static List<String[]> GetUser2Info(int SearchType, int SN, Double Area, String SName, String Name, String Tel)
+        public static List<String[]> GetUser2Info(int SearchType, int SN, String SName, String Name, String Tel, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> User2List = new List<String[]>();//待返回的店面信息列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
 
+                OracleParameter[] Parm = new OracleParameter[7];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_SName", OracleType.VarChar);//SName参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = SName;
+                Parm[2] = new OracleParameter("v_Name", OracleType.VarChar);//Name参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Name;
+                Parm[3] = new OracleParameter("v_Tel", OracleType.VarChar);//Tel参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Tel;
+                Parm[4] = new OracleParameter("v_LikeQuery", OracleType.Int32);//模糊查找参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Convert.ToInt16(LikeQuery);
+                Parm[5] = new OracleParameter("v_SearchType", OracleType.Int32);//查找类型参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = SearchType;
+                Parm[6] = new OracleParameter("p_cur", OracleType.Cursor);
+                Parm[6].Direction = ParameterDirection.Output;//定义引用游标输出参数
+
+                OracleCommand QueryUser2 = new OracleCommand("proc_GetUser2Info", Connect);//指定存储过程
+                QueryUser2.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                QueryUser2.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    QueryUser2.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(QueryUser2);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    User2List.Add(new String[] {datatable.Rows[i][0].ToString(),//店面编号
+                                                datatable.Rows[i][1].ToString(),//面积
+                                                datatable.Rows[i][2].ToString(),//店名
+                                                datatable.Rows[i][3].ToString(),//店主姓名
+                                                datatable.Rows[i][4].ToString()});//电话
+                }
+                return User2List;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询店面信息表失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 根据店面编号设置店面信息
         /// </summary>
         /// <param name="SN">店面编号</param>
         /// <param name="Area">面积</param>
-        /// <param name="SName">点名</param>
+        /// <param name="SName">店名</param>
         /// <param name="Name">店主姓名</param>
         /// <param name="Tel">电话</param>
         /// <returns>设置成功返回真，否则返回假</returns>
         public static Boolean SetUser2Info(int SN, Double Area, String SName, String Name, String Tel)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[5];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Area", OracleType.Double);//Area参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Area;
+                Parm[2] = new OracleParameter("v_SName", OracleType.VarChar);//SName参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = SName;
+                Parm[3] = new OracleParameter("v_Name", OracleType.VarChar);//Name参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Name;
+                Parm[4] = new OracleParameter("v_Tel", OracleType.VarChar);//Tel参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Tel;
+
+                OracleCommand SetUser2 = new OracleCommand("proc_SetUser2Info", Connect);//指定存储过程
+                SetUser2.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetUser2.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetUser2.Parameters.Add(tP);
+                }
+                if (SetUser2.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置店面信息表失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 新增店面信息
         /// </summary>
         /// <param name="SN">店面编号</param>
         /// <param name="Area">面积</param>
-        /// <param name="SName">点名</param>
+        /// <param name="SName">店名</param>
         /// <param name="Name">店主姓名</param>
         /// <param name="Tel">电话</param>
-        /// <returns>新增成功返回1，因店面编号重复新增失败返回-1，其它原因新增失败返回0</returns>
-        public static int AddUser2Info(int SN, Double Area, String SName, String Name, String Tel)
+        /// <returns>新增成功返回真，否则返回假</returns>
+        public static Boolean AddUser2Info(int SN, Double Area, String SName, String Name, String Tel)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[5];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Area", OracleType.Double);//Area参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Area;
+                Parm[2] = new OracleParameter("v_SName", OracleType.VarChar);//SName参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = SName;
+                Parm[3] = new OracleParameter("v_Name", OracleType.VarChar);//Name参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Name;
+                Parm[4] = new OracleParameter("v_Tel", OracleType.VarChar);//Tel参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Tel;
+
+                OracleCommand AddUser2 = new OracleCommand("proc_AddUser2Info", Connect);//指定存储过程
+                AddUser2.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddUser2.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddUser2.Parameters.Add(tP);
+                }
+                if (AddUser2.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增店面信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 删除店面信息
         /// </summary>
         /// <param name="SN">店面编号</param>
-        /// <param name="AllClear">是否关联删除该店面所有记录</param>
         /// <returns>删除成功返回真，否则返回假</returns>
-        public static Boolean DeleteUser2Info(int SN, Boolean AllClear)
+        public static Boolean DeleteUser2Info(int SN)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                //删除户主
+                OracleParameter[] Parm = new OracleParameter[1];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int16);//店面编号参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+
+                OracleCommand DelUser2 = new OracleCommand("proc_DelUser2", Connect);//指定存储过程
+                DelUser2.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelUser2.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelUser2.Parameters.Add(tP);
+                }
+                //调用存储过程
+                if (DelUser2.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除店面信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
 
         //店面对应月份缴费标志信息处理
@@ -1669,7 +2557,56 @@ namespace AccountMgr
         /// <returns>新增成功返回真，否则返回假</returns>
         public static Boolean AddUser2FeeFlag(int SN, int Year, int Month, Boolean PCFee_Flag, Boolean PUBCFee_Flag, Boolean ELEFee_Flag, Boolean GTFee_Flag)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[7];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_PCFee_Flag", OracleType.Int16);//PCFee_Flag参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Convert.ToInt16(PCFee_Flag);
+                Parm[4] = new OracleParameter("v_PUBCFee_Flag", OracleType.Int16);//PUBCFee_Flag参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Convert.ToInt16(PUBCFee_Flag);
+                Parm[5] = new OracleParameter("v_ELEFee_Flag", OracleType.Int16);//ELEFee_Flag参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Convert.ToInt16(ELEFee_Flag);
+                Parm[6] = new OracleParameter("v_GTFee_Flag", OracleType.Int16);//GTFee_Flag参数
+                Parm[6].Direction = ParameterDirection.Input;//输入
+                Parm[6].Value = Convert.ToInt16(GTFee_Flag);
+
+                OracleCommand AddUser2FeeFlag = new OracleCommand("proc_AddUser2FeeFlag", Connect);//指定存储过程
+                AddUser2FeeFlag.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddUser2FeeFlag.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddUser2FeeFlag.Parameters.Add(tP);
+                }
+                if (AddUser2FeeFlag.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增店面缴费标志信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 按一定条件删除某店面的缴费标志信息
         /// </summary>
@@ -1685,7 +2622,47 @@ namespace AccountMgr
         /// <returns>删除成功返回真，否则返回假</returns>
         public static Boolean DeleteUser2FeeFlag(int SN, int Year, int Month, int DeleteType)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[4];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_DeleteType", OracleType.Int16);//DeleteType参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = DeleteType;
+
+                OracleCommand DelUser2FeeFlag = new OracleCommand("proc_DelUser2FeeFlag", Connect);//指定存储过程
+                DelUser2FeeFlag.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelUser2FeeFlag.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelUser2FeeFlag.Parameters.Add(tP);
+                }
+                if (DelUser2FeeFlag.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除店面缴费标志信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 设置某店面某月的交费标志信息
         /// </summary>
@@ -1699,105 +2676,604 @@ namespace AccountMgr
         /// <returns>设置成功返回真，否则返回假</returns>
         public static Boolean SetUser2FeeFlag(int SN, int Year, int Month, Boolean PCFee_Flag, Boolean PUBCFee_Flag, Boolean ELEFee_Flag, Boolean GTFee_Flag)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[7];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_PCFee_Flag", OracleType.Int16);//PCFee_Flag参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Convert.ToInt16(PCFee_Flag);
+                Parm[4] = new OracleParameter("v_PUBCFee_Flag", OracleType.Int16);//PUBCFee_Flag参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Convert.ToInt16(PUBCFee_Flag);
+                Parm[5] = new OracleParameter("v_ELEFee_Flag", OracleType.Int16);//ELEFee_Flag参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Convert.ToInt16(ELEFee_Flag);
+                Parm[6] = new OracleParameter("v_GTFee_Flag", OracleType.Int16);//GTFee_Flag参数
+                Parm[6].Direction = ParameterDirection.Input;//输入
+                Parm[6].Value = Convert.ToInt16(GTFee_Flag);
+
+                OracleCommand SetUser2FeeFlag = new OracleCommand("proc_SetUser2FeeFlag", Connect);//指定存储过程
+                SetUser2FeeFlag.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetUser2FeeFlag.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetUser2FeeFlag.Parameters.Add(tP);
+                }
+                if (SetUser2FeeFlag.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置店面缴费标志信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 按店面编号年份月份查询店面的缴费标志信息
         /// </summary>
         /// <param name="SN">店面编号</param>
         /// <param name="Year">年份</param>
         /// <param name="Month">月份</param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>表中符合条件的行</returns>
-        public static Boolean[] GetUser2FeeFlag(int SN, int Year, int Month)
+        public static List<String[]> GetUser2FeeFlag(int SN, int Year, int Month, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> User2FeeFlagList = new List<String[]>();//待返回的店面缴费标志列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[5];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_LikeQuery", OracleType.Int16);//LikeQuery参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = LikeQuery;
+                Parm[4] = new OracleParameter("p_cur", OracleType.Cursor);
+                Parm[4].Direction = ParameterDirection.Output;//定义引用游标输出参数
+
+                OracleCommand GetUser2FeeFlag = new OracleCommand("proc_GetUser2FeeFlag", Connect);//指定存储过程
+                GetUser2FeeFlag.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                GetUser2FeeFlag.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    GetUser2FeeFlag.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(GetUser2FeeFlag);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    User2FeeFlagList.Add(new String[] {datatable.Rows[i][0].ToString(),//店面编号
+                                                        datatable.Rows[i][1].ToString(),//年份
+                                                        datatable.Rows[i][2].ToString(),//月份
+                                                        datatable.Rows[i][3].ToString(),//物业费标志
+                                                        datatable.Rows[i][4].ToString(),//公摊费标志
+                                                        datatable.Rows[i][5].ToString(),//电费标志
+                                                        datatable.Rows[i][6].ToString()});//垃圾转运费标志
+                }
+                return User2FeeFlagList;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询店面缴费标志信息失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
 
         //店面物业费收费细则处理
         /// <summary> 新增店面物业费收费细则
         /// </summary>
-        /// <param name="SN">栋号</param>
+        /// <param name="SN">店面编号</param>
         /// <param name="PCFee">物业费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
+        /// <param name="Bonus">优惠金额</param>
         /// <returns>新增成功返回真，否则返回假</returns>
-        public static Boolean AddUser2PCFee(int SN, Double PCFee, String Date)
+        public static Boolean AddUser2PCFee(int SN, Double PCFee, int Year, int Month, int Day, Double Bonus)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[6];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_PCFee", OracleType.Double);//PCFee参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = PCFee;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int16);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+                Parm[5] = new OracleParameter("v_Bonus", OracleType.Double);//Bonus参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Bonus;
+
+                OracleCommand AddUser2PCFee = new OracleCommand("proc_AddUser2PCFee", Connect);//指定存储过程
+                AddUser2PCFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddUser2PCFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddUser2PCFee.Parameters.Add(tP);
+                }
+                if (AddUser2PCFee.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增店面物业费收费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 删除店面物业费收费细则
         /// </summary>
         /// <param name="SN">店面编号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>删除成功返回真，否则返回假</returns>
-        public static Boolean DeleteUser2PCFee(int SN, String Date)
+        public static Boolean DeleteUser2PCFee(int SN, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[4];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Day;
+
+                OracleCommand DelUser2PCFee = new OracleCommand("proc_DelUser2PCFee", Connect);//指定存储过程
+                DelUser2PCFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelUser2PCFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelUser2PCFee.Parameters.Add(tP);
+                }
+                if (DelUser2PCFee.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除店面物业费缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 修改店面物业费收费细则
         /// </summary>
         /// <param name="SN">店面编号</param>
         /// <param name="PCFee">物业费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
+        /// <param name="Bonus">优惠金额</param>
         /// <returns>设置成功返回真，否则返回假</returns>
-        public static Boolean SetUser2PCFee(int BN, int RN, Double PCFee, String Date, Double Bonus)
+        public static Boolean SetUser2PCFee(int SN, Double PCFee, int Year, int Month, int Day, Double Bonus)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[6];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_PCFee", OracleType.Double);//PCFee参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = PCFee;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+                Parm[5] = new OracleParameter("v_Bonus", OracleType.Double);//Bonus参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Bonus;
+
+                OracleCommand SetUser2PCFee = new OracleCommand("proc_SetUser2PCFee", Connect);//指定存储过程
+                SetUser2PCFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetUser2PCFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetUser2PCFee.Parameters.Add(tP);
+                }
+                if (SetUser2PCFee.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置店面物业费缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 查询店面物业费收费细则
         /// </summary>
         /// <param name="SN">店面编号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <param name="SearchType">查询类型：
         ///     1：根据店面编号查询
         ///     2：根据缴费日期查询
         /// </param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>符合条件的行</returns>
-        public static List<String[]> GetUser2PCFee(int BN, String Date, int SearchType)
+        public static List<String[]> GetUser2PCFee(int SN, int Year, int Month, int Day, int SearchType, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> User2PCFeeList = new List<String[]>();//待返回的店面物业费缴费细则列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[7];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_Day", OracleType.Int32);//Day参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Day;
+                Parm[4] = new OracleParameter("v_SearchType", OracleType.Int32);//SearchType参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = SearchType;
+                Parm[5] = new OracleParameter("v_LikeQuery", OracleType.Int16);//LikeQuery参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Convert.ToInt16(LikeQuery);
+                Parm[6] = new OracleParameter("p_cur", OracleType.Cursor);
+                Parm[6].Direction = ParameterDirection.Output;//定义引用游标输出参数
+
+                OracleCommand GetUser2PCFee = new OracleCommand("proc_GetUser2PCFee", Connect);//指定存储过程
+                GetUser2PCFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                GetUser2PCFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    GetUser2PCFee.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(GetUser2PCFee);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    User2PCFeeList.Add(new String[] {datatable.Rows[i][0].ToString(),//店面编号
+                                                        datatable.Rows[i][1].ToString(),//物业费
+                                                        datatable.Rows[i][2].ToString(),//缴费年份
+                                                        datatable.Rows[i][3].ToString(),//缴费月份
+                                                        datatable.Rows[i][4].ToString(),//缴费日期
+                                                        datatable.Rows[i][5].ToString()});//优惠金额
+                }
+                return User2PCFeeList;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询店面物业费缴费细则失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
 
         //店面电费收费细则处理
         /// <summary> 新增店面电费收费细则
         /// </summary>
-        /// <param name="SN">栋号</param>
+        /// <param name="SN">店面编号</param>
         /// <param name="ELEFee">电费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>新增成功返回真，否则返回假</returns>
-        public static Boolean AddUser2ELEFee(int SN, Double ELEFee, String Date)
+        public static Boolean AddUser2ELEFee(int SN, Double ELEFee, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[5];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_ELEFee", OracleType.Double);//ELEFee参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = ELEFee;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int16);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+
+                OracleCommand AddUser2ELEFee = new OracleCommand("proc_AddUser2ELEFee", Connect);//指定存储过程
+                AddUser2ELEFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddUser2ELEFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddUser2ELEFee.Parameters.Add(tP);
+                }
+                if (AddUser2ELEFee.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增店面电费收费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 删除店面电费收费细则
         /// </summary>
         /// <param name="SN">店面编号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>删除成功返回真，否则返回假</returns>
-        public static Boolean DeleteUser2ELEFee(int SN, String Date)
+        public static Boolean DeleteUser2ELEFee(int SN, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[4];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Day;
+
+                OracleCommand DelUser2ELEFee = new OracleCommand("proc_DelUser2ELEFee", Connect);//指定存储过程
+                DelUser2ELEFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelUser2ELEFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelUser2ELEFee.Parameters.Add(tP);
+                }
+                if (DelUser2ELEFee.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除店面电费缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 修改店面电费收费细则
         /// </summary>
         /// <param name="SN">栋号</param>
         /// <param name="ELEFee">电费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>设置成功返回真，否则返回假</returns>
-        public static Boolean SetUser2ELEFee(int SN, Double ELEFee, String Date)
+        public static Boolean SetUser2ELEFee(int SN, Double ELEFee, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[5];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_ELEFee", OracleType.Double);//ELEFee参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = ELEFee;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+
+                OracleCommand SetUser2ELEFee = new OracleCommand("proc_SetUser2ELEFee", Connect);//指定存储过程
+                SetUser2ELEFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetUser2ELEFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetUser2ELEFee.Parameters.Add(tP);
+                }
+                if (SetUser2ELEFee.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置店面电费缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 查询店面电费收费细则
         /// </summary>
         /// <param name="SN">店面编号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <param name="SearchType">查询类型：
         ///     1：根据店面编号查询
         ///     2：根据缴费日期查询
         /// </param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>符合条件的行</returns>
-        public static List<String[]> GetUser2ELEFee(int SN, String Date, int SearchType)
+        public static List<String[]> GetUser2ELEFee(int SN, int Year, int Month, int Day, int SearchType, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> User2ELEFeeList = new List<String[]>();//待返回的店面电费缴费细则列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[7];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_Day", OracleType.Int32);//Day参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Day;
+                Parm[4] = new OracleParameter("v_SearchType", OracleType.Int32);//SearchType参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = SearchType;
+                Parm[5] = new OracleParameter("v_LikeQuery", OracleType.Int16);//LikeQuery参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Convert.ToInt16(LikeQuery);
+                Parm[6] = new OracleParameter("p_cur", OracleType.Cursor);
+                Parm[6].Direction = ParameterDirection.Output;//定义引用游标输出参数
+
+                OracleCommand GetUser2ELEFee = new OracleCommand("proc_GetUser2ELEFee", Connect);//指定存储过程
+                GetUser2ELEFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                GetUser2ELEFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    GetUser2ELEFee.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(GetUser2ELEFee);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    User2ELEFeeList.Add(new String[] {datatable.Rows[i][0].ToString(),//店面编号
+                                                        datatable.Rows[i][1].ToString(),//电费
+                                                        datatable.Rows[i][2].ToString(),//缴费年份
+                                                        datatable.Rows[i][3].ToString(),//缴费月份
+                                                        datatable.Rows[i][4].ToString()});//缴费日期
+                }
+                return User2ELEFeeList;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询店面电费缴费细则失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
 
         //户主垃圾转运费收费细则处理
@@ -1805,43 +3281,236 @@ namespace AccountMgr
         /// </summary>
         /// <param name="SN">店面编号</param>
         /// <param name="GTFee">垃圾转运费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>新增成功返回真，否则返回假</returns>
-        public static Boolean AddUser2GTFee(int SN, Double GTFee, String Date)
+        public static Boolean AddUser2GTFee(int SN, Double GTFee, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[5];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_GTFee", OracleType.Double);//GTFee参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = GTFee;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int16);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+
+                OracleCommand AddUser2GTFee = new OracleCommand("proc_AddUser2GTFee", Connect);//指定存储过程
+                AddUser2GTFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddUser2GTFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddUser2GTFee.Parameters.Add(tP);
+                }
+                if (AddUser2GTFee.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增店面垃圾转运费收费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 删除店面垃圾转运费收费细则
         /// </summary>
         /// <param name="SN">店面编号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>删除成功返回真，否则返回假</returns>
-        public static Boolean DeleteUser2GTFee(int SN, String Date)
+        public static Boolean DeleteUser2GTFee(int SN, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[4];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Day;
+
+                OracleCommand DelUser2GTFee = new OracleCommand("proc_DelUser2GTFee", Connect);//指定存储过程
+                DelUser2GTFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelUser2GTFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelUser2GTFee.Parameters.Add(tP);
+                }
+                if (DelUser2GTFee.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除店面垃圾转运费缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 修改店面垃圾转运费收费细则
         /// </summary>
         /// <param name="SN">栋号</param>
         /// <param name="GTFee">垃圾转运费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>设置成功返回真，否则返回假</returns>
-        public static Boolean SetUser2GTFee(int SN, Double GTFee, String Date)
+        public static Boolean SetUser2GTFee(int SN, Double GTFee, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[5];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_GTFee", OracleType.Double);//GTFee参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = GTFee;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+
+                OracleCommand SetUser2GTFee = new OracleCommand("proc_SetUser2GTFee", Connect);//指定存储过程
+                SetUser2GTFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetUser2GTFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetUser2GTFee.Parameters.Add(tP);
+                }
+                if (SetUser2GTFee.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置店面垃圾转运费缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 查询店面垃圾转运费收费细则
         /// </summary>
         /// <param name="SN">店面编号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <param name="SearchType">查询类型：
         ///     1：根据店面编号查询
         ///     2：根据缴费日期查询
         /// </param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>符合条件的行</returns>
-        public static List<String[]> GetUser2GTFee(int SN, String Date, int SearchType)
+        public static List<String[]> GetUser2GTFee(int SN, int Year, int Month, int Day, int SearchType, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> User2GTFeeList = new List<String[]>();//待返回的店面垃圾转运费缴费细则列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[7];//实例化参数列表
+                Parm[0] = new OracleParameter("v_SN", OracleType.Int32);//SN参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = SN;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_Day", OracleType.Int32);//Day参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Day;
+                Parm[4] = new OracleParameter("v_SearchType", OracleType.Int32);//SearchType参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = SearchType;
+                Parm[5] = new OracleParameter("v_LikeQuery", OracleType.Int16);//LikeQuery参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Convert.ToInt16(LikeQuery);
+                Parm[6] = new OracleParameter("p_cur", OracleType.Cursor);
+                Parm[6].Direction = ParameterDirection.Output;//定义引用游标输出参数
+
+                OracleCommand GetUser2GTFee = new OracleCommand("proc_GetUser2GTFee", Connect);//指定存储过程
+                GetUser2GTFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                GetUser2GTFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    GetUser2GTFee.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(GetUser2GTFee);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    User2GTFeeList.Add(new String[] {datatable.Rows[i][0].ToString(),//店面编号
+                                                        datatable.Rows[i][1].ToString(),//垃圾转运费
+                                                        datatable.Rows[i][2].ToString(),//缴费年份
+                                                        datatable.Rows[i][3].ToString(),//缴费月份
+                                                        datatable.Rows[i][4].ToString()});//缴费日期
+                }
+                return User2GTFeeList;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询店面垃圾转运费缴费细则失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
 
         //外租车信息处理
@@ -1851,11 +3520,64 @@ namespace AccountMgr
         /// <param name="CarID">车牌号</param>
         /// <param name="Name">姓名</param>
         /// <param name="Tel">电话</param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>表中符合条件的行</returns>
-        public static List<String[]> GetUser3Info(int SearchType, String CarID, String Name, String Tel)
+        public static List<String[]> GetUser3Info(int SearchType, String CarID, String Name, String Tel, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> User3List = new List<String[]>();//待返回的外租车主信息列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
 
+                OracleParameter[] Parm = new OracleParameter[6];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+                Parm[1] = new OracleParameter("v_Name", OracleType.VarChar);//Name参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Name;
+                Parm[2] = new OracleParameter("v_Tel", OracleType.VarChar);//Tel参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Tel;
+                Parm[3] = new OracleParameter("v_LikeQuery", OracleType.Int32);//模糊查找参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Convert.ToInt16(LikeQuery);
+                Parm[4] = new OracleParameter("v_SearchType", OracleType.Int32);//查找类型参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = SearchType;
+                Parm[5] = new OracleParameter("p_cur", OracleType.Cursor);
+                Parm[5].Direction = ParameterDirection.Output;//定义引用游标输出参数
+
+                OracleCommand QueryUser3 = new OracleCommand("proc_GetUser3Info", Connect);//指定存储过程
+                QueryUser3.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                QueryUser3.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    QueryUser3.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(QueryUser3);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    User3List.Add(new String[] {datatable.Rows[i][0].ToString(),//车牌号
+                                                datatable.Rows[i][1].ToString(),//姓名
+                                                datatable.Rows[i][2].ToString()});//电话
+                }
+                return User3List;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询外租车主信息表失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 根据外租车车牌号设置信息
         /// </summary>
@@ -1865,26 +3587,132 @@ namespace AccountMgr
         /// <returns>设置成功返回真，否则返回假</returns>
         public static Boolean SetUser3Info(String CarID, String Name, String Tel)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[3];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+                Parm[1] = new OracleParameter("v_Name", OracleType.VarChar);//Name参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Name;
+                Parm[2] = new OracleParameter("v_Tel", OracleType.VarChar);//Tel参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Tel;
+
+                OracleCommand SetUser3 = new OracleCommand("proc_SetUser3Info", Connect);//指定存储过程
+                SetUser3.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetUser3.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetUser3.Parameters.Add(tP);
+                }
+                if (SetUser3.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置外租车主信息表失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 新增外租车信息
         /// </summary>
         /// <param name="CarID">车牌号</param>
         /// <param name="Name">店主姓名</param>
         /// <param name="Tel">电话</param>
-        /// <returns>新增成功返回1，因车牌号重复新增失败返回-1，其它原因新增失败返回0</returns>
-        public static int AddUser3Info(String CarID, String Name, String Tel)
+        /// <returns>新增成功返回真，否则返回假</returns>
+        public static Boolean AddUser3Info(String CarID, String Name, String Tel)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[3];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+                Parm[1] = new OracleParameter("v_Name", OracleType.VarChar);//Name参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Name;
+                Parm[2] = new OracleParameter("v_Tel", OracleType.VarChar);//Tel参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Tel;
+
+                OracleCommand AddUser3 = new OracleCommand("proc_AddUser3Info", Connect);//指定存储过程
+                AddUser3.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddUser3.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddUser3.Parameters.Add(tP);
+                }
+                if (AddUser3.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增外租车主信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 删除外租车信息
         /// </summary>
         /// <param name="CarID">车牌号</param>
-        /// <param name="AllClear">是否关联删除该车牌号所有记录</param>
         /// <returns>删除成功返回真，否则返回假</returns>
-        public static Boolean DeleteUser3Info(String CarID, Boolean AllClear)
+        public static Boolean DeleteUser3Info(String CarID)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                //删除户主
+                OracleParameter[] Parm = new OracleParameter[1];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//车牌号参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+
+                OracleCommand DelUser3 = new OracleCommand("proc_DelUser3", Connect);//指定存储过程
+                DelUser3.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelUser3.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelUser3.Parameters.Add(tP);
+                }
+                //调用存储过程
+                if (DelUser3.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除外租车主信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
 
         //车辆对应月份缴费标志信息处理
@@ -1897,7 +3725,48 @@ namespace AccountMgr
         /// <returns>新增成功返回真，否则返回假</returns>
         public static Boolean AddCarFeeFlag(String CarID, int Year, int Month, Boolean CarFee_Flag)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[7];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_CarFee_Flag", OracleType.Int16);//PCFee_Flag参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Convert.ToInt16(PCFee_Flag);
+
+
+                OracleCommand AddUser2FeeFlag = new OracleCommand("proc_AddUser2FeeFlag", Connect);//指定存储过程
+                AddUser2FeeFlag.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddUser2FeeFlag.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddUser2FeeFlag.Parameters.Add(tP);
+                }
+                if (AddUser2FeeFlag.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增店面缴费标志信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 按一定条件删除某车辆的缴费标志信息
         /// </summary>
