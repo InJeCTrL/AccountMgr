@@ -3742,26 +3742,26 @@ namespace AccountMgr
                 Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
                 Parm[2].Direction = ParameterDirection.Input;//输入
                 Parm[2].Value = Month;
-                Parm[3] = new OracleParameter("v_CarFee_Flag", OracleType.Int16);//PCFee_Flag参数
+                Parm[3] = new OracleParameter("v_CarFee_Flag", OracleType.Int16);//CarFee_Flag参数
                 Parm[3].Direction = ParameterDirection.Input;//输入
-                Parm[3].Value = Convert.ToInt16(PCFee_Flag);
+                Parm[3].Value = Convert.ToInt16(CarFee_Flag);
 
 
-                OracleCommand AddUser2FeeFlag = new OracleCommand("proc_AddUser2FeeFlag", Connect);//指定存储过程
-                AddUser2FeeFlag.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
-                AddUser2FeeFlag.Parameters.Clear();//清空参数列表
+                OracleCommand AddCarFeeFlag = new OracleCommand("proc_AddCarFeeFlag", Connect);//指定存储过程
+                AddCarFeeFlag.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddCarFeeFlag.Parameters.Clear();//清空参数列表
                 foreach (OracleParameter tP in Parm)
                 {//填充参数列表
-                    AddUser2FeeFlag.Parameters.Add(tP);
+                    AddCarFeeFlag.Parameters.Add(tP);
                 }
-                if (AddUser2FeeFlag.ExecuteNonQuery() == 0)
+                if (AddCarFeeFlag.ExecuteNonQuery() == 0)
                     return false;//添加失败
                 else
                     return true;//添加成功
             }
             catch (Exception)
             {
-                return false;//新增店面缴费标志信息失败则返回假
+                return false;//新增车辆缴费标志信息失败则返回假
             }
             finally
             {
@@ -3782,7 +3782,47 @@ namespace AccountMgr
         /// <returns>删除成功返回真，否则返回假</returns>
         public static Boolean DeleteCarFeeFlag(String CarID, int Year, int Month, int DeleteType)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[4];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_DeleteType", OracleType.Int16);//DeleteType参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = DeleteType;
+
+                OracleCommand DelCarFeeFlag = new OracleCommand("proc_DelCarFeeFlag", Connect);//指定存储过程
+                DelCarFeeFlag.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelCarFeeFlag.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelCarFeeFlag.Parameters.Add(tP);
+                }
+                if (DelCarFeeFlag.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除车辆缴费标志信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 设置某车辆某月的交费标志信息
         /// </summary>
@@ -3793,17 +3833,107 @@ namespace AccountMgr
         /// <returns>设置成功返回真，否则返回假</returns>
         public static Boolean SetCarFeeFlag(String CarID, int Year, int Month, Boolean CarFee_Flag)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[4];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_CarFee_Flag", OracleType.Int16);//CarFee_Flag参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Convert.ToInt16(CarFee_Flag);
+                
+                OracleCommand SetCarFeeFlag = new OracleCommand("proc_SetCarFeeFlag", Connect);//指定存储过程
+                SetCarFeeFlag.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetCarFeeFlag.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetCarFeeFlag.Parameters.Add(tP);
+                }
+                if (SetCarFeeFlag.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置车费缴费标志信息失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 按车牌号年份月份查询车辆的缴费标志信息
         /// </summary>
         /// <param name="CarID">车牌号</param>
         /// <param name="Year">年份</param>
         /// <param name="Month">月份</param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>表中符合条件的行</returns>
-        public static Boolean GetCarFeeFlag(String CarID, int Year, int Month)
+        public static List<String[]> GetCarFeeFlag(String CarID, int Year, int Month, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> CarFeeFlagList = new List<String[]>();//待返回的车费缴费细则列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[4];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_LikeQuery", OracleType.Int32);//LikeQuery参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Convert.ToInt16(LikeQuery);
+                
+                OracleCommand GetCarFeeFlag = new OracleCommand("proc_GetCarFeeFlag", Connect);//指定存储过程
+                GetCarFeeFlag.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                GetCarFeeFlag.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    GetCarFeeFlag.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(GetCarFeeFlag);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    CarFeeFlagList.Add(new String[] {datatable.Rows[i][0].ToString(),//车牌号
+                                                        datatable.Rows[i][1].ToString(),//年份
+                                                        datatable.Rows[i][2].ToString(),//月份
+                                                        datatable.Rows[i][3].ToString()});//停车费标志
+                }
+                return CarFeeFlagList;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询车费缴费标志失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
 
         //车辆收费细则处理
@@ -3811,44 +3941,236 @@ namespace AccountMgr
         /// </summary>
         /// <param name="CarID">车牌号</param>
         /// <param name="CarFee">停车费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>新增成功返回真，否则返回假</returns>
-        public static Boolean AddCarFee(String CarID, Double CarFee, String Date)
+        public static Boolean AddCarFee(String CarID, Double CarFee, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[5];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+                Parm[1] = new OracleParameter("v_CarFee", OracleType.Double);//CarFee参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = CarFee;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int16);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+
+                OracleCommand AddCarFee = new OracleCommand("proc_AddCarFee", Connect);//指定存储过程
+                AddCarFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                AddCarFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    AddCarFee.Parameters.Add(tP);
+                }
+                if (AddCarFee.ExecuteNonQuery() == 0)
+                    return false;//添加失败
+                else
+                    return true;//添加成功
+            }
+            catch (Exception)
+            {
+                return false;//新增车辆收费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 删除车辆停车费收费细则
         /// </summary>
         /// <param name="CarID">车牌号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>删除成功返回真，否则返回假</returns>
-        public static Boolean DeleteCarFee(String CarID, String Date)
+        public static Boolean DeleteCarFee(String CarID, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[4];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int16);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Day;
+
+                OracleCommand DelCarFee = new OracleCommand("proc_DelCarFee", Connect);//指定存储过程
+                DelCarFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                DelCarFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    DelCarFee.Parameters.Add(tP);
+                }
+                if (DelCarFee.ExecuteNonQuery() == 0)
+                    return false;//删除失败
+                else
+                    return true;//删除成功
+            }
+            catch (Exception)
+            {
+                return false;//删除车辆缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 修改车辆停车费收费细则
         /// </summary>
         /// <param name="CarID">车牌号</param>
         /// <param name="CarFee">停车费</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <returns>设置成功返回真，否则返回假</returns>
-        public static Boolean SetCarFee(String CarID, Double CarFee, String Date)
+        public static Boolean SetCarFee(String CarID, Double CarFee, int Year, int Month, int Day)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[5];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+                Parm[1] = new OracleParameter("v_CarFee", OracleType.Double);//CarFee参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = CarFee;
+                Parm[2] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Year;
+                Parm[3] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Month;
+                Parm[4] = new OracleParameter("v_Day", OracleType.Int16);//Day参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = Day;
+
+                OracleCommand SetCarFee = new OracleCommand("proc_SetCarFee", Connect);//指定存储过程
+                SetCarFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                SetCarFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    SetCarFee.Parameters.Add(tP);
+                }
+                if (SetCarFee.ExecuteNonQuery() == 0)
+                    return false;//设置失败
+                else
+                    return true;//设置成功
+            }
+            catch (Exception)
+            {
+                return false;//设置车辆缴费细则失败则返回假
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
         /// <summary> 查询车辆停车费收费细则
         /// </summary>
         /// <param name="CarID">车牌号</param>
-        /// <param name="Date">缴费日期</param>
+        /// <param name="Year">缴费年份</param>
+        /// <param name="Month">缴费月份</param>
+        /// <param name="Day">缴费日期</param>
         /// <param name="SearchType">查询类型：
         ///     1：根据车牌号查询
         ///     2：根据缴费日期查询
         /// </param>
+        /// <param name="LikeQuery">是否模糊查询</param>
         /// <returns>符合条件的行</returns>
-        public static List<String[]> GetCarFee(String CarID, String Date, int SearchType)
+        public static List<String[]> GetCarFee(String CarID, int Year, int Month, int Day, int SearchType, Boolean LikeQuery)
         {
+            String Connect_Str = GetDBConnectStr();//获取数据库连接参数字符串
+            List<String[]> CarFeeList = new List<String[]>();//待返回的车辆缴费细则列表
+            OracleConnection Connect = new OracleConnection(Connect_Str);//实例化连接oracle类
 
+            try
+            {
+                Connect.Open();//尝试连接数据库
+
+                OracleParameter[] Parm = new OracleParameter[7];//实例化参数列表
+                Parm[0] = new OracleParameter("v_CarID", OracleType.VarChar);//CarID参数
+                Parm[0].Direction = ParameterDirection.Input;//输入
+                Parm[0].Value = CarID;
+                Parm[1] = new OracleParameter("v_Year", OracleType.Int32);//Year参数
+                Parm[1].Direction = ParameterDirection.Input;//输入
+                Parm[1].Value = Year;
+                Parm[2] = new OracleParameter("v_Month", OracleType.Int32);//Month参数
+                Parm[2].Direction = ParameterDirection.Input;//输入
+                Parm[2].Value = Month;
+                Parm[3] = new OracleParameter("v_Day", OracleType.Int32);//Day参数
+                Parm[3].Direction = ParameterDirection.Input;//输入
+                Parm[3].Value = Day;
+                Parm[4] = new OracleParameter("v_SearchType", OracleType.Int32);//SearchType参数
+                Parm[4].Direction = ParameterDirection.Input;//输入
+                Parm[4].Value = SearchType;
+                Parm[5] = new OracleParameter("v_LikeQuery", OracleType.Int16);//LikeQuery参数
+                Parm[5].Direction = ParameterDirection.Input;//输入
+                Parm[5].Value = Convert.ToInt16(LikeQuery);
+                Parm[6] = new OracleParameter("p_cur", OracleType.Cursor);
+                Parm[6].Direction = ParameterDirection.Output;//定义引用游标输出参数
+
+                OracleCommand GetCarFee = new OracleCommand("proc_GetCarFee", Connect);//指定存储过程
+                GetCarFee.CommandType = CommandType.StoredProcedure;//本次查询为存储过程
+                GetCarFee.Parameters.Clear();//清空参数列表
+                foreach (OracleParameter tP in Parm)
+                {//填充参数列表
+                    GetCarFee.Parameters.Add(tP);
+                }
+                OracleDataAdapter OA = new OracleDataAdapter(GetCarFee);
+                DataTable datatable = new DataTable();
+                OA.Fill(datatable);//调用存储过程并拉取数据
+                int i = datatable.Rows.Count;//循环行数次
+                while ((i--) != 0)//按行读取，直到结尾
+                {
+                    CarFeeList.Add(new String[] {datatable.Rows[i][0].ToString(),//车牌号
+                                                 datatable.Rows[i][1].ToString(),//停车费
+                                                 datatable.Rows[i][2].ToString(),//缴费年份
+                                                 datatable.Rows[i][3].ToString(),//缴费月份
+                                                 datatable.Rows[i][4].ToString()});//缴费日期
+                }
+                return CarFeeList;//查询成功
+            }
+            catch (Exception)
+            {
+                return null;//查询车辆缴费细则失败则返回null
+            }
+            finally
+            {
+                Connect.Close();//最后必须关闭数据库连接
+            }
         }
-        
     }
 }
