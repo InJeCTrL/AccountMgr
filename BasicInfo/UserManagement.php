@@ -68,6 +68,9 @@
                 <div class="input-group">
                     <span class="input-group-addon">在线状态</span>
                     <select id="Online" class="form-control">
+                    	<option value="">任意</option>
+                    	<option value="1">在线</option>
+                    	<option value="0">离线</option>
                     </select>
                 </div>
             </div>
@@ -81,7 +84,7 @@
         </div>
         <div class="row">
         	<div class="form-group col-lg-12">
-        		<button class="btn btn-primary btn-block">查询</button>
+        		<button class="btn btn-success btn-block">查询</button>
         	</div>
         </div>
 		<div class="table-responsive">
@@ -272,6 +275,28 @@
 				});
 			}
 		});
-		$(document).ready(SetUserManageShow(1));
+		$(document).ready(function(){
+			SetUserManageShow(1);
+			var ret_type = $.ajax
+			(
+				{
+	        		url : './BasicInfo/GetUserTypeList.php',
+	         		type : "post",
+	         		data : {},
+	        		async : false,
+    			}
+    		).responseText;
+    		$('#UserType').html(JSON.parse(ret_type));
+    		var ret_area = $.ajax
+			(
+				{
+	        		url : './BasicInfo/GetAreaList.php',
+	         		type : "post",
+	         		data : {},
+	        		async : false,
+    			}
+    		).responseText;
+    		$('#Area').html(JSON.parse(ret_area));
+		});
 	</script>
 </html>
