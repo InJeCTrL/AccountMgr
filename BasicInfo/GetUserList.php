@@ -36,9 +36,63 @@
 			{
 				exit();
 			}
+			// 身份证号码
+			if (isset($_REQUEST['UID']))
+			{
+				$UID = $_REQUEST['UID'];
+			}
+			else
+			{
+				exit();
+			}
+			// 电话号码
+			if (isset($_REQUEST['TEL']))
+			{
+				$TEL = $_REQUEST['TEL'];
+			}
+			else
+			{
+				exit();
+			}
+			// 姓名
+			if (isset($_REQUEST['Name']))
+			{
+				$Name = $_REQUEST['Name'];
+			}
+			else
+			{
+				exit();
+			}
+			// 用户身份
+			if (isset($_REQUEST['Type']))
+			{
+				$Type = $_REQUEST['Type'];
+			}
+			else
+			{
+				exit();
+			}
+			// 在线状态
+			if (isset($_REQUEST['Online']))
+			{
+				$Online = $_REQUEST['Online'];
+			}
+			else
+			{
+				exit();
+			}
+			// 管辖范围(楼盘)
+			if (isset($_REQUEST['Area']))
+			{
+				$Area = $_REQUEST['Area'];
+			}
+			else
+			{
+				exit();
+			}
 			$ret = [];
 			// 获取正式用户数量
-			$row_UserCount = GetNormalUserCount($conn);
+			$row_UserCount = GetNormalUserCount($conn, $UID, $TEL, $Name, $Type, $Online, $Area);
 			// 正式用户总数
 			$UserCount = $row_UserCount['@Result'];
 			$ret['UserCount'] = $UserCount;
@@ -58,7 +112,7 @@
 			// 页码为自然数
 			$Offset = ($Page - 1) * 10;
 			// 获取正式用户列表
-			$Res = GetUserList($conn, $Offset);
+			$Res = GetUserList($conn, $Offset, $UID, $TEL, $Name, $Type, $Online, $Area);
 			$ret['Res'] = "";
 			for ($i = 0; $i < count($Res); $i++)
 			{

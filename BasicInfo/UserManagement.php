@@ -40,19 +40,19 @@
             <div class="form-group col-lg-4">
                 <div class="input-group">
                     <span class="input-group-addon">身份证号码</span>
-                    <input class="form-control" type="text">
+                    <input id="UID" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group col-lg-4">
                 <div class="input-group">
                     <span class="input-group-addon">电话号码</span>
-                    <input class="form-control" type="text">
+                    <input id="TEL" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group col-lg-4">
                 <div class="input-group">
                 	<span class="input-group-addon">姓名</span>
-                    <input class="form-control" type="text">
+                    <input id="Name" class="form-control" type="text">
                 </div>
             </div>
         </div>
@@ -83,19 +83,22 @@
             </div>
         </div>
         <div class="row">
-        	<div class="form-group col-lg-12">
-        		<button class="btn btn-success btn-block">查询</button>
+        	<div class="form-group col-lg-6">
+        		<button id="doquery" class="btn btn-success btn-block">查询</button>
+        	</div>
+        	<div class="form-group col-lg-6">
+        		<button class="btn btn-primary btn-block">新增用户</button>
         	</div>
         </div>
 		<div class="table-responsive">
 		    <table class="table table-striped ">
 		        <thead>
 		            <tr>
-		            	<th><input type="checkbox" id="chkall" /></th>
-		                <th>姓名</th>
-		                <th>身份</th>
-		                <th>状态</th>
-		                <th>操作</th>
+		            	<th class="col-lg-1"><input type="checkbox" id="chkall" /></th>
+		                <th class="col-lg-3">姓名</th>
+		                <th class="col-lg-3">身份</th>
+		                <th class="col-lg-2">状态</th>
+		                <th class="col-lg-3">操作</th>
 		            </tr>
 		        </thead>
 		        <tbody id="userlist" name="userlist">
@@ -115,13 +118,16 @@
 		</ul>
 		<ul class="nav nav-pills pagination" style="float: left;">
 			<li class="active">
-				 <a href="#"><span id="UserCount" name="UserCount" class="badge pull-right"></span>正式用户数量：</a>
+				 <a href="#"><span id="UserCount" name="UserCount" class="badge pull-right"></span>查得用户数量：</a>
 			</li>
 		</ul>
 	</body>
 	<script>
+		var search_UID = '', search_TEL = '', search_Name = '',
+			search_type = '', search_online = '', search_area = '',
+			page = 1;
 		// 强制离线指定ID的用户账号
-		function forcesignout(userid, page)
+		function forcesignout(userid)
 		{
 			var ret = $.ajax
 			(
@@ -136,7 +142,7 @@
 			if (ret != '')
 			{
 				alert(ret);
-				SetUserManageShow(page);
+				SetUserManageShow();
 			}
 			// 返回为空则认为用户下线，刷新页面
 			else
@@ -145,7 +151,7 @@
 			}
 		}
 		// 删除指定ID的用户账号
-		function deleteUser(userid, page)
+		function deleteUser(userid)
 		{
 			var ret = $.ajax
 			(
@@ -179,7 +185,7 @@
 				{
 					alert('用户已删除！');
 				}
-				SetUserManageShow(page);
+				SetUserManageShow();
 			}
 			// 返回为空则认为用户下线，刷新页面
 			else
@@ -187,15 +193,16 @@
 				window.location.reload();
 			}
 		}
+		
 		// 获取用户管理并显示
-		function SetUserManageShow(page)
+		function SetUserManageShow()
 		{
 			var ret = $.ajax
 			(
 				{
 	        		url : './BasicInfo/GetUserList.php',
 	         		type : "post",
-	         		data : {Page:page},
+	         		data : {Page:page, UID:search_UID, TEL:search_TEL, Name:search_Name, Type:search_type, Online:search_online, Area:search_area},
 	        		async : false,
     			}
     		).responseText;
@@ -216,15 +223,15 @@
 			$('.pagination li').each(function(){
 				// 单击按钮时获取按钮字符串并传入翻页页面
 				$(this).bind('click', function(){
-					var page_index = $(this).children()[0].innerText;
-					SetUserManageShow(page_index);
+					page = $(this).children()[0].innerText;
+					SetUserManageShow();
 				});
 			});
 			// 为每个强制离线按钮绑定事件
 			$('.signout').each(function(){
 				$(this).bind('click', function(){
 					var userid = $(this).parent().attr('id');
-					forcesignout(userid, page);
+					forcesignout(userid);
 				});
 			});
 			// 为每个删除按钮添加事件
@@ -233,7 +240,7 @@
 					if (confirm('确认删除账号？'))
 					{
 						var userid = $(this).parent().attr('id');
-						deleteUser(userid, page);
+						deleteUser(userid);
 					}
 				});
 			});
@@ -254,8 +261,7 @@
 					if ($(this).is(':checked') == true)
 					{
 						var userid = $(this).parent().parent().children().eq(4).children().eq(0).attr('id');
-						var nowpage = $('.active a').eq(1).text();
-						deleteUser(userid, nowpage);
+						deleteUser(userid);
 					}
 				});
 			}
@@ -269,14 +275,24 @@
 					if ($(this).is(':checked') == true)
 					{
 						var userid = $(this).parent().parent().children().eq(4).children().eq(0).attr('id');
-						var nowpage = $('.active a').eq(1).text();
-						forcesignout(userid, nowpage);
+						forcesignout(userid);
 					}
 				});
 			}
 		});
+		// 查询按钮
+		$('#doquery').bind('click', function(){
+			// 查询赋值
+			search_UID = $('#UID').val();
+			search_TEL = $('#TEL').val();
+			search_Name = $('#Name').val();
+			search_type = $('#UserType').val();
+			search_online = $('#Online').val();
+			search_area = $('#Area').val();
+			SetUserManageShow();
+		});
 		$(document).ready(function(){
-			SetUserManageShow(1);
+			SetUserManageShow();
 			var ret_type = $.ajax
 			(
 				{

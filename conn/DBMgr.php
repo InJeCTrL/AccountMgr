@@ -102,19 +102,20 @@
 		return $result;
 	}
 	// 获取正式用户账号数量
-	function GetNormalUserCount($link)
+	function GetNormalUserCount($link, $UID, $TEL, $Name, $Type, $Online, $Area)
 	{
-		$stmt = $link->prepare("CALL GetNormalUserCount(@Result)");
+		$stmt = $link->prepare("CALL GetNormalUserCount(@Result, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssssss", $UID, $TEL, $Name, $Type, $Online, $Area);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
 		return $result;
 	}
 	// 获取正式用户账号列表
-	function GetUserList($link, $Offset)
+	function GetUserList($link, $Offset, $UID, $TEL, $Name, $Type, $Online, $Area)
 	{
-		$stmt = $link->prepare("CALL GetUserList(?)");
-		$stmt->bind_param("i", $Offset);
+		$stmt = $link->prepare("CALL GetUserList(?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("issssss", $Offset, $UID, $TEL, $Name, $Type, $Online, $Area);
 		$stmt->execute();
 		$stmt->bind_result($R1, $R2, $R3, $R4, $R5, $R6);
 		// 数据行下标
