@@ -35,10 +35,60 @@
 		    	<a style="text-decoration: none;" href="#">用户管理</a>
 		    </li>
 		</ol>
+        <h3>条件筛选</h3>
+        <div class="row">
+            <div class="form-group col-lg-4">
+                <div class="input-group">
+                    <span class="input-group-addon">身份证号码</span>
+                    <input class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group col-lg-4">
+                <div class="input-group">
+                    <span class="input-group-addon">电话号码</span>
+                    <input class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group col-lg-4">
+                <div class="input-group">
+                	<span class="input-group-addon">姓名</span>
+                    <input class="form-control" type="text">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-lg-4">
+                <div class="input-group">
+                    <span class="input-group-addon">用户身份</span>
+                    <select id="UserType" class="form-control">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-lg-4">
+                <div class="input-group">
+                    <span class="input-group-addon">在线状态</span>
+                    <select id="Online" class="form-control">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-lg-4">
+                <div class="input-group">
+                    <span class="input-group-addon">管辖范围</span>
+                    <select id="Area" class="form-control">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+        	<div class="form-group col-lg-12">
+        		<button class="btn btn-primary btn-block">查询</button>
+        	</div>
+        </div>
 		<div class="table-responsive">
 		    <table class="table table-striped ">
 		        <thead>
 		            <tr>
+		            	<th><input type="checkbox" id="chkall" /></th>
 		                <th>姓名</th>
 		                <th>身份</th>
 		                <th>状态</th>
@@ -49,6 +99,15 @@
 		        </tbody>
 		    </table>
 		</div>
+		<div class="row">
+        	<div class="form-group col-lg-3">
+        		<div class="input-group">
+                    <span class="input-group-addon">批量操作：</span>
+                    <button id="multidel" class="btn btn-danger btn-block">删除</button>
+                    <button id="multisignout" class="btn btn-warning btn-block">强制离线</button>
+               </div>
+        	</div>
+        </div>
 		<ul id="pagelimit" name="pagelimit" class="pagination" style="float: right;">
 		</ul>
 		<ul class="nav nav-pills pagination" style="float: left;">
@@ -58,6 +117,73 @@
 		</ul>
 	</body>
 	<script>
+		// 强制离线指定ID的用户账号
+		function forcesignout(userid, page)
+		{
+			var ret = $.ajax
+			(
+				{
+	        		url : './BasicInfo/forceSignout.php',
+	         		type : "post",
+	         		data : {UserID:userid},
+	        		async : false,
+    			}
+    		).responseText;
+    		// 注销用户
+			if (ret != '')
+			{
+				alert(ret);
+				SetUserManageShow(page);
+			}
+			// 返回为空则认为用户下线，刷新页面
+			else
+			{
+				window.location.reload();
+			}
+		}
+		// 删除指定ID的用户账号
+		function deleteUser(userid, page)
+		{
+			var ret = $.ajax
+			(
+				{
+	        		url : './BasicInfo/deleteUser.php',
+	         		type : "post",
+	         		data : {UserID:userid, force:0},
+	        		async : false,
+    			}
+    		).responseText;
+    		// 删除用户
+			if (ret != '')
+			{
+				// 没有有效删除
+				if (ret === '0')
+				{
+					if (confirm('无法删除账号，可能该用户在其它数据表有记录！是否强制删除用户？（包括其它表的响应记录）'))
+					{
+						var ret = $.ajax
+						(
+							{
+				        		url : './BasicInfo/deleteUser.php',
+				         		type : "post",
+				         		data : {UserID:userid, force:1},
+				        		async : false,
+			    			}
+			    		).responseText;
+					}
+				}
+				else
+				{
+					alert('用户已删除！');
+				}
+				SetUserManageShow(page);
+			}
+			// 返回为空则认为用户下线，刷新页面
+			else
+			{
+				window.location.reload();
+			}
+		}
 		// 获取用户管理并显示
 		function SetUserManageShow(page)
 		{
@@ -95,26 +221,7 @@
 			$('.signout').each(function(){
 				$(this).bind('click', function(){
 					var userid = $(this).parent().attr('id');
-					var ret = $.ajax
-					(
-						{
-			        		url : './BasicInfo/forceSignout.php',
-			         		type : "post",
-			         		data : {UserID:userid},
-			        		async : false,
-		    			}
-		    		).responseText;
-		    		// 注销用户
-					if (ret != '')
-					{
-						alert(ret);
-						SetUserManageShow(page);
-					}
-					// 返回为空则认为用户下线，刷新页面
-					else
-					{
-						window.location.reload();
-					}
+					forcesignout(userid, page);
 				});
 			});
 			// 为每个删除按钮添加事件
@@ -123,49 +230,48 @@
 					if (confirm('确认删除账号？'))
 					{
 						var userid = $(this).parent().attr('id');
-						var ret = $.ajax
-						(
-							{
-				        		url : './BasicInfo/deleteUser.php',
-				         		type : "post",
-				         		data : {UserID:userid, force:0},
-				        		async : false,
-			    			}
-			    	).responseText;
-			    		// 删除用户
-						if (ret != '')
-						{
-							// 没有有效删除
-							if (ret === '0')
-							{
-								if (confirm('无法删除账号，可能该用户在其它数据表有记录！是否强制删除用户？（包括其它表的响应记录）'))
-								{
-									var ret = $.ajax
-									(
-										{
-							        		url : './BasicInfo/deleteUser.php',
-							         		type : "post",
-							         		data : {UserID:userid, force:1},
-							        		async : false,
-						    			}
-						    		).responseText;
-								}
-							}
-							else
-							{
-								alert('用户已删除！');
-							}
-							SetUserManageShow(page);
-						}
-						// 返回为空则认为用户下线，刷新页面
-						else
-						{
-							window.location.reload();
-						}
+						deleteUser(userid, page);
 					}
 				});
 			});
 		}
+		// 全选
+		$('#chkall').bind('click', function(){
+			$('.chksel').each(function(){
+				$(this).prop('checked', $('#chkall').is(':checked'));
+				$(this).attr('checked', $('#chkall').is(':checked'));
+			});
+		});
+		// 批量删除
+		$('#multidel').bind('click', function(){
+			if (confirm('确认批量删除选中的用户账号？'))
+			{
+				$('.chksel').each(function(){
+					// 获取选中行的ID并提交删除
+					if ($(this).is(':checked') == true)
+					{
+						var userid = $(this).parent().parent().children().eq(4).children().eq(0).attr('id');
+						var nowpage = $('.active a').eq(1).text();
+						deleteUser(userid, nowpage);
+					}
+				});
+			}
+		});
+		// 批量强制离线
+		$('#multisignout').bind('click', function(){
+			if (confirm('确认批量强制离线选中的用户账号？'))
+			{
+				$('.chksel').each(function(){
+					// 获取选中行的ID并强制离线
+					if ($(this).is(':checked') == true)
+					{
+						var userid = $(this).parent().parent().children().eq(4).children().eq(0).attr('id');
+						var nowpage = $('.active a').eq(1).text();
+						forcesignout(userid, nowpage);
+					}
+				});
+			}
+		});
 		$(document).ready(SetUserManageShow(1));
 	</script>
 </html>

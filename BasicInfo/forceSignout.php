@@ -1,5 +1,6 @@
 <?php
 	// 强制使给定ID的用户账号离线
+	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
 	// 当前session显示已登录，更新session以验证

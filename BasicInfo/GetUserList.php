@@ -27,7 +27,7 @@
 		else
 		{
 			// 页码
-			if (isset($_REQUEST['Page']) && $_REQUEST['Page'] != '')
+			if (isset($_REQUEST['Page']) && $_REQUEST['Page'] != '' && $_REQUEST['Page'] != '...')
 			{
 				$Page = $_REQUEST['Page'];
 				$Page = (int)$Page;
@@ -64,6 +64,7 @@
 			{
 				$ret['Res'] .= 
 				"<tr>
+					<td><input type='checkbox' class='chksel' /></td>
 	                <td>" . $Res[$i][3] . "</td>
 	                <td>" . $Res[$i][4] . "</td>
 	                <td>" . ($Res[$i][5] === 0 ? "离线" : "在线") . "</td>
@@ -79,10 +80,28 @@
 			$ret['PageLimit'] = "
 				<li><a href='#'>&laquo;</a>
 		    	</li>";
-			for ($i = 1; $i <= $PageNum; $i++)
+			// 跳转到首页之后插入省略号
+			if ($Page - 3 > 1)
 			{
 				$ret['PageLimit'] .= "
-					<li " . ($i === $Page ? "class='active'" : "") . "><a href='#'>" . $PageNum . "</a>
+					<li><a href='#'>...</a>
+		    		</li>";
+			}
+			for ($i = $Page - 3; $i <= $Page + 3; $i++)
+			{
+				// 页码在总页面范围
+				if ($i >= 1 && $i <= $PageNum)
+				{
+					$ret['PageLimit'] .= "
+						<li " . ($i === $Page ? "class='active'" : "") . "><a href='#'>" . $PageNum . "</a>
+			    		</li>";
+				}
+			}
+			// 跳转到尾页之前插入省略号
+			if ($i - 1 < $PageNum)
+			{
+				$ret['PageLimit'] .= "
+					<li><a href='#'>...</a>
 		    		</li>";
 			}
 		    $ret['PageLimit'] .= "
