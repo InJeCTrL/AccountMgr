@@ -94,10 +94,10 @@
 			// 获取正式用户数量
 			$row_UserCount = GetNormalUserCount($conn, $UID, $TEL, $Name, $Type, $Online, $Area);
 			// 正式用户总数
-			$UserCount = $row_UserCount['@Result'];
+			$UserCount = (int)($row_UserCount['@Result']);
 			$ret['UserCount'] = $UserCount;
 			// 总页数
-			$PageNum = ceil($UserCount / 10);
+			$PageNum = max(ceil($UserCount / 10), 1);
 			// 页码为返回首页
 			if ($Page === '«' || $Page <= 0)
 			{
