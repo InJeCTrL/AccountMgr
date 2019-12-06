@@ -68,7 +68,7 @@
 				for ($i_UserArea = 0; $i_UserArea < count($UserArea); $i_UserArea++)
 				{
 					// 找到相同, 不加入
-					if ($Area[$i_Area][0] === $i_UserArea[$i_Area][0])
+					if ($Area[$i_Area][0] === $UserArea[$i_UserArea][0])
 					{
 						$addlist = 0;
 						break;

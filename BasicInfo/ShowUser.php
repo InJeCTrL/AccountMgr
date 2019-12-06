@@ -79,7 +79,7 @@
 					            	<select id="Area_sel" multiple="multiple" class="form-control">
 					            	</select>
 					            </div>
-					            <div class="form-group col-lg-2">
+					            <div class="form-group col-lg-3">
 					            	<label>&nbsp;</label>
 					            	<button id="addone" class="form-control btn btn-primary">添加</button>
 					            	<button id="addall" class="form-control btn btn-primary">全部添加</button>
@@ -134,6 +134,7 @@
 		</div>
 	</body>
 	<script>
+		var UserID = <?php echo $_REQUEST['UserID']; ?>;
 		// 获取个人信息并显示
 		function SetInfoShow()
 		{
@@ -142,7 +143,7 @@
 				{
 	        		url : './BasicInfo/GetUserInfo.php',
 	         		type : "post",
-	         		data : {userid:<?php echo $_REQUEST['UserID']; ?>},
+	         		data : {userid:UserID},
 	        		async : false,
     			}
     		).responseText;
@@ -170,12 +171,18 @@
 			var Name = $('#Name').val();
     		var TEL = $('#TEL').val();
     		var UID = $('#UID').val();
+    		var Type = $('#Type').val();
+    		// 已选管辖范围
+    		var Area = [];
+			$('#Area_sel').children().each(function(){
+				Area.push($(this).val());
+			});
 			var ret = $.ajax
 			(
 				{
-	        		url : './BasicInfo/doSetPersonalInfo.php',
+	        		url : './BasicInfo/doSetUserInfo.php',
 	         		type : "post",
-	         		data : {name:Name, tel:TEL, uid:UID},
+	         		data : {userid:UserID, name:Name, tel:TEL, uid:UID, type:Type, area_list:Area},
 	        		async : false,
     			}
     		).responseText;
@@ -201,9 +208,9 @@
 			var ret = $.ajax
 			(
 				{
-					url : "./BasicInfo/dosetpwd_loggedin.php",
+					url : "./BasicInfo/doSetUserpwd.php",
 					type : "post",
-					data : {PWD1:Pwd1, PWD2:Pwd2},
+					data : {userid:UserID, PWD1:Pwd1, PWD2:Pwd2},
 					async : false,
 				}
 			).responseText;
@@ -223,7 +230,7 @@
 			var ret = $.ajax
 			(
 				{
-					url : "./BasicInfo/dosetsec.php",
+					url : "./BasicInfo/doSetUsersec.php",
 					type : "post",
 					data : {SEC:Sec},
 					async : false,

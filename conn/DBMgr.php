@@ -84,8 +84,19 @@
 	function SetPersonalInfo($link, $opUserID, $targetUserID, $Name, $TEL, $UID, $ModName)
 	{
 		$remoteIP = $_SERVER['REMOTE_ADDR'];
-		$stmt = $link->prepare("CALL SetUserInfo(?, ?, ?, ?, ?, ?, ?, @Result)");
+		$stmt = $link->prepare("CALL SetPersonalInfo(?, ?, ?, ?, ?, ?, ?, @Result)");
 		$stmt->bind_param("iisssss", $opUserID, $targetUserID, $Name, $TEL, $UID, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 设置用户账号信息
+	function SetUserInfo($link, $opUserID, $targetUserID, $Name, $TEL, $UID, $Type, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL SetUserInfo(?, ?, ?, ?, ?, ?, ?, ?, @Result)");
+		$stmt->bind_param("ssssssss", $opUserID, $targetUserID, $Name, $TEL, $UID, $Type, $remoteIP, $ModName);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
@@ -95,7 +106,7 @@
 	function GetUser($link, $userID)
 	{
 		$stmt = $link->prepare("CALL GetUser(?, @UID, @TEL, @UserName, @strType, @Online, @intType)");
-		$stmt->bind_param("i", $userID);
+		$stmt->bind_param("s", $userID);
 		$stmt->execute();
 		$res = $link->query('SELECT @UID, @TEL, @UserName, @strType, @Online, @intType');
 		$result = $res->fetch_assoc();
@@ -184,5 +195,21 @@
 			$i++;
 		}
 		return $Result;
+	}
+	// 设置用户所属管辖范围(楼盘)列表
+	function SetUserAreaList($link, $opUserID, $targetUserID, $Area, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		// 先删除用户所属管辖范围
+		$stmt = $link->prepare("CALL DeleteUserArea(?, ?, ?, ?)");
+		$stmt->bind_param("ssss", $opUserID, $targetUserID, $remoteIP, $ModName);
+		$stmt->execute();
+		// 插入用户所属管辖范围
+		for ($i = 0; $i < count($Area); $i++)
+		{
+			$stmt = $link->prepare("CALL AddUserArea(?, ?, ?, ?, ?)");
+			$stmt->bind_param("sssss", $opUserID, $targetUserID, $Area[$i], $remoteIP, $ModName);
+			$stmt->execute();
+		}
 	}
 ?>
