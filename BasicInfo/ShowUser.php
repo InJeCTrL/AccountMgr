@@ -1,4 +1,5 @@
 <?php
+	// 查看/修改用户账号
 	session_start();
 	// 禁止重复找回密码
 	unset($_SESSION['enResetPwd']);
@@ -32,13 +33,16 @@
 		    	基本信息
 		    </li>
 		    <li class="active">
-		    	个人信息
+		    	<a style="text-decoration: none;" href="#" onclick="$('#mainview').load('./BasicInfo/UserManagement.php')">用户管理</a>
+		    </li>
+		    <li class="active">
+		    	用户详细信息
 		    </li>
 		</ol>
 		<div class="tabbable" id="tabs">
 			<ul class="nav nav-tabs">
 				<li class="active">
-					<a id="tab_info" name="tab_info" href="#panel-info" data-toggle="tab">我的信息</a>
+					<a id="tab_info" name="tab_info" href="#panel-info" data-toggle="tab">用户信息</a>
 				</li>
 				<li>
 					<a id="tab_pwd" name="tab_pwd" href="#panel-changepwd" data-toggle="tab">修改密码</a>
@@ -58,7 +62,8 @@
 				            </div>
 				            <div class="form-group">
 				                <label for="type">身份</label>
-				                <input disabled="disabled" type="text" class="form-control" id="Type" maxlength="1000">
+				                <select id="Type" class="form-control">
+                    			</select>
 				            </div>
 				            <div class="form-group">
 				                <label for="tel">电话号码</label>
@@ -67,6 +72,25 @@
 				            <div class="form-group">
 				                <label for="uid">身份证号码</label>
 				                <input type="text" class="form-control" id="UID" maxlength="30">
+				            </div>
+				            <div class="form-group">
+				            	<div class="form-group col-lg-5">
+					            	<label>管辖范围(已选)</label>
+					            	<select id="Area_sel" multiple="multiple" class="form-control">
+					            	</select>
+					            </div>
+					            <div class="form-group col-lg-2">
+					            	<label>&nbsp;</label>
+					            	<button id="addone" class="form-control btn btn-primary">添加</button>
+					            	<button id="addall" class="form-control btn btn-primary">全部添加</button>
+				            		<button id="delone" class="form-control btn btn-warning">删除</button>
+				            		<button id="delall" class="form-control btn btn-warning">全部删除</button>
+					            </div>
+					            <div class="form-group col-lg-5">
+					            	<label>未选列表</label>
+					            	<select id="Area_not" multiple="multiple" class="form-control">
+					            	</select>
+					            </div>
 				            </div>
 				            <div class="form-group">
 				                <button id="mdfinfo" name="mdfinfo" type="button" class="btn btn-success btn-block">提交修改</button>
@@ -116,17 +140,19 @@
 			var ret = $.ajax
 			(
 				{
-	        		url : './BasicInfo/GetPersonalInfo.php',
+	        		url : './BasicInfo/GetUserInfo.php',
 	         		type : "post",
-	         		data : {},
+	         		data : {userid:<?php echo $_REQUEST['UserID']; ?>},
 	        		async : false,
     			}
     		).responseText;
     		var obj_ret = JSON.parse(ret);
     		$('#Name').val(obj_ret['Name']);
-    		$('#Type').val(obj_ret['Type']);
+    		$('#Type').html(obj_ret['Type']);
     		$('#TEL').val(obj_ret['TEL']);
     		$('#UID').val(obj_ret['UID']);
+    		$('#Area_sel').html(obj_ret['Area_sel']);
+    		$('#Area_not').html(obj_ret['Area_not']);
 		}
 		// 切换tab到我的信息时清空我的信息输入框
 		$('#tab_info').bind('click', SetInfoShow);
@@ -159,6 +185,7 @@
 	    		if (ret === '修改成功！')
 	    		{
 	    			$('#top').load('./top.php');
+	    			$('#left').load('./left.php');
 	    		}
     		}
     		// 返回为空则认为用户下线，刷新页面
@@ -212,7 +239,45 @@
 				window.location.reload();
 			}
 		});
-		// 打开个人信息页面时获取个人信息并显示
+		// 删除按钮
+		$('#delone').bind('click', function(){
+			var ops = $('#Area_sel').children();
+			for (var i = ops.length - 1; i >= 0; i--)
+			{
+				if (ops[i].selected == true)
+			    {
+					$('#Area_not').append(ops[i]);
+				}
+			}
+		});
+		// 添加按钮
+		$('#addone').bind('click', function(){
+			var ops = $('#Area_not').children();
+			for (var i = ops.length - 1; i >= 0; i--)
+			{
+				if (ops[i].selected == true)
+			    {
+					$('#Area_sel').append(ops[i]);
+				}
+			}
+		});
+		// 添加所有按钮
+		$('#addall').bind('click', function(){
+			var ops = $('#Area_not').children();
+			for (var i = ops.length - 1; i >= 0; i--)
+			{
+				$('#Area_sel').append(ops[i]);
+			}
+		});
+		// 删除所有按钮
+		$('#delall').bind('click', function(){
+			var ops = $('#Area_sel').children();
+			for (var i = ops.length - 1; i >= 0; i--)
+			{
+				$('#Area_not').append(ops[i]);
+			}
+		});
+		// 打开详细信息页面时获取详细信息并显示
 		$(document).ready(SetInfoShow());
 	</script>
 </html>

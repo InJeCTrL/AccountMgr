@@ -94,10 +94,10 @@
 	// 获取用户账号信息
 	function GetUser($link, $userID)
 	{
-		$stmt = $link->prepare("CALL GetUser(?, @UID, @TEL, @UserName, @strType, @Online)");
+		$stmt = $link->prepare("CALL GetUser(?, @UID, @TEL, @UserName, @strType, @Online, @intType)");
 		$stmt->bind_param("i", $userID);
 		$stmt->execute();
-		$res = $link->query('SELECT @UID, @TEL, @UserName, @strType, @Online');
+		$res = $link->query('SELECT @UID, @TEL, @UserName, @strType, @Online, @intType');
 		$result = $res->fetch_assoc();
 		return $result;
 	}
@@ -152,6 +152,25 @@
 	function GetAreaList($link)
 	{
 		$stmt = $link->prepare("CALL GetAreaList()");
+		$stmt->execute();
+		$stmt->bind_result($R1, $R2);
+		// 数据行下标
+		$i = 0;
+		// 待返回的数据集合
+		$Result = [];
+		// 循环获取数据
+		while ($res = $stmt->fetch())
+		{
+			$Result[$i] = [$R1, $R2];
+			$i++;
+		}
+		return $Result;
+	}
+	// 获取用户所属管辖范围(楼盘)列表
+	function GetUserAreaList($link, $UserID)
+	{
+		$stmt = $link->prepare("CALL GetUserAreaList(?)");
+		$stmt->bind_param("i", $UserID);
 		$stmt->execute();
 		$stmt->bind_result($R1, $R2);
 		// 数据行下标

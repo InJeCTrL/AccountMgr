@@ -32,7 +32,7 @@
 		    	基本信息
 		    </li>
 		    <li class="active">
-		    	<a style="text-decoration: none;" href="#">用户管理</a>
+		    	用户管理
 		    </li>
 		</ol>
         <h3>条件筛选</h3>
@@ -242,6 +242,13 @@
 						var userid = $(this).parent().attr('id');
 						deleteUser(userid);
 					}
+				});
+			});
+			// 为每个查看修改按钮添加事件
+			$('.mdf').each(function(){
+				$(this).bind('click', function(){
+					var userid = $(this).parent().attr('id');
+					$('#mainview').load('./BasicInfo/ShowUser.php?UserID=' + userid);
 				});
 			});
 		}
