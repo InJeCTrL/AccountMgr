@@ -80,6 +80,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 尝试新增账号
+	function AddUser($link, $opUserID, $UID, $TEL, $Name, $Type, $pwd1, $Sec, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL AddUser(?, ?, ?, ?, ?, ?, ?, ?, ?, @Result, @ID)");
+		$stmt->bind_param("issssssss", $opUserID, $UID, $TEL, $Name, $Type, $pwd1, $Sec, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result, @ID');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 设置用户账号的个人信息
 	function SetPersonalInfo($link, $opUserID, $targetUserID, $Name, $TEL, $UID, $ModName)
 	{
@@ -122,6 +133,16 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 获取申请注册用户数量
+	function GetRegCount($link, $UID, $TEL, $Name)
+	{
+		$stmt = $link->prepare("CALL GetRegCount(@Result, ?, ?, ?)");
+		$stmt->bind_param("sss", $UID, $TEL, $Name);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取正式用户账号列表
 	function GetUserList($link, $Offset, $UID, $TEL, $Name, $Type, $Online, $Area)
 	{
@@ -137,6 +158,25 @@
 		while ($res = $stmt->fetch())
 		{
 			$Result[$i] = [$R1, $R2, $R3, $R4, $R5, $R6];
+			$i++;
+		}
+		return $Result;
+	}
+	// 获取申请注册账号列表
+	function GetRegList($link, $Offset, $UID, $TEL, $Name)
+	{
+		$stmt = $link->prepare("CALL GetRegList(?, ?, ?, ?)");
+		$stmt->bind_param("isss", $Offset, $UID, $TEL, $Name);
+		$stmt->execute();
+		$stmt->bind_result($R1, $R2, $R3, $R4);
+		// 数据行下标
+		$i = 0;
+		// 待返回的数据集合
+		$Result = [];
+		// 循环获取数据
+		while ($res = $stmt->fetch())
+		{
+			$Result[$i] = [$R1, $R2, $R3, $R4];
 			$i++;
 		}
 		return $Result;
