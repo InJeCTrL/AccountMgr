@@ -28,7 +28,7 @@
 		{
 			// 获取用户身份列表
 			$Res = GetAreaList($conn);
-			$ret = "<option value = ''>任意</option>";
+			$ret = "";
 			for ($i = 0; $i < count($Res); $i++)
 			{
 				$ret .= 

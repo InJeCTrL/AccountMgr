@@ -61,6 +61,7 @@
                 <div class="input-group">
                     <span class="input-group-addon">用户身份</span>
                     <select id="UserType" class="form-control">
+                    	<option value="">任意</option>
                     </select>
                 </div>
             </div>
@@ -78,6 +79,7 @@
                 <div class="input-group">
                     <span class="input-group-addon">管辖范围</span>
                     <select id="Area" class="form-control">
+                    	<option value="">任意</option>
                     </select>
                 </div>
             </div>
@@ -87,7 +89,7 @@
         		<button id="doquery" class="btn btn-success btn-block">查询</button>
         	</div>
         	<div class="form-group col-lg-6">
-        		<button class="btn btn-primary btn-block">新增用户</button>
+        		<button id="newuser" class="btn btn-primary btn-block">新增用户</button>
         	</div>
         </div>
 		<div class="table-responsive">
@@ -298,6 +300,10 @@
 			search_area = $('#Area').val();
 			SetUserManageShow();
 		});
+		// 新增用户
+		$('#newuser').bind('click', function(){
+			$('#mainview').load('./BasicInfo/AddUser.php');
+		});
 		$(document).ready(function(){
 			SetUserManageShow();
 			var ret_type = $.ajax
@@ -309,7 +315,7 @@
 	        		async : false,
     			}
     		).responseText;
-    		$('#UserType').html(JSON.parse(ret_type));
+    		$('#UserType').html($('#UserType').html() + JSON.parse(ret_type));
     		var ret_area = $.ajax
 			(
 				{
@@ -319,7 +325,7 @@
 	        		async : false,
     			}
     		).responseText;
-    		$('#Area').html(JSON.parse(ret_area));
+    		$('#Area').html($('#Area').html() + JSON.parse(ret_area));
 		});
 	</script>
 </html>
