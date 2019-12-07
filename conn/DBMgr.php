@@ -53,6 +53,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 删除楼盘
+	function DeleteArea($link, $opUserID, $targetAreaID, $force)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL DeleteArea(?, ?, ?, ?, @Result)");
+		$stmt->bind_param("ssss", $opUserID, $targetAreaID, $remoteIP, $force);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 修改用户账户密码
 	function SetUserPassword($link, $opUserID, $targetUserID, $Password, $ModName)
 	{
@@ -91,6 +102,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 尝试新增楼盘
+	function AddArea($link, $opUserID, $Name, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL AddArea(?, ?, ?, ?, @Result, @ID)");
+		$stmt->bind_param("isss", $opUserID, $Name, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result, @ID');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 设置用户账号的个人信息
 	function SetPersonalInfo($link, $opUserID, $targetUserID, $Name, $TEL, $UID, $ModName)
 	{
@@ -113,6 +135,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 设置楼盘信息
+	function SetAreaInfo($link, $opUserID, $targetAreaID, $Name, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL SetAreaInfo(?, ?, ?, ?, ?, @Result)");
+		$stmt->bind_param("sssss", $opUserID, $targetAreaID, $Name, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取用户账号信息
 	function GetUser($link, $userID)
 	{
@@ -120,6 +153,16 @@
 		$stmt->bind_param("s", $userID);
 		$stmt->execute();
 		$res = $link->query('SELECT @UID, @TEL, @UserName, @strType, @Online, @intType');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取楼盘信息
+	function GetArea($link, $areaID)
+	{
+		$stmt = $link->prepare("CALL GetArea(?, @AreaName)");
+		$stmt->bind_param("s", $areaID);
+		$stmt->execute();
+		$res = $link->query('SELECT @AreaName');
 		$result = $res->fetch_assoc();
 		return $result;
 	}
@@ -138,6 +181,16 @@
 	{
 		$stmt = $link->prepare("CALL GetRegCount(@Result, ?, ?, ?)");
 		$stmt->bind_param("sss", $UID, $TEL, $Name);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取楼盘数量
+	function GetAreaCount($link, $Name)
+	{
+		$stmt = $link->prepare("CALL GetAreaCount(@Result, ?)");
+		$stmt->bind_param("s", $Name);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
@@ -200,9 +253,10 @@
 		return $Result;
 	}
 	// 获取管辖范围(楼盘)列表
-	function GetAreaList($link)
+	function GetAreaList($link, $Name = '')
 	{
-		$stmt = $link->prepare("CALL GetAreaList()");
+		$stmt = $link->prepare("CALL GetAreaList(?)");
+		$stmt->bind_param("s", $Name);
 		$stmt->execute();
 		$stmt->bind_result($R1, $R2);
 		// 数据行下标
