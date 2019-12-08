@@ -33,14 +33,7 @@
 			{
 				exit();
 			}
-			// 级联删除标志
-			if (isset($_REQUEST['force']) && $_REQUEST['force'] != '')
-				$force = $_REQUEST['force'];
-			else
-			{
-				exit();
-			}
-			$Result = DeleteArea($conn, $_SESSION['UserID'], $AID, $force);
+			$Result = DeleteArea($conn, $_SESSION['UserID'], $AID);
 			echo $Result['@Result'] === null ? '0' : $Result['@Result'];
 		}
 	}

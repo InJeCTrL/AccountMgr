@@ -91,7 +91,7 @@
 				{
 	        		url : './BasicInfo/deleteArea.php',
 	         		type : "post",
-	         		data : {AID:aid, force:0},
+	         		data : {AID:aid},
 	        		async : false,
     			}
     		).responseText;
@@ -101,18 +101,7 @@
 				// 没有有效删除
 				if (ret === '0')
 				{
-					if (confirm('无法删除楼盘，可能该用户在其它数据表有记录！是否强制删除楼盘？（包括其它表的相应记录）'))
-					{
-						var ret = $.ajax
-						(
-							{
-				        		url : './BasicInfo/deleteArea.php',
-				         		type : "post",
-				         		data : {AID:aid, force:1},
-				        		async : false,
-			    			}
-			    		).responseText;
-					}
+					alert('楼盘删除失败！');
 				}
 				else
 				{
@@ -162,7 +151,7 @@
 			// 为每个删除按钮添加事件
 			$('.del').each(function(){
 				$(this).bind('click', function(){
-					if (confirm('确认删除楼盘？'))
+					if (confirm('请谨慎操作！\n删除楼盘会级联删除其下属的所有其它数据！\n确认批量删除选中的楼盘？'))
 					{
 						var aid = $(this).parent().attr('id');
 						deleteArea(aid);
@@ -186,7 +175,7 @@
 		});
 		// 批量删除
 		$('#multidel').bind('click', function(){
-			if (confirm('确认批量删除选中的楼盘？'))
+			if (confirm('请谨慎操作！\n删除楼盘会级联删除其下属的所有其它数据！\n确认批量删除选中的楼盘？'))
 			{
 				$('.chksel').each(function(){
 					// 获取选中行的ID并提交删除

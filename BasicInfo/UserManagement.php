@@ -160,7 +160,7 @@
 				{
 	        		url : './BasicInfo/deleteUser.php',
 	         		type : "post",
-	         		data : {UserID:userid, force:0},
+	         		data : {UserID:userid},
 	        		async : false,
     			}
     		).responseText;
@@ -170,18 +170,7 @@
 				// 没有有效删除
 				if (ret === '0')
 				{
-					if (confirm('无法删除账号，可能该用户在其它数据表有记录！是否强制删除用户？（包括其它表的相应记录）'))
-					{
-						var ret = $.ajax
-						(
-							{
-				        		url : './BasicInfo/deleteUser.php',
-				         		type : "post",
-				         		data : {UserID:userid, force:1},
-				        		async : false,
-			    			}
-			    		).responseText;
-					}
+					alert('用户删除失败！');
 				}
 				else
 				{
@@ -239,7 +228,7 @@
 			// 为每个删除按钮添加事件
 			$('.del').each(function(){
 				$(this).bind('click', function(){
-					if (confirm('确认删除账号？'))
+					if (confirm('请谨慎操作！\n删除用户会级联删除其下属的所有其它数据！\n确认批量删除选中的用户？'))
 					{
 						var userid = $(this).parent().attr('id');
 						deleteUser(userid);
@@ -263,7 +252,7 @@
 		});
 		// 批量删除
 		$('#multidel').bind('click', function(){
-			if (confirm('确认批量删除选中的用户账号？'))
+			if (confirm('请谨慎操作！\n删除用户会级联删除其下属的所有其它数据！\n确认批量删除选中的用户？'))
 			{
 				$('.chksel').each(function(){
 					// 获取选中行的ID并提交删除

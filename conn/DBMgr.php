@@ -43,22 +43,22 @@
 		$stmt->execute();
 	}
 	// 删除用户账号
-	function DeleteUser($link, $opUserID, $targetUserID, $force)
+	function DeleteUser($link, $opUserID, $targetUserID)
 	{
 		$remoteIP = $_SERVER['REMOTE_ADDR'];
-		$stmt = $link->prepare("CALL DeleteUser(?, ?, ?, ?, @Result)");
-		$stmt->bind_param("iiss", $opUserID, $targetUserID, $remoteIP, $force);
+		$stmt = $link->prepare("CALL DeleteUser(?, ?, ?, @Result)");
+		$stmt->bind_param("iis", $opUserID, $targetUserID, $remoteIP);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
 		return $result;
 	}
 	// 删除楼盘
-	function DeleteArea($link, $opUserID, $targetAreaID, $force)
+	function DeleteArea($link, $opUserID, $targetAreaID)
 	{
 		$remoteIP = $_SERVER['REMOTE_ADDR'];
-		$stmt = $link->prepare("CALL DeleteArea(?, ?, ?, ?, @Result)");
-		$stmt->bind_param("ssss", $opUserID, $targetAreaID, $remoteIP, $force);
+		$stmt = $link->prepare("CALL DeleteArea(?, ?, ?, @Result)");
+		$stmt->bind_param("sss", $opUserID, $targetAreaID, $remoteIP);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
