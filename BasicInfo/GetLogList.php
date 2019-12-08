@@ -1,5 +1,5 @@
 <?php
-	// 以json方式返回翻页列表与楼盘列表
+	// 以json方式返回翻页列表与日志列表
 	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
@@ -13,7 +13,7 @@
 		$_SESSION['Type'] = $UserInfo['@strType'];
 		$_SESSION['Online'] = $UserInfo['@Online'];
 	}
-	// 已登录，获取翻页列表与审核楼盘列表
+	// 已登录，获取翻页列表与日志列表
 	if (isset($_SESSION['Online']) && $_SESSION['Online'] == 1)
 	{
 		// 不是超级管理员，强制注销
@@ -27,7 +27,7 @@
 		else
 		{
 			// 页码
-			if (isset($_REQUEST['Page']) && $_REQUEST['Page'] != '' && $_REQUEST['Page'] != '...')
+			if (isset($_REQUEST['Page']) && $_REQUEST['Page'] != '')
 			{
 				$Page = $_REQUEST['Page'];
 			}
@@ -35,10 +35,64 @@
 			{
 				exit();
 			}
-			// 楼盘名称
-			if (isset($_REQUEST['name']))
+			// 时间
+			if (isset($_REQUEST['time']))
 			{
-				$Name = $_REQUEST['name'];
+				$Time = $_REQUEST['time'];
+			}
+			else
+			{
+				exit();
+			}
+			// IP地址
+			if (isset($_REQUEST['ip']))
+			{
+				$IP = $_REQUEST['ip'];
+			}
+			else
+			{
+				exit();
+			}
+			// 操作者姓名
+			if (isset($_REQUEST['opname']))
+			{
+				$OpName = $_REQUEST['opname'];
+			}
+			else
+			{
+				exit();
+			}
+			// 操作者身份证号码
+			if (isset($_REQUEST['uid']))
+			{
+				$UID = $_REQUEST['uid'];
+			}
+			else
+			{
+				exit();
+			}
+			// 模块/单元名称
+			if (isset($_REQUEST['modname']))
+			{
+				$ModName = $_REQUEST['modname'];
+			}
+			else
+			{
+				exit();
+			}
+			// 涉及表名称
+			if (isset($_REQUEST['tblName']))
+			{
+				$tblName = $_REQUEST['tblName'];
+			}
+			else
+			{
+				exit();
+			}
+			// 行为
+			if (isset($_REQUEST['action']))
+			{
+				$Action = $_REQUEST['action'];
 			}
 			else
 			{
@@ -46,12 +100,12 @@
 			}
 			$ret = [];
 			// 获取楼盘数量
-			$row_AreaCount = GetAreaCount($conn, $Name);
+			$row_LogCount = GetLogCount($conn, $Time, $IP, $OpName, $UID, $ModName, $tblName, $Action);
 			// 申请楼盘总数
-			$AreaCount = (int)($row_AreaCount['@Result']);
-			$ret['AreaCount'] = $AreaCount;
+			$LogCount = (int)($row_LogCount['@Result']);
+			$ret['LogCount'] = $LogCount;
 			// 总页数
-			$PageNum = max(ceil($AreaCount / 10), 1);
+			$PageNum = max(ceil($LogCount / 10), 1);
 			// 返回首页
 			if ($Page === '«')
 			{
@@ -77,21 +131,21 @@
 			$Page = (int)$Page;
 			// 页码为自然数
 			$Offset = ($Page - 1) * 10;
-			// 获取楼盘列表
-			$Res = GetAreaList($conn, $Offset, 10, $Name);
+			// 获取日志列表
+			$Res = GetLogList($conn, $Offset, $Time, $IP, $OpName, $UID, $ModName, $tblName, $Action);
 			$ret['Res'] = "";
 			for ($i = 0; $i < count($Res); $i++)
 			{
 				$ret['Res'] .= 
-				"<tr>
-					<td><input type='checkbox' class='chksel' /></td>
+				"<tr id = '" . $Res[$i][0] . "'>
 	                <td>" . $Res[$i][1] . "</td>
-	                <td>
-	                    <div id=" . $Res[$i][0] . " class='btn-group'>
-	                        <a href='#' class='btn btn-primary mdf'>查看/修改</a>
-	                        <a href='#' class='btn btn-danger del'>删除</a>
-	                    </div>
-	                </td>
+	                <td>" . $Res[$i][2] . "</td>
+	                <td>" . $Res[$i][3] . "</td>
+	                <td>" . $Res[$i][4] . "</td>
+	                <td>" . $Res[$i][5] . "</td>
+	                <td>" . $Res[$i][6] . "</td>
+	                <td>" . $Res[$i][7] . "</td>
+	                <td>" . ($Res[$i][8] === -1 ? '无效' : $Res[$i][8]) . "</td>
 	            </tr>";
 			}
 			$ret['PageLimit'] = "

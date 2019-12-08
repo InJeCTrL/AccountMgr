@@ -30,7 +30,6 @@
 			if (isset($_REQUEST['Page']) && $_REQUEST['Page'] != '' && $_REQUEST['Page'] != '...')
 			{
 				$Page = $_REQUEST['Page'];
-				$Page = (int)$Page;
 			}
 			else
 			{
@@ -98,17 +97,29 @@
 			$ret['UserCount'] = $UserCount;
 			// 总页数
 			$PageNum = max(ceil($UserCount / 10), 1);
-			// 页码为返回首页
-			if ($Page === '«' || $Page <= 0)
+			// 返回首页
+			if ($Page === '«')
 			{
 				$Page = 1;
-				$Offset = 0;
 			}
-			// 页码为转到尾页
-			else if ($Page === '»' || $Page > $PageNum)
+			// 转到尾页
+			else if ($Page === '»')
 			{
 				$Page = $PageNum;
 			}
+			else if ($Page <= 0)
+			{
+				$Page = 1;
+			}
+			else if ($Page > $PageNum)
+			{
+				$Page = $PageNum;
+			}
+			else
+			{
+				$Page = 1;
+			}
+			$Page = (int)$Page;
 			// 页码为自然数
 			$Offset = ($Page - 1) * 10;
 			// 获取正式用户列表
@@ -147,7 +158,7 @@
 				if ($i >= 1 && $i <= $PageNum)
 				{
 					$ret['PageLimit'] .= "
-						<li " . ($i === $Page ? "class='active'" : "") . "><a href='#'>" . $PageNum . "</a>
+						<li " . ($i === $Page ? "class='active'" : "") . "><a href='#'>" . $i . "</a>
 			    		</li>";
 				}
 			}

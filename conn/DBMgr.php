@@ -196,6 +196,16 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 获取日志数量
+	function GetLogCount($link, $Time, $IP, $OpName, $UID, $ModName, $tblName, $Action)
+	{
+		$stmt = $link->prepare("CALL GetLogCount(@Result, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("sssssss", $Time, $IP, $OpName, $UID, $ModName, $tblName, $Action);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取正式用户账号列表
 	function GetUserList($link, $Offset, $UID, $TEL, $Name, $Type, $Online, $Area)
 	{
@@ -234,6 +244,25 @@
 		}
 		return $Result;
 	}
+	// 获取日志列表
+	function GetLogList($link, $Offset, $Time, $IP, $OpName, $UID, $ModName, $tblName, $Action)
+	{
+		$stmt = $link->prepare("CALL GetLogList(?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("isssssss", $Offset, $Time, $IP, $OpName, $UID, $ModName, $tblName, $Action);
+		$stmt->execute();
+		$stmt->bind_result($R1, $R2, $R3, $R4, $R5, $R6, $R7, $R8, $R9);
+		// 数据行下标
+		$i = 0;
+		// 待返回的数据集合
+		$Result = [];
+		// 循环获取数据
+		while ($res = $stmt->fetch())
+		{
+			$Result[$i] = [$R1, $R2, $R3, $R4, $R5, $R6, $R7, $R8, $R9];
+			$i++;
+		}
+		return $Result;
+	}
 	// 获取正式用户身份列表
 	function GetUserTypeList($link)
 	{
@@ -252,11 +281,47 @@
 		}
 		return $Result;
 	}
-	// 获取管辖范围(楼盘)列表
-	function GetAreaList($link, $Name = '')
+	// 获取模块名称列表
+	function GetModNameList($link)
 	{
-		$stmt = $link->prepare("CALL GetAreaList(?)");
-		$stmt->bind_param("s", $Name);
+		$stmt = $link->prepare("CALL GetModNameList()");
+		$stmt->execute();
+		$stmt->bind_result($R1);
+		// 数据行下标
+		$i = 0;
+		// 待返回的数据集合
+		$Result = [];
+		// 循环获取数据
+		while ($res = $stmt->fetch())
+		{
+			$Result[$i] = [$R1];
+			$i++;
+		}
+		return $Result;
+	}
+	// 获取数据库表名列表
+	function GetTblList($link)
+	{
+		$stmt = $link->prepare("CALL GetTblList()");
+		$stmt->execute();
+		$stmt->bind_result($R1);
+		// 数据行下标
+		$i = 0;
+		// 待返回的数据集合
+		$Result = [];
+		// 循环获取数据
+		while ($res = $stmt->fetch())
+		{
+			$Result[$i] = [$R1];
+			$i++;
+		}
+		return $Result;
+	}
+	// 获取管辖范围(楼盘)列表
+	function GetAreaList($link, $Offset = 0, $Num = 0, $Name = '')
+	{
+		$stmt = $link->prepare("CALL GetAreaList(?, ?, ?)");
+		$stmt->bind_param("iis", $Offset, $Num, $Name);
 		$stmt->execute();
 		$stmt->bind_result($R1, $R2);
 		// 数据行下标

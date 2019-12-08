@@ -41,7 +41,7 @@
 		            <li><a id="UserManage" name="UserManage" href="#"><i class="glyphicon glyphicon-th-list"></i>用户管理</a></li>
 		            <li><a id="ApplyApprove" href="#"><i class="glyphicon glyphicon-asterisk"></i>审核注册</a></li>
 		            <li><a id="AreaList" href="#"><i class="glyphicon glyphicon-edit"></i>楼盘列表</a></li>
-		            <li><a href="#"><i class="glyphicon glyphicon-eye-open"></i>操作日志</a></li>
+		            <li><a id="LogList" href="#"><i class="glyphicon glyphicon-eye-open"></i>操作日志</a></li>
 		            <?php
 						}
 		            ?>
@@ -109,6 +109,10 @@
 		// 单击楼盘列表
 		$('#AreaList').bind('click', function(){
 			$('#mainview').load('./BasicInfo/AreaList.php');
+		});
+		// 单击操作日志
+		$('#LogList').bind('click', function(){
+			$('#mainview').load('./BasicInfo/LogList.php');
 		});
 	</script>
 </html>
