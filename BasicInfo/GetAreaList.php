@@ -26,7 +26,7 @@
 		// 是超级管理员
 		else
 		{
-			// 获取用户身份列表
+			// 获取楼盘列表
 			$Res = GetAreaList($conn);
 			$ret = "";
 			for ($i = 0; $i < count($Res); $i++)

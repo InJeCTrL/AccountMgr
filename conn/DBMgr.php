@@ -196,6 +196,86 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 获取住户数量
+	function GetHouseHoldCount($link, $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square)
+	{
+		$stmt = $link->prepare("CALL GetHouseHoldCount(@Result, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssssss", $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取商铺数量
+	function GetShopCount($link, $AreaID, $ShopName, $Name, $TEL)
+	{
+		$stmt = $link->prepare("CALL GetShopCount(@Result, ?, ?, ?, ?)");
+		$stmt->bind_param("ssss", $AreaID, $ShopName, $Name, $TEL);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取车辆数量
+	function GetCarCount($link, $AreaID, $CarCode, $Name, $TEL)
+	{
+		$stmt = $link->prepare("CALL GetCarCount(@Result, ?, ?, ?, ?)");
+		$stmt->bind_param("ssss", $AreaID, $CarCode, $Name, $TEL);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取住户一段时间的缴费金额
+	function GetHouseHoldSumFee($link, $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square, $startDate, $endDate)
+	{
+		$stmt = $link->prepare("CALL GetHouseHoldSumFee(@Result, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssssssss", $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square, $startDate, $endDate);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取住户一段时间的未缴费的交易数
+	function GetHouseHoldNotCount($link, $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square, $startDate, $endDate)
+	{
+		$stmt = $link->prepare("CALL GetHouseHoldNotCount(@Result, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssssssss", $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square, $startDate, $endDate);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取商铺一段时间的未缴费的交易数
+	function GetShopNotCount($link, $AreaID, $ShopName, $Name, $TEL, $startDate, $endDate)
+	{
+		$stmt = $link->prepare("CALL GetShopNotCount(@Result, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssssss", $AreaID, $ShopName, $Name, $TEL, $startDate, $endDate);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取商铺一段时间的缴费金额
+	function GetShopSumFee($link, $AreaID, $ShopName, $Name, $TEL, $startDate, $endDate)
+	{
+		$stmt = $link->prepare("CALL GetShopSumFee(@Result, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssssss", $AreaID, $ShopName, $Name, $TEL, $startDate, $endDate);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取车辆一段时间的缴费金额
+	function GetCarSumFee($link, $AreaID, $CarCode, $Name, $TEL, $startDate, $endDate)
+	{
+		$stmt = $link->prepare("CALL GetCarSumFee(@Result, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssssss", $AreaID, $CarCode, $Name, $TEL, $startDate, $endDate);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取日志数量
 	function GetLogCount($link, $Time, $IP, $OpName, $UID, $ModName, $tblName, $Action)
 	{

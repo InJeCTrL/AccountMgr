@@ -54,9 +54,11 @@
 		            <span class="pull-right glyphicon glyphicon-chevron-down"></span>
 		        </a>
 		        <ul id="systemSetting2" class="nav nav-list collapse secondmenu" style="height: 0px;">
-		            <li><a href="#"><i class="glyphicon glyphicon-calendar"></i>数据概览</a></li>
+		            <li><a id="DataView" href="#"><i class="glyphicon glyphicon-calendar"></i>数据概览</a></li>
 		            <li><a href="#"><i class="glyphicon glyphicon-home"></i>楼栋列表</a></li>
 		            <li><a href="#"><i class="glyphicon glyphicon-asterisk"></i>业/户主信息</a></li>
+		            <li><a href="#"><i class="glyphicon glyphicon-shopping-cart"></i>商铺信息</a></li>
+		            <li><a href="#"><i class="glyphicon glyphicon-flag"></i>车辆信息</a></li>
 		            <?php
 		            	if ($_SESSION['Type'] === '超级管理员' || $_SESSION['Type'] === '管理员')
 						{
@@ -70,7 +72,7 @@
 		    <li>
 		        <a href="#" style="background: darkorange;color: white;">
 		            <i class="glyphicon glyphicon-credit-card"></i>
-					缴费充值
+					缴费与账目
 		        </a>
 		    </li>
 		    <?php
@@ -113,6 +115,10 @@
 		// 单击操作日志
 		$('#LogList').bind('click', function(){
 			$('#mainview').load('./BasicInfo/LogList.php');
+		});
+		// 单击数据概览
+		$('#DataView').bind('click', function(){
+			$('#mainview').load('./AreaManagement/index.php');
 		});
 	</script>
 </html>
