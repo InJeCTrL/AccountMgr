@@ -31,7 +31,7 @@
 		// 非法获取其它楼盘信息
 		if ($legal === 0)
 		{
-			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问其它楼盘信息');
+			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问其它楼栋信息');
 			unset($_SESSION['Online']);
 			exit();
 		}

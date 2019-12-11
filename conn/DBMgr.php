@@ -157,6 +157,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 设置楼栋信息
+	function SetBuildingInfo($link, $opUserID, $targetBuildingID, $AreaID, $BNo, $PMCU, $PRSF, $TF, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL SetBuildingInfo(?, ?, ?, ?, ?, ?, ?, ?, ?, @Result)");
+		$stmt->bind_param("sssssssss", $opUserID, $targetBuildingID, $AreaID, $BNo, $PMCU, $PRSF, $TF, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取用户账号信息
 	function GetUser($link, $userID)
 	{

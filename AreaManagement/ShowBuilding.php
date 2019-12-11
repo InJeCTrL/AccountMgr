@@ -134,7 +134,7 @@
 					{
 				?>
                 <div class="form-group">
-	                <button id="submitadd" name="submitadd" type="button" class="btn btn-success btn-block">提交新增</button>
+	                <button id="mdfinfo" name="mdfinfo" type="button" class="btn btn-success btn-block">提交修改</button>
 	            </div>
     			<?php
 					}
@@ -173,9 +173,9 @@
 			var ret = $.ajax
 			(
 				{
-	        		url : './BasicInfo/doSetBuildingInfo.php',
+	        		url : './AreaManagement/doSetBuildingInfo.php',
 	         		type : "post",
-	         		data : {areaid:AreaID, bno:BNo, pmcu:PMCU, prsf:PRSF, tf:TF},
+	         		data : {BID:bid, areaid:AreaID, bno:BNo, pmcu:PMCU, prsf:PRSF, tf:TF},
 	        		async : false,
     			}
     		).responseText;
