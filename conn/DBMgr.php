@@ -124,6 +124,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 尝试新增楼栋
+	function AddBuilding($link, $opUserID, $AreaID, $BNo, $PMCU, $PRSF, $TF, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL AddBuilding(?, ?, ?, ?, ?, ?, ?, ?, @Result, @ID)");
+		$stmt->bind_param("isssssss", $opUserID, $AreaID, $BNo, $PMCU, $PRSF, $TF, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result, @ID');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 设置用户账号的个人信息
 	function SetPersonalInfo($link, $opUserID, $targetUserID, $Name, $TEL, $UID, $ModName)
 	{

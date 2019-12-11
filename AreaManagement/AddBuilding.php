@@ -105,7 +105,7 @@
 			var ret = $.ajax
 			(
 				{
-	        		url : './BasicInfo/doAddBuilding.php',
+	        		url : './AreaManagement/doAddBuilding.php',
 	         		type : "post",
 	         		data : {aid:AreaID, bno:BNo, pmcu:PMCU, prsf:PRSF, tf:TF},
 	        		async : false,

@@ -1,5 +1,5 @@
 <?php
-	/* 楼盘管辖-楼栋列表-修改楼栋信息 */
+	/* 新增楼栋 */
 	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
@@ -16,37 +16,18 @@
 	// 已登录
 	if (isset($_SESSION['Online']) && $_SESSION['Online'] == 1)
 	{
-		// 不是管理员及以上，强制注销
+		// 不是管理员及以上权限，强制注销
 		if ($_SESSION['Type'] != '超级管理员' && $_SESSION['Type'] != '管理员')
 		{
-			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问楼栋列表-查看/修改');
+			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问新增楼栋');
 			unset($_SESSION['Online']);
 			exit();
 		}
 		else
 		{
-			// 楼栋ID
-			if (isset($_REQUEST['BID']) && $_REQUEST['BID'] != '')
-			{
-				$BID = $_REQUEST['BID'];
-				$BID = (int)$BID;
-			}
-			else
-			{
-				exit();
-			}
-			// 标志当前用户对楼栋的访问是否合法
-			$legal_building = (int)(IsLegalBuilding($conn, $_SESSION['UserID'], $BID)['@Result']);
-			// 非法获取其它楼栋信息
-			if ($legal_building === 0)
-			{
-				SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问其它楼栋信息');
-				unset($_SESSION['Online']);
-				exit();
-			}
 			// 楼盘ID
-			if (isset($_REQUEST['areaid']) && $_REQUEST['areaid'] != '')
-				$AreaID = $_REQUEST['areaid'];
+			if (isset($_REQUEST['aid']) && $_REQUEST['aid'] != '')
+				$AreaID = $_REQUEST['aid'];
 			else
 			{
 				echo '楼盘不存在！';
@@ -90,8 +71,8 @@
 			{
 				$TF = 0;
 			}
-			// 设置楼栋信息
-			$Result = SetBuildingInfo($conn, $_SESSION['UserID'], $BID, $AreaID, $BNo, $PMCU, $PRSF, $TF, "楼盘管辖-楼栋列表-修改楼栋信息");
+			// 新增楼栋
+			$Result = AddBuilding($conn, $_SESSION['UserID'], $AreaID, $BNo, $PMCU, $PRSF, $TF, "楼盘管辖-楼栋列表-新增楼栋");
 			echo $Result['@Result'];
 		}
 	}

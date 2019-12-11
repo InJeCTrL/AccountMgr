@@ -214,7 +214,7 @@
 					// 获取选中行的ID并提交删除
 					if ($(this).is(':checked') == true)
 					{
-						var bid = $(this).parent().parent().children().eq(2).children().eq(0).attr('id');
+						var bid = $(this).parent().parent().children().eq(3).children().eq(0).attr('id');
 						deleteBuilding(bid);
 					}
 				});
