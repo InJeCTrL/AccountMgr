@@ -64,6 +64,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 删除楼栋
+	function DeleteBuilding($link, $opUserID, $targetBuildingID)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL DeleteBuilding(?, ?, ?, @Result)");
+		$stmt->bind_param("sss", $opUserID, $targetBuildingID, $remoteIP);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 修改用户账户密码
 	function SetUserPassword($link, $opUserID, $targetUserID, $Password, $ModName)
 	{
@@ -166,6 +177,36 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 获取楼栋信息
+	function GetBuilding($link, $BID)
+	{
+		$stmt = $link->prepare("CALL GetBuilding(?, @AreaID, @BNo, @PMCU, @PRSF, @TF)");
+		$stmt->bind_param("s", $BID);
+		$stmt->execute();
+		$res = $link->query('SELECT @AreaID, @BNo, @PMCU, @PRSF, @TF');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 检查用户对楼盘的访问是否合法
+	function IsLegalArea($link, $UserID, $AreaID)
+	{
+		$stmt = $link->prepare("CALL IsLegalArea(?, ?, @Result)");
+		$stmt->bind_param("ss", $UserID, $AreaID);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 检查用户对楼栋的访问是否合法
+	function IsLegalBuilding($link, $UserID, $BID)
+	{
+		$stmt = $link->prepare("CALL IsLegalBuilding(?, ?, @Result)");
+		$stmt->bind_param("ss", $UserID, $BID);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取正式用户账号数量
 	function GetNormalUserCount($link, $UID, $TEL, $Name, $Type, $Online, $Area)
 	{
@@ -191,6 +232,16 @@
 	{
 		$stmt = $link->prepare("CALL GetAreaCount(@Result, ?)");
 		$stmt->bind_param("s", $Name);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取楼栋数量
+	function GetBuildingCount($link, $AID, $BNo)
+	{
+		$stmt = $link->prepare("CALL GetBuildingCount(@Result, ?, ?)");
+		$stmt->bind_param("ss", $AID, $BNo);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
@@ -412,6 +463,25 @@
 		while ($res = $stmt->fetch())
 		{
 			$Result[$i] = [$R1, $R2];
+			$i++;
+		}
+		return $Result;
+	}
+	// 获取楼栋列表
+	function GetBuildingList($link, $Offset = 0, $Num = 0, $AID, $BNo)
+	{
+		$stmt = $link->prepare("CALL GetBuildingList(?, ?, ?, ?)");
+		$stmt->bind_param("iiss", $Offset, $Num, $AID, $BNo);
+		$stmt->execute();
+		$stmt->bind_result($R1, $R2, $R3);
+		// 数据行下标
+		$i = 0;
+		// 待返回的数据集合
+		$Result = [];
+		// 循环获取数据
+		while ($res = $stmt->fetch())
+		{
+			$Result[$i] = [$R1, $R2, $R3];
 			$i++;
 		}
 		return $Result;

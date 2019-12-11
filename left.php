@@ -55,7 +55,7 @@
 		        </a>
 		        <ul id="systemSetting2" class="nav nav-list collapse secondmenu" style="height: 0px;">
 		            <li><a id="DataView" href="#"><i class="glyphicon glyphicon-calendar"></i>数据概览</a></li>
-		            <li><a href="#"><i class="glyphicon glyphicon-home"></i>楼栋列表</a></li>
+		            <li><a id="BuildingList" href="#"><i class="glyphicon glyphicon-home"></i>楼栋列表</a></li>
 		            <li><a href="#"><i class="glyphicon glyphicon-asterisk"></i>业/户主信息</a></li>
 		            <li><a href="#"><i class="glyphicon glyphicon-shopping-cart"></i>商铺信息</a></li>
 		            <li><a href="#"><i class="glyphicon glyphicon-flag"></i>车辆信息</a></li>
@@ -119,6 +119,10 @@
 		// 单击数据概览
 		$('#DataView').bind('click', function(){
 			$('#mainview').load('./AreaManagement/index.php');
+		});
+		// 单击楼栋列表
+		$('#BuildingList').bind('click', function(){
+			$('#mainview').load('./AreaManagement/BuildingList.php');
 		});
 	</script>
 </html>

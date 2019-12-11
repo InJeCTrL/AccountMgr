@@ -27,7 +27,7 @@
 		else
 		{
 			// 页码
-			if (isset($_REQUEST['Page']) && $_REQUEST['Page'] != '' && $_REQUEST['Page'] != '...')
+			if (isset($_REQUEST['Page']) && $_REQUEST['Page'] != '')
 			{
 				$Page = $_REQUEST['Page'];
 			}
