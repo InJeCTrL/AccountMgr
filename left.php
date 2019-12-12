@@ -56,17 +56,9 @@
 		        <ul id="systemSetting2" class="nav nav-list collapse secondmenu" style="height: 0px;">
 		            <li><a id="DataView" href="#"><i class="glyphicon glyphicon-calendar"></i>数据概览</a></li>
 		            <li><a id="BuildingList" href="#"><i class="glyphicon glyphicon-home"></i>楼栋列表</a></li>
-		            <li><a href="#"><i class="glyphicon glyphicon-asterisk"></i>业/户主信息</a></li>
+		            <li><a id="HouseHoldList" href="#"><i class="glyphicon glyphicon-asterisk"></i>住户信息</a></li>
 		            <li><a href="#"><i class="glyphicon glyphicon-shopping-cart"></i>商铺信息</a></li>
 		            <li><a href="#"><i class="glyphicon glyphicon-flag"></i>车辆信息</a></li>
-		            <?php
-		            	if ($_SESSION['Type'] === '超级管理员' || $_SESSION['Type'] === '管理员')
-						{
-		            ?>
-		            <li><a href="#"><i class="glyphicon glyphicon-edit"></i>常费用设置</a></li>
-		            <?php
-		            	}
-		            ?>
 		        </ul>
 		    </li>
 		    <li>
@@ -123,6 +115,10 @@
 		// 单击楼栋列表
 		$('#BuildingList').bind('click', function(){
 			$('#mainview').load('./AreaManagement/BuildingList.php');
+		});
+		// 单击住户列表
+		$('#HouseHoldList').bind('click', function(){
+			$('#mainview').load('./AreaManagement/HouseHoldList.php');
 		});
 	</script>
 </html>

@@ -1,5 +1,5 @@
 <?php
-	// 以json方式返回翻页列表与楼栋列表
+	// 以json方式返回翻页列表与住户列表
 	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
@@ -13,7 +13,7 @@
 		$_SESSION['Type'] = $UserInfo['@strType'];
 		$_SESSION['Online'] = $UserInfo['@Online'];
 	}
-	// 已登录，获取翻页列表与楼栋列表
+	// 已登录，获取翻页列表与住户列表
 	if (isset($_SESSION['Online']) && $_SESSION['Online'] == 1)
 	{
 		// 页码
@@ -50,23 +50,75 @@
 			unset($_SESSION['Online']);
 			exit();
 		}
-		// 楼栋号
-		if (isset($_REQUEST['bno']))
+		// 楼栋ID
+		if (isset($_REQUEST['bid']))
 		{
-			$BNo = $_REQUEST['bno'];
+			$BID = $_REQUEST['bid'];
+		}
+		else
+		{
+			exit();
+		}
+		// 标志当前用户合法查找的楼栋
+		if ($BID === '')
+		{
+			$legal_building = 1;
+		}
+		else
+		{
+			$legal_building = (int)(IsLegalBuilding($conn, $_SESSION['UserID'], $BID)['@Result']);
+		}
+		// 非法访问其它楼栋
+		if ($legal_building === 0)
+		{
+			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问其它楼栋');
+			unset($_SESSION['Online']);
+			exit();
+		}
+		// 门牌号
+		if (isset($_REQUEST['roomcode']))
+		{
+			$RoomCode = $_REQUEST['roomcode'];
+		}
+		else
+		{
+			exit();
+		}
+		// 住户姓名
+		if (isset($_REQUEST['name']))
+		{
+			$Name = $_REQUEST['name'];
+		}
+		else
+		{
+			exit();
+		}
+		// 电话号码
+		if (isset($_REQUEST['tel']))
+		{
+			$TEL = $_REQUEST['tel'];
+		}
+		else
+		{
+			exit();
+		}
+		// 住房面积
+		if (isset($_REQUEST['square']))
+		{
+			$square = $_REQUEST['square'];
 		}
 		else
 		{
 			exit();
 		}
 		$ret = [];
-		// 获取楼栋数量
-		$row_BuildingCount = GetBuildingCount($conn, $AID, $BNo);
-		// 楼栋总数
-		$BuildingCount = (int)($row_BuildingCount['@Result']);
-		$ret['BuildingCount'] = $BuildingCount;
+		// 获取住户数量
+		$row_HouseHoldCount = GetHouseHoldCount($conn, $AID, $BID, $RoomCode, $Name, $TEL, $square);
+		// 住户总数
+		$HouseHoldCount = (int)($row_HouseHoldCount['@Result']);
+		$ret['HouseHoldCount'] = $HouseHoldCount;
 		// 总页数
-		$PageNum = max(ceil($BuildingCount / 10), 1);
+		$PageNum = max(ceil($HouseHoldCount / 10), 1);
 		// 返回首页
 		if ($Page === '«')
 		{
@@ -92,8 +144,8 @@
 		$Page = (int)$Page;
 		// 页码为自然数
 		$Offset = ($Page - 1) * 10;
-		// 获取楼栋列表
-		$Res = GetBuildingList($conn, $Offset, 10, $AID, $BNo);
+		// 获取住户列表
+		$Res = GetHouseHoldList($conn, $Offset, 10, $AID, $BID, $RoomCode, $Name, $TEL, $square);
 		$ret['Res'] = "";
 		for ($i = 0; $i < count($Res); $i++)
 		{
@@ -102,6 +154,8 @@
 				<td><input type='checkbox' class='chksel' /></td>
                 <td>" . $Res[$i][1] . "</td>
                 <td>" . $Res[$i][2] . "</td>
+                <td>" . $Res[$i][3] . "</td>
+                <td>" . $Res[$i][4] . "</td>
                 <td>
                     <div id=" . $Res[$i][0] . " class='btn-group'>
                         <a href='#' class='btn btn-primary mdf'>" . (($_SESSION['Type'] === '超级管理员' || $_SESSION['Type'] === '管理员') ? "查看/修改" : "查看") . "</a>" . 

@@ -508,6 +508,25 @@
 		}
 		return $Result;
 	}
+	// 获取住户列表
+	function GetHouseHoldList($link, $Offset = 0, $Num = 0, $AID, $BID, $RoomCode, $Name, $TEL, $square)
+	{
+		$stmt = $link->prepare("CALL GetHouseHoldList(?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("iissssss", $Offset, $Num, $AID, $BID, $RoomCode, $Name, $TEL, $square);
+		$stmt->execute();
+		$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
+		// 数据行下标
+		$i = 0;
+		// 待返回的数据集合
+		$Result = [];
+		// 循环获取数据
+		while ($res = $stmt->fetch())
+		{
+			$Result[$i] = [$R1, $R2, $R3, $R4, $R5];
+			$i++;
+		}
+		return $Result;
+	}
 	// 获取用户所属管辖范围(楼盘)列表
 	function GetUserAreaList($link, $UserID)
 	{

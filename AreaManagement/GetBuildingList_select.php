@@ -1,5 +1,5 @@
 <?php
-	// 删除给定ID对应的楼栋
+	// 以json方式返回楼栋列表
 	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
@@ -16,27 +16,34 @@
 	// 已登录
 	if (isset($_SESSION['Online']) && $_SESSION['Online'] == 1)
 	{
-		// 楼栋ID
-		if (isset($_REQUEST['BID']) && $_REQUEST['BID'] != '')
+		// 楼盘ID
+		if (isset($_REQUEST['areaid']) && $_REQUEST['areaid'] != '')
 		{
-			$BID = $_REQUEST['BID'];
-			$BID = (int)$BID;
+			$AreaID = $_REQUEST['areaid'];
+			$AreaID = (int)$AreaID;
 		}
 		else
 		{
 			exit();
 		}
-		// 标志当前用户合法查找的楼栋
-		$legal = (int)(IsLegalBuilding($conn, $_SESSION['UserID'], $BID)['@Result']);
-		// 非法删除其它楼栋
+		// 标志当前用户合法查找的楼盘
+		$legal = (int)(IsLegalArea($conn, $_SESSION['UserID'], $AreaID));
+		// 非法查找其它楼盘的楼栋
 		if ($legal === 0)
 		{
-			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限删除其它楼栋');
+			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问其它楼盘');
 			unset($_SESSION['Online']);
 			exit();
 		}
-		$Result = DeleteBuilding($conn, $_SESSION['UserID'], $BID);
-		echo $Result['@Result'] === null ? '0' : $Result['@Result'];
+		// 获取当前楼盘下属楼栋列表
+		$Res = GetBuildingList($conn, 0, 0, $AreaID, '');
+		$ret = "";
+		for ($i = 0; $i < count($Res); $i++)
+		{
+			$ret .= 
+			"<option value = '" . $Res[$i][0] . "'>" . $Res[$i][2] . "</option>";
+		}
+        echo json_encode($ret);
 	}
 	// 未登录
 	else
