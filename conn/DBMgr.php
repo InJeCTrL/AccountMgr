@@ -75,6 +75,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 删除住户
+	function DeleteHouseHold($link, $opUserID, $targetHouseHoldID)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL DeleteHouseHold(?, ?, ?, @Result)");
+		$stmt->bind_param("sss", $opUserID, $targetHouseHoldID, $remoteIP);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 修改用户账户密码
 	function SetUserPassword($link, $opUserID, $targetUserID, $Password, $ModName)
 	{
@@ -224,6 +235,16 @@
 	{
 		$stmt = $link->prepare("CALL IsLegalBuilding(?, ?, @Result)");
 		$stmt->bind_param("ss", $UserID, $BID);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 检查用户对住户的访问是否合法
+	function IsLegalHouseHold($link, $UserID, $HID)
+	{
+		$stmt = $link->prepare("CALL IsLegalHouseHold(?, ?, @Result)");
+		$stmt->bind_param("ss", $UserID, $HID);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
