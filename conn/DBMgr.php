@@ -146,6 +146,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 尝试新增住户
+	function AddHouseHold($link, $opUserID, $AreaID, $BID, $RoomCode, $Name, $TEL, $square, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL AddHouseHold(?, ?, ?, ?, ?, ?, ?, ?, ?, @Result, @ID)");
+		$stmt->bind_param("issssssss", $opUserID, $AreaID, $BID, $RoomCode, $Name, $TEL, $square, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result, @ID');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 设置用户账号的个人信息
 	function SetPersonalInfo($link, $opUserID, $targetUserID, $Name, $TEL, $UID, $ModName)
 	{

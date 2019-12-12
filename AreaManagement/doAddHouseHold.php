@@ -1,5 +1,5 @@
 <?php
-	/* 新增楼栋 */
+	/* 新增住户 */
 	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
@@ -42,37 +42,51 @@
 				unset($_SESSION['Online']);
 				exit();
 			}
-			// 楼栋号
-			if (isset($_REQUEST['bno']) && $_REQUEST['bno'] != '')
-				$BNo = $_REQUEST['bno'];
+			// 楼栋ID
+			if (isset($_REQUEST['bid']) && $_REQUEST['bid'] != '')
+				$BID = $_REQUEST['bid'];
 			else
 			{
-				echo '楼栋号为空！';
+				echo '楼栋为空！';
 				exit();
 			}
-			// 物业费单价
-			if (isset($_REQUEST['pmcu']) && $_REQUEST['pmcu'] != '')
-				$PMCU = $_REQUEST['pmcu'];
+			// 标志当前用户对楼栋的访问是否合法
+			$legal_building = (int)(IsLegalBuilding($conn, $_SESSION['UserID'], $BID)['@Result']);
+			// 非法获取其它楼栋信息
+			if ($legal_building === 0)
+			{
+				SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问其它楼栋信息');
+				unset($_SESSION['Online']);
+				exit();
+			}
+			// 门牌号
+			if (isset($_REQUEST['roomcode']) && $_REQUEST['roomcode'] != '')
+				$RoomCode = $_REQUEST['roomcode'];
 			else
 			{
-				$PMCU = 0;
+				echo '门牌号为空！';
+				exit();
 			}
-			// 公摊费
-			if (isset($_REQUEST['prsf']) && $_REQUEST['prsf'] != '')
-				$PRSF = $_REQUEST['prsf'];
+			// 住户姓名
+			if (isset($_REQUEST['name']) && $_REQUEST['name'] != '')
+				$Name = $_REQUEST['name'];
 			else
 			{
-				$PRSF = 0;
+				echo '姓名为空！';
+				exit();
 			}
-			// 垃圾清运费
-			if (isset($_REQUEST['tf']) && $_REQUEST['tf'] != '')
-				$TF = $_REQUEST['tf'];
+			// 电话号码
+			if (isset($_REQUEST['tel']) && $_REQUEST['tel'] != '')
+				$TEL = $_REQUEST['tel'];
+			// 住房面积
+			if (isset($_REQUEST['sq']) && $_REQUEST['sq'] != '')
+				$square = $_REQUEST['sq'];
 			else
 			{
-				$TF = 0;
+				$square = 0;
 			}
-			// 新增楼栋
-			$Result = AddBuilding($conn, $_SESSION['UserID'], $AreaID, $BNo, $PMCU, $PRSF, $TF, "楼盘管辖-楼栋列表-新增楼栋");
+			// 新增住户
+			$Result = AddHouseHold($conn, $_SESSION['UserID'], $AreaID, $BID, $RoomCode, $Name, $TEL, $square, "楼盘管辖-住户信息-新增住户");
 			echo $Result['@Result'];
 		}
 	}
