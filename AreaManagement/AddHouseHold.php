@@ -40,10 +40,10 @@
 	<body>
 		<ol class="breadcrumb">
 		    <li class="active">
-		    	住户信息
+		    	楼盘管辖
 		    </li>
 		    <li class="active">
-		    	<a style="text-decoration: none;" href="#" onclick="$('#mainview').load('./AreaManagement/HouseHoldList.php')">住户列表</a>
+		    	<a style="text-decoration: none;" href="#" onclick="$('#mainview').load('./AreaManagement/HouseHoldList.php')">住户信息</a>
 		    </li>
 		    <li class="active">
 		    	新增住户

@@ -231,6 +231,16 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 获取住户信息
+	function GetHouseHold($link, $HID)
+	{
+		$stmt = $link->prepare("CALL GetHouseHold(?, @AreaID, @BID, @RoomCode, @Name, @TEL, @square)");
+		$stmt->bind_param("s", $HID);
+		$stmt->execute();
+		$res = $link->query('SELECT @AreaID, @BID, @RoomCode, @Name, @TEL, @square');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 检查用户对楼盘的访问是否合法
 	function IsLegalArea($link, $UserID, $AreaID)
 	{
