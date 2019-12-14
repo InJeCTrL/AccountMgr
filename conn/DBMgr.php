@@ -201,6 +201,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 设置住户信息
+	function SetHouseHoldInfo($link, $opUserID, $targetHouseHoldID, $AreaID, $BID, $RoomCode, $Name, $TEL, $square, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL SetHouseHoldInfo(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @Result)");
+		$stmt->bind_param("ssssssssss", $opUserID, $targetHouseHoldID, $AreaID, $BID, $RoomCode, $Name, $TEL, $square, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取用户账号信息
 	function GetUser($link, $userID)
 	{

@@ -1,5 +1,5 @@
 <?php
-	/* 新增住户 */
+	/* 楼盘管辖-住户信息-修改住户信息 */
 	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
@@ -16,21 +16,40 @@
 	// 已登录
 	if (isset($_SESSION['Online']) && $_SESSION['Online'] == 1)
 	{
-		// 不是管理员及以上权限，强制注销
+		// 不是管理员及以上，强制注销
 		if ($_SESSION['Type'] != '超级管理员' && $_SESSION['Type'] != '管理员')
 		{
-			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问新增楼栋');
+			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问楼栋列表-查看/修改');
 			unset($_SESSION['Online']);
 			exit();
 		}
 		else
 		{
-			// 楼盘ID
-			if (isset($_REQUEST['aid']) && $_REQUEST['aid'] != '')
-				$AreaID = $_REQUEST['aid'];
+			// 住户ID
+			if (isset($_REQUEST['HID']) && $_REQUEST['HID'] != '')
+			{
+				$HID = $_REQUEST['HID'];
+				$HID = (int)$HID;
+			}
 			else
 			{
-				echo '楼盘为空！';
+				exit();
+			}
+			// 标志当前用户对住户的访问是否合法
+			$legal_household = (int)(IsLegalHouseHold($conn, $_SESSION['UserID'], $HID)['@Result']);
+			// 非法获取其它住户信息
+			if ($legal_household === 0)
+			{
+				SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限修改其它住户信息');
+				unset($_SESSION['Online']);
+				exit();
+			}
+			// 楼盘ID
+			if (isset($_REQUEST['areaid']) && $_REQUEST['areaid'] != '')
+				$AreaID = $_REQUEST['areaid'];
+			else
+			{
+				echo '楼盘不存在！';
 				exit();
 			}
 			// 标志当前用户对楼盘的访问是否合法
@@ -47,7 +66,7 @@
 				$BID = $_REQUEST['bid'];
 			else
 			{
-				echo '楼栋为空！';
+				echo '楼栋不存在！';
 				exit();
 			}
 			// 标志当前用户对楼栋的访问是否合法
@@ -72,8 +91,7 @@
 				$Name = $_REQUEST['name'];
 			else
 			{
-				echo '姓名为空！';
-				exit();
+				$Name = 0;
 			}
 			// 电话号码
 			if (isset($_REQUEST['tel']) && $_REQUEST['tel'] != '')
@@ -89,8 +107,8 @@
 			{
 				$square = 0;
 			}
-			// 新增住户
-			$Result = AddHouseHold($conn, $_SESSION['UserID'], $AreaID, $BID, $RoomCode, $Name, $TEL, $square, "楼盘管辖-住户信息-新增住户");
+			// 设置住户信息
+			$Result = SetHouseHoldInfo($conn, $_SESSION['UserID'], $HID, $AreaID, $BID, $RoomCode, $Name, $TEL, $square, "楼盘管辖-住户信息-修改住户信息");
 			echo $Result['@Result'];
 		}
 	}
