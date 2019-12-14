@@ -19,7 +19,7 @@
 		// 不是管理员及以上权限，强制注销
 		if ($_SESSION['Type'] != '超级管理员' && $_SESSION['Type'] != '管理员')
 		{
-			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问新增住户');
+			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问新增商铺');
 			unset($_SESSION['Online']);
 			exit();
 		}
@@ -42,37 +42,20 @@
 				unset($_SESSION['Online']);
 				exit();
 			}
-			// 楼栋ID
-			if (isset($_REQUEST['bid']) && $_REQUEST['bid'] != '')
-				$BID = $_REQUEST['bid'];
+			// 商铺名称
+			if (isset($_REQUEST['shopname']) && $_REQUEST['shopname'] != '')
+				$ShopName = $_REQUEST['shopname'];
 			else
 			{
-				echo '楼栋为空！';
+				echo '商铺名称为空！';
 				exit();
 			}
-			// 标志当前用户对楼栋的访问是否合法
-			$legal_building = (int)(IsLegalBuilding($conn, $_SESSION['UserID'], $BID)['@Result']);
-			// 非法获取其它楼栋信息
-			if ($legal_building === 0)
-			{
-				SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问其它楼栋信息');
-				unset($_SESSION['Online']);
-				exit();
-			}
-			// 门牌号
-			if (isset($_REQUEST['roomcode']) && $_REQUEST['roomcode'] != '')
-				$RoomCode = $_REQUEST['roomcode'];
-			else
-			{
-				echo '门牌号为空！';
-				exit();
-			}
-			// 住户姓名
+			// 店主姓名
 			if (isset($_REQUEST['name']) && $_REQUEST['name'] != '')
 				$Name = $_REQUEST['name'];
 			else
 			{
-				echo '姓名为空！';
+				echo '店主姓名为空！';
 				exit();
 			}
 			// 电话号码
@@ -82,15 +65,29 @@
 			{
 				$TEL = '';
 			}
-			// 住房面积
-			if (isset($_REQUEST['sq']) && $_REQUEST['sq'] != '')
-				$square = $_REQUEST['sq'];
+			// 物业费单价
+			if (isset($_REQUEST['pmcu']) && $_REQUEST['pmcu'] != '')
+				$PMCU = $_REQUEST['pmcu'];
 			else
 			{
-				$square = 0;
+				$PMCU = 0;
 			}
-			// 新增住户
-			$Result = AddHouseHold($conn, $_SESSION['UserID'], $AreaID, $BID, $RoomCode, $Name, $TEL, $square, "楼盘管辖-住户信息-新增住户");
+			// 电费单价
+			if (isset($_REQUEST['elu']) && $_REQUEST['elu'] != '')
+				$ELU = $_REQUEST['elu'];
+			else
+			{
+				$ELU = 0;
+			}
+			// 垃圾清运费
+			if (isset($_REQUEST['tf']) && $_REQUEST['tf'] != '')
+				$TF = $_REQUEST['tf'];
+			else
+			{
+				$TF = 0;
+			}
+			// 新增商铺
+			$Result = AddShop($conn, $_SESSION['UserID'], $AreaID, $ShopName, $Name, $TEL, $PMCU, $ELU, $TF, "楼盘管辖-商铺信息-新增商铺");
 			echo $Result['@Result'];
 		}
 	}

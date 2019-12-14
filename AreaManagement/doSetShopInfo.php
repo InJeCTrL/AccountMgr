@@ -1,5 +1,5 @@
 <?php
-	/* 楼盘管辖-住户信息-修改住户信息 */
+	/* 楼盘管辖-商铺信息-修改商铺信息 */
 	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
@@ -19,28 +19,28 @@
 		// 不是管理员及以上，强制注销
 		if ($_SESSION['Type'] != '超级管理员' && $_SESSION['Type'] != '管理员')
 		{
-			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问住户信息-查看/修改');
+			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问商铺信息-查看/修改');
 			unset($_SESSION['Online']);
 			exit();
 		}
 		else
 		{
-			// 住户ID
-			if (isset($_REQUEST['HID']) && $_REQUEST['HID'] != '')
+			// 商铺ID
+			if (isset($_REQUEST['SID']) && $_REQUEST['SID'] != '')
 			{
-				$HID = $_REQUEST['HID'];
-				$HID = (int)$HID;
+				$SID = $_REQUEST['SID'];
+				$SID = (int)$SID;
 			}
 			else
 			{
 				exit();
 			}
-			// 标志当前用户对住户的访问是否合法
-			$legal_household = (int)(IsLegalHouseHold($conn, $_SESSION['UserID'], $HID)['@Result']);
-			// 非法获取其它住户信息
-			if ($legal_household === 0)
+			// 标志当前用户对商铺的访问是否合法
+			$legal_shop = (int)(IsLegalShop($conn, $_SESSION['UserID'], $SID)['@Result']);
+			// 非法获取其它商铺信息
+			if ($legal_shop === 0)
 			{
-				SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限修改其它住户信息');
+				SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限修改其它商铺信息');
 				unset($_SESSION['Online']);
 				exit();
 			}
@@ -61,29 +61,12 @@
 				unset($_SESSION['Online']);
 				exit();
 			}
-			// 楼栋ID
-			if (isset($_REQUEST['bid']) && $_REQUEST['bid'] != '')
-				$BID = $_REQUEST['bid'];
+			// 商铺名称
+			if (isset($_REQUEST['shopname']) && $_REQUEST['shopname'] != '')
+				$ShopName = $_REQUEST['shopname'];
 			else
 			{
-				echo '楼栋不存在！';
-				exit();
-			}
-			// 标志当前用户对楼栋的访问是否合法
-			$legal_building = (int)(IsLegalBuilding($conn, $_SESSION['UserID'], $BID)['@Result']);
-			// 非法获取其它楼栋信息
-			if ($legal_building === 0)
-			{
-				SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问其它楼栋信息');
-				unset($_SESSION['Online']);
-				exit();
-			}
-			// 门牌号
-			if (isset($_REQUEST['roomcode']) && $_REQUEST['roomcode'] != '')
-				$RoomCode = $_REQUEST['roomcode'];
-			else
-			{
-				echo '门牌号为空！';
+				echo '商铺名称为空！';
 				exit();
 			}
 			// 住户姓名
@@ -100,15 +83,29 @@
 			{
 				$TEL = '';
 			}
-			// 住房面积
-			if (isset($_REQUEST['sq']) && $_REQUEST['sq'] != '')
-				$square = $_REQUEST['sq'];
+			// 预设物业费单价
+			if (isset($_REQUEST['pmcu']) && $_REQUEST['pmcu'] != '')
+				$PMCU = $_REQUEST['pmcu'];
 			else
 			{
-				$square = 0;
+				$PMCU = 0;
 			}
-			// 设置住户信息
-			$Result = SetHouseHoldInfo($conn, $_SESSION['UserID'], $HID, $AreaID, $BID, $RoomCode, $Name, $TEL, $square, "楼盘管辖-住户信息-修改住户信息");
+			// 预设电费单价
+			if (isset($_REQUEST['elu']) && $_REQUEST['elu'] != '')
+				$ELU = $_REQUEST['elu'];
+			else
+			{
+				$ELU = 0;
+			}
+			// 预设垃圾清运费
+			if (isset($_REQUEST['tf']) && $_REQUEST['tf'] != '')
+				$TF = $_REQUEST['tf'];
+			else
+			{
+				$TF = 0;
+			}
+			// 设置商铺信息
+			$Result = SetShopInfo($conn, $_SESSION['UserID'], $SID, $AreaID, $ShopName, $Name, $TEL, $PMCU, $ELU, $TF, "楼盘管辖-商铺信息-修改商铺信息");
 			echo $Result['@Result'];
 		}
 	}

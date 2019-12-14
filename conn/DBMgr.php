@@ -86,6 +86,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 删除商铺
+	function DeleteShop($link, $opUserID, $targetShopID)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL DeleteShop(?, ?, ?, @Result)");
+		$stmt->bind_param("sss", $opUserID, $targetShopID, $remoteIP);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 修改用户账户密码
 	function SetUserPassword($link, $opUserID, $targetUserID, $Password, $ModName)
 	{
@@ -157,6 +168,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 尝试新增商铺
+	function AddShop($link, $opUserID, $AreaID, $ShopName, $Name, $TEL, $PMCU, $ELU, $TF, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL AddShop(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @Result, @ID)");
+		$stmt->bind_param("isssssssss", $opUserID, $AreaID, $ShopName, $Name, $TEL, $PMCU, $ELU, $TF, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result, @ID');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 设置用户账号的个人信息
 	function SetPersonalInfo($link, $opUserID, $targetUserID, $Name, $TEL, $UID, $ModName)
 	{
@@ -212,6 +234,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 设置商铺信息
+	function SetShopInfo($link, $opUserID, $targetShopID, $AreaID, $ShopName, $Name, $TEL, $PMCU, $ELU, $TF, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL SetShopInfo(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @Result)");
+		$stmt->bind_param("sssssssssss", $opUserID, $targetShopID, $AreaID, $ShopName, $Name, $TEL, $PMCU, $ELU, $TF, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取用户账号信息
 	function GetUser($link, $userID)
 	{
@@ -252,6 +285,16 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 获取商铺信息
+	function GetShop($link, $SID)
+	{
+		$stmt = $link->prepare("CALL GetShop(?, @AreaID, @ShopName, @Name, @TEL, @PMCU, @ELU, @TF)");
+		$stmt->bind_param("s", $SID);
+		$stmt->execute();
+		$res = $link->query('SELECT @AreaID, @ShopName, @Name, @TEL, @PMCU, @ELU, @TF');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 检查用户对楼盘的访问是否合法
 	function IsLegalArea($link, $UserID, $AreaID)
 	{
@@ -277,6 +320,16 @@
 	{
 		$stmt = $link->prepare("CALL IsLegalHouseHold(?, ?, @Result)");
 		$stmt->bind_param("ss", $UserID, $HID);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 检查用户对住户的访问是否合法
+	function IsLegalShop($link, $UserID, $SID)
+	{
+		$stmt = $link->prepare("CALL IsLegalShop(?, ?, @Result)");
+		$stmt->bind_param("ss", $UserID, $SID);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
