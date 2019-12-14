@@ -37,9 +37,9 @@
 		{
 			$ret['AreaLabel'][$i] = $UserArea[$i][1];
 			$ret['Area_Rate'][$i]['name'] = $UserArea[$i][1];
-			$ret['Area_Rate'][$i]['value'] = (int)(GetHouseHoldCount($conn, $UserArea[0][0], '', '', '', '', '')['@Result']) +
-												(int)(GetShopCount($conn, $UserArea[0][0], '', '', '')['@Result']) +
-												(int)(GetCarCount($conn, $UserArea[0][0], '', '', '')['@Result']);
+			$ret['Area_Rate'][$i]['value'] = (int)(GetHouseHoldCount($conn, $UserArea[$i][0], '', '', '', '', '')['@Result']) +
+												(int)(GetShopCount($conn, $UserArea[$i][0], '', '', '')['@Result']) +
+												(int)(GetCarCount($conn, $UserArea[$i][0], '', '', '')['@Result']);
 		}
 		// 当前查看的楼盘名称
 		$ret['EachArea_Name'] = $UserArea[0][1];
