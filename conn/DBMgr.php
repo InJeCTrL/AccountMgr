@@ -580,6 +580,25 @@
 		}
 		return $Result;
 	}
+	// 获取商铺列表
+	function GetShopList($link, $Offset = 0, $Num = 0, $AID, $ShopName, $Name, $TEL)
+	{
+		$stmt = $link->prepare("CALL GetShopList(?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("iissss", $Offset, $Num, $AID, $ShopName, $Name, $TEL);
+		$stmt->execute();
+		$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
+		// 数据行下标
+		$i = 0;
+		// 待返回的数据集合
+		$Result = [];
+		// 循环获取数据
+		while ($res = $stmt->fetch())
+		{
+			$Result[$i] = [$R1, $R2, $R3, $R4, $R5];
+			$i++;
+		}
+		return $Result;
+	}
 	// 获取用户所属管辖范围(楼盘)列表
 	function GetUserAreaList($link, $UserID)
 	{

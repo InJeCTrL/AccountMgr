@@ -32,12 +32,12 @@
 		    	楼盘管辖
 		    </li>
 		    <li class="active">
-		    	住户列表
+		    	商铺信息
 		    </li>
 		</ol>
         <h3>条件筛选</h3>
         <div class="row">
-            <div class="form-group col-lg-4">
+            <div class="form-group col-lg-6">
                 <div class="input-group">
                     <span class="input-group-addon">楼盘</span>
                     <select id="AreaID" class="form-control">
@@ -45,38 +45,24 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group col-lg-4">
+            <div class="form-group col-lg-6">
                 <div class="input-group">
-                    <span class="input-group-addon">楼栋</span>
-                    <select id="BID" class="form-control">
-                    	<option value="">任意</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group col-lg-4">
-                <div class="input-group">
-                    <span class="input-group-addon">门牌号</span>
-                    <input id="RoomCode" type="text" class="form-control" />
+                    <span class="input-group-addon">商铺名称</span>
+                    <input id="ShopName" type="text" class="form-control" />
                 </div>
             </div>
         </div>
         <div class="row">
-        	<div class="form-group col-lg-4">
+        	<div class="form-group col-lg-6">
                 <div class="input-group">
-                    <span class="input-group-addon">住户姓名</span>
+                    <span class="input-group-addon">店主姓名</span>
                     <input id="Name" type="text" class="form-control" />
                 </div>
             </div>
-            <div class="form-group col-lg-4">
+            <div class="form-group col-lg-6">
                 <div class="input-group">
                     <span class="input-group-addon">电话号码</span>
                     <input id="TEL" type="text" class="form-control" />
-                </div>
-            </div>
-            <div class="form-group col-lg-4">
-                <div class="input-group">
-                    <span class="input-group-addon">住房面积</span>
-                    <input id="square" type="text" class="form-control" />
                 </div>
             </div>
         </div>
@@ -90,7 +76,7 @@
         		<button id="doquery" class="btn btn-success btn-block">查询</button>
         	</div>
         	<div class="form-group col-lg-6">
-        		<button id="newbuilding" class="btn btn-primary btn-block">新增住户</button>
+        		<button id="newshop" class="btn btn-primary btn-block">新增商铺</button>
         	</div>
         	<?php
         		}
@@ -110,13 +96,13 @@
 		            <tr>
 		            	<th class="col-lg-1"><input type="checkbox" id="chkall" /></th>
 		                <th class="col-lg-2">楼盘名称</th>
-		                <th class="col-lg-2">楼栋号</th>
-		                <th class="col-lg-2">门牌号</th>
-		                <th class="col-lg-2">住户姓名</th>
+		                <th class="col-lg-2">商铺名称</th>
+		                <th class="col-lg-2">店主姓名</th>
+		                <th class="col-lg-2">电话号码</th>
 		                <th class="col-lg-3">操作</th>
 		            </tr>
 		        </thead>
-		        <tbody id="householdlist" name="householdlist">
+		        <tbody id="shoplist" name="shoplist">
 		        </tbody>
 		    </table>
 		</div>
@@ -140,39 +126,39 @@
 		</ul>
 		<ul class="nav nav-pills pagination" style="float: left;">
 			<li class="active">
-				 <a href="#"><span id="HouseHoldCount" name="HouseHoldCount" class="badge pull-right"></span>查得住户数量：</a>
+				 <a href="#"><span id="ShopCount" name="ShopCount" class="badge pull-right"></span>查得商铺数量：</a>
 			</li>
 		</ul>
 	</body>
 	<script>
-		var search_AreaID = '', search_BuildingID = '', search_RoomCode = '',
-			search_Name = '', search_TEL = '', search_square = '',
+		var search_AreaID = '', search_ShopName = '',
+			search_Name = '', search_TEL = '',
 			page = 1;
-		// 删除指定ID的住户
-		function deleteHouseHold(hid)
+		// 删除指定ID的商铺
+		function deleteShop(sid)
 		{
 			var ret = $.ajax
 			(
 				{
-	        		url : './AreaManagement/deleteHouseHold.php',
+	        		url : './AreaManagement/deleteShop.php',
 	         		type : "post",
-	         		data : {HID:hid},
+	         		data : {SID:sid},
 	        		async : false,
     			}
     		).responseText;
-    		// 删除住户
+    		// 删除商铺
 			if (ret != '')
 			{
 				// 没有有效删除
 				if (ret === '0')
 				{
-					alert('住户删除失败！');
+					alert('商铺删除失败！');
 				}
 				else
 				{
-					alert('住户已删除！');
+					alert('商铺已删除！');
 				}
-				SetHouseHoldListShow();
+				SetShopListShow();
 			}
 			// 返回为空则认为用户下线，刷新页面
 			else
@@ -180,24 +166,24 @@
 				window.location.reload();
 			}
 		}
-		// 获取住户列表并显示
-		function SetHouseHoldListShow()
+		// 获取商铺列表并显示
+		function SetShopListShow()
 		{
 			var ret = $.ajax
 			(
 				{
-	        		url : './AreaManagement/GetHouseHoldList.php',
+	        		url : './AreaManagement/GetShopList.php',
 	         		type : "post",
-	         		data : {Page:page, aid:search_AreaID, bid:search_BuildingID, roomcode:search_RoomCode, name:search_Name, tel:search_TEL, square:search_square},
+	         		data : {Page:page, aid:search_AreaID, shopname:search_ShopName, name:search_Name, tel:search_TEL},
 	        		async : false,
     			}
     		).responseText;
-    		// 获取传回的json，根据json设置住户列表与翻页显示
+    		// 获取传回的json，根据json设置商铺列表与翻页显示
 			if (ret != '')
 			{
 				var obj_ret = JSON.parse(ret);
-				$('#householdlist').html(obj_ret['Res']);
-				$('#HouseHoldCount').text(obj_ret['HouseHoldCount']);
+				$('#shoplist').html(obj_ret['Res']);
+				$('#ShopCount').text(obj_ret['ShopCount']);
 				$('#pagelimit').html(obj_ret['PageLimit']);
 			}
 			// 返回为空则认为用户下线，刷新页面
@@ -210,24 +196,24 @@
 				// 单击按钮时获取按钮字符串并传入翻页页面
 				$(this).bind('click', function(){
 					page = $(this).children()[0].innerText;
-					SetHouseHoldListShow();
+					SetShopListShow();
 				});
 			});
 			// 为每个删除按钮添加事件
 			$('.del').each(function(){
 				$(this).bind('click', function(){
-					if (confirm('请谨慎操作！\n删除住户会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的楼栋？'))
+					if (confirm('请谨慎操作！\n删除商铺会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的商铺？'))
 					{
-						var hid = $(this).parent().attr('id');
-						deleteHouseHold(hid);
+						var sid = $(this).parent().attr('id');
+						deleteShop(sid);
 					}
 				});
 			});
 			// 为每个查看修改按钮添加事件
 			$('.mdf').each(function(){
 				$(this).bind('click', function(){
-					var hid = $(this).parent().attr('id');
-					$('#mainview').load('./AreaManagement/ShowHouseHold.php?HID=' + hid);
+					var sid = $(this).parent().attr('id');
+					$('#mainview').load('./AreaManagement/ShowShop.php?SID=' + sid);
 				});
 			});
 		}
@@ -240,14 +226,14 @@
 		});
 		// 批量删除
 		$('#multidel').bind('click', function(){
-			if (confirm('请谨慎操作！\n删除住户会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的楼栋？'))
+			if (confirm('请谨慎操作！\n删除商铺会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的商铺？'))
 			{
 				$('.chksel').each(function(){
 					// 获取选中行的ID并提交删除
 					if ($(this).is(':checked') == true)
 					{
-						var hid = $(this).parent().parent().children().eq(5).children().eq(0).attr('id');
-						deleteHouseHold(hid);
+						var sid = $(this).parent().parent().children().eq(5).children().eq(0).attr('id');
+						deleteShop(sid);
 					}
 				});
 			}
@@ -256,31 +242,14 @@
 		$('#doquery').bind('click', function(){
 			// 查询赋值
 			search_AreaID = $('#AreaID').val();
-			search_BuildingID = $('#BID').val();
-			search_RoomCode = $('#RoomCode').val();
+			search_ShopName = $('#ShopName').val();
 			search_Name = $('#Name').val();
 			search_TEL = $('#TEL').val();
-			search_square = $('#square').val();
-			SetHouseHoldListShow();
+			SetShopListShow();
 		});
-		// 新增住户
-		$('#newbuilding').bind('click', function(){
-			$('#mainview').load('./AreaManagement/AddHouseHold.php');
-		});
-		// 改变楼盘选中
-		$('#AreaID').bind('change', function(){
-			var aid = $('#AreaID').val();
-			var ret_buildinglist = $.ajax
-			(
-				{
-	        		url : './AreaManagement/GetBuildingList_select.php',
-	         		type : "post",
-	         		data : {areaid:aid},
-	        		async : false,
-    			}
-    		).responseText;
-    		$('#BID').html('<option value="">任意</option>');
-    		$('#BID').html($('#BID').html() + JSON.parse(ret_buildinglist));
+		// 新增商铺
+		$('#newshop').bind('click', function(){
+			$('#mainview').load('./AreaManagement/AddShop.php');
 		});
 		$(document).ready(function(){
 			var ret_arealist = $.ajax
@@ -293,7 +262,7 @@
     			}
     		).responseText;
     		$('#AreaID').html($('#AreaID').html() + JSON.parse(ret_arealist));
-			SetHouseHoldListShow();
+			SetShopListShow();
 		});
 	</script>
 </html>

@@ -90,7 +90,7 @@
         		<button id="doquery" class="btn btn-success btn-block">查询</button>
         	</div>
         	<div class="form-group col-lg-6">
-        		<button id="newbuilding" class="btn btn-primary btn-block">新增住户</button>
+        		<button id="newhousehold" class="btn btn-primary btn-block">新增住户</button>
         	</div>
         	<?php
         		}
@@ -216,7 +216,7 @@
 			// 为每个删除按钮添加事件
 			$('.del').each(function(){
 				$(this).bind('click', function(){
-					if (confirm('请谨慎操作！\n删除住户会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的楼栋？'))
+					if (confirm('请谨慎操作！\n删除住户会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的住户？'))
 					{
 						var hid = $(this).parent().attr('id');
 						deleteHouseHold(hid);
@@ -240,7 +240,7 @@
 		});
 		// 批量删除
 		$('#multidel').bind('click', function(){
-			if (confirm('请谨慎操作！\n删除住户会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的楼栋？'))
+			if (confirm('请谨慎操作！\n删除住户会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的住户？'))
 			{
 				$('.chksel').each(function(){
 					// 获取选中行的ID并提交删除
@@ -264,7 +264,7 @@
 			SetHouseHoldListShow();
 		});
 		// 新增住户
-		$('#newbuilding').bind('click', function(){
+		$('#newhousehold').bind('click', function(){
 			$('#mainview').load('./AreaManagement/AddHouseHold.php');
 		});
 		// 改变楼盘选中
