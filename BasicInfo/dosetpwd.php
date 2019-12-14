@@ -43,6 +43,8 @@
 			unset($_SESSION['enResetPwd']);
 			// 重设密码
 			SetUserPassword($conn, -1, $targetUserID, $pwd1, "找回密码-重设密码");
+			// 重置登录状态
+			SignOut($conn, $targetUserID, $targetUserID, '找回密码-重置登录状态');
 			echo '修改成功！';
 		}
 	}
