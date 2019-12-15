@@ -37,9 +37,9 @@
 		{
 			$ret['AreaLabel'][$i] = $UserArea[$i][1];
 			$ret['Area_Rate'][$i]['name'] = $UserArea[$i][1];
-			$ret['Area_Rate'][$i]['value'] = (int)(GetHouseHoldCount($conn, $UserArea[$i][0], '', '', '', '', '')['@Result']) +
-												(int)(GetShopCount($conn, $UserArea[$i][0], '', '', '')['@Result']) +
-												(int)(GetCarCount($conn, $UserArea[$i][0], '', '', '')['@Result']);
+			$ret['Area_Rate'][$i]['value'] = (int)(GetHouseHoldCount($conn, $_SESSION['UserID'], $UserArea[$i][0], '', '', '', '', '')['@Result']) +
+												(int)(GetShopCount($conn, $_SESSION['UserID'], $UserArea[$i][0], '', '', '')['@Result']) +
+												(int)(GetCarCount($conn, $_SESSION['UserID'], $UserArea[$i][0], '', '', '')['@Result']);
 		}
 		// 当前查看的楼盘名称
 		$ret['EachArea_Name'] = $UserArea[0][1];
@@ -50,17 +50,17 @@
 			$ret['UserAreaList'] .= '<option value = "' . $UserArea[$i][0] . '">' . $UserArea[$i][1] . '</option>';
 		}
 		// 住户总数
-		$ret['HouseHoldCount'] = (int)(GetHouseHoldCount($conn, '', '', '', '', '', '')['@Result']);
+		$ret['HouseHoldCount'] = (int)(GetHouseHoldCount($conn, -1, '', '', '', '', '', '')['@Result']);
 		// 商铺总数
-		$ret['ShopCount'] = (int)(GetShopCount($conn, '', '', '', '')['@Result']);
+		$ret['ShopCount'] = (int)(GetShopCount($conn, -1, '', '', '', '')['@Result']);
 		// 车辆总数
-		$ret['CarCount'] = (int)(GetCarCount($conn, '', '', '', '')['@Result']);
+		$ret['CarCount'] = (int)(GetCarCount($conn, -1, '', '', '', '')['@Result']);
 		// 单个楼盘内三种缴费个体的数量列表
-		$ret['EachArea_Rate'][0]['value'] = (int)(GetHouseHoldCount($conn, $UserArea[0][0], '', '', '', '', '')['@Result']);
+		$ret['EachArea_Rate'][0]['value'] = (int)(GetHouseHoldCount($conn, -1, $UserArea[0][0], '', '', '', '', '')['@Result']);
 		$ret['EachArea_Rate'][0]['name'] = '住户';
-		$ret['EachArea_Rate'][1]['value'] = (int)(GetShopCount($conn, $UserArea[0][0], '', '', '')['@Result']);
+		$ret['EachArea_Rate'][1]['value'] = (int)(GetShopCount($conn, -1, $UserArea[0][0], '', '', '')['@Result']);
 		$ret['EachArea_Rate'][1]['name'] = '商铺';
-		$ret['EachArea_Rate'][2]['value'] = (int)(GetCarCount($conn, $UserArea[0][0], '', '', '')['@Result']);
+		$ret['EachArea_Rate'][2]['value'] = (int)(GetCarCount($conn, -1, $UserArea[0][0], '', '', '')['@Result']);
 		$ret['EachArea_Rate'][2]['name'] = '车辆';
 		// 最近六个月日期列表(年-月)
 		for ($i = 0; $i < 6; $i++)

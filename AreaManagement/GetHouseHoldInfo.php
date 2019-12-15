@@ -54,7 +54,7 @@
 			"<option " . ($Res[$i][0] === (int)($AreaID) ? "selected='selected'" : "") . " value = '" . $Res[$i][0] . "'>" . $Res[$i][1] . "</option>";
 		}
 		// 获取归属楼盘下属楼栋列表
-		$Res = GetBuildingList($conn, 0, 0, $AreaID, '');
+		$Res = GetBuildingList($conn, 0, 0, $_SESSION['UserID'], $AreaID, '');
 		$ret['BID'] = "";
 		for ($i = 0; $i < count($Res); $i++)
 		{

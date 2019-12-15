@@ -113,7 +113,7 @@
 		}
 		$ret = [];
 		// 获取住户数量
-		$row_HouseHoldCount = GetHouseHoldCount($conn, $AID, $BID, $RoomCode, $Name, $TEL, $square);
+		$row_HouseHoldCount = GetHouseHoldCount($conn, $_SESSION['UserID'], $AID, $BID, $RoomCode, $Name, $TEL, $square);
 		// 住户总数
 		$HouseHoldCount = (int)($row_HouseHoldCount['@Result']);
 		$ret['HouseHoldCount'] = $HouseHoldCount;
@@ -145,7 +145,7 @@
 		// 页码为自然数
 		$Offset = ($Page - 1) * 10;
 		// 获取住户列表
-		$Res = GetHouseHoldList($conn, $Offset, 10, $AID, $BID, $RoomCode, $Name, $TEL, $square);
+		$Res = GetHouseHoldList($conn, $Offset, 10, $_SESSION['UserID'], $AID, $BID, $RoomCode, $Name, $TEL, $square);
 		$ret['Res'] = "";
 		for ($i = 0; $i < count($Res); $i++)
 		{

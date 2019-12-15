@@ -61,7 +61,7 @@
 		}
 		$ret = [];
 		// 获取楼栋数量
-		$row_BuildingCount = GetBuildingCount($conn, $AID, $BNo);
+		$row_BuildingCount = GetBuildingCount($conn, $_SESSION['UserID'], $AID, $BNo);
 		// 楼栋总数
 		$BuildingCount = (int)($row_BuildingCount['@Result']);
 		$ret['BuildingCount'] = $BuildingCount;
@@ -93,7 +93,7 @@
 		// 页码为自然数
 		$Offset = ($Page - 1) * 10;
 		// 获取楼栋列表
-		$Res = GetBuildingList($conn, $Offset, 10, $AID, $BNo);
+		$Res = GetBuildingList($conn, $Offset, 10, $_SESSION['UserID'], $AID, $BNo);
 		$ret['Res'] = "";
 		for ($i = 0; $i < count($Res); $i++)
 		{

@@ -79,7 +79,7 @@
 		}
 		$ret = [];
 		// 获取商铺数量
-		$row_ShopCount = GetShopCount($conn, $AID, $ShopName, $Name, $TEL);
+		$row_ShopCount = GetShopCount($conn, $_SESSION['UserID'], $AID, $ShopName, $Name, $TEL);
 		// 商铺总数
 		$ShopCount = (int)($row_ShopCount['@Result']);
 		$ret['ShopCount'] = $ShopCount;
@@ -111,7 +111,7 @@
 		// 页码为自然数
 		$Offset = ($Page - 1) * 10;
 		// 获取商铺列表
-		$Res = GetShopList($conn, $Offset, 10, $AID, $ShopName, $Name, $TEL);
+		$Res = GetShopList($conn, $Offset, 10, $_SESSION['UserID'], $AID, $ShopName, $Name, $TEL);
 		$ret['Res'] = "";
 		for ($i = 0; $i < count($Res); $i++)
 		{

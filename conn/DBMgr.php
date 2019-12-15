@@ -419,40 +419,40 @@
 		return $result;
 	}
 	// 获取楼栋数量
-	function GetBuildingCount($link, $AID, $BNo)
+	function GetBuildingCount($link, $UserID, $AID, $BNo)
 	{
-		$stmt = $link->prepare("CALL GetBuildingCount(@Result, ?, ?)");
-		$stmt->bind_param("ss", $AID, $BNo);
+		$stmt = $link->prepare("CALL GetBuildingCount(@Result, ?, ?, ?)");
+		$stmt->bind_param("sss", $UserID, $AID, $BNo);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
 		return $result;
 	}
 	// 获取住户数量
-	function GetHouseHoldCount($link, $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square)
+	function GetHouseHoldCount($link, $UserID, $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square)
 	{
-		$stmt = $link->prepare("CALL GetHouseHoldCount(@Result, ?, ?, ?, ?, ?, ?)");
-		$stmt->bind_param("ssssss", $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square);
+		$stmt = $link->prepare("CALL GetHouseHoldCount(@Result, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("sssssss", $UserID, $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
 		return $result;
 	}
 	// 获取商铺数量
-	function GetShopCount($link, $AreaID, $ShopName, $Name, $TEL)
+	function GetShopCount($link, $UserID, $AreaID, $ShopName, $Name, $TEL)
 	{
-		$stmt = $link->prepare("CALL GetShopCount(@Result, ?, ?, ?, ?)");
-		$stmt->bind_param("ssss", $AreaID, $ShopName, $Name, $TEL);
+		$stmt = $link->prepare("CALL GetShopCount(@Result, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("sssss", $UserID, $AreaID, $ShopName, $Name, $TEL);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
 		return $result;
 	}
 	// 获取车辆数量
-	function GetCarCount($link, $AreaID, $CarCode, $Name, $TEL)
+	function GetCarCount($link, $UserID, $AreaID, $CarCode, $Name, $TEL)
 	{
-		$stmt = $link->prepare("CALL GetCarCount(@Result, ?, ?, ?, ?)");
-		$stmt->bind_param("ssss", $AreaID, $CarCode, $Name, $TEL);
+		$stmt = $link->prepare("CALL GetCarCount(@Result, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("sssss", $UserID, $AreaID, $CarCode, $Name, $TEL);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
@@ -649,10 +649,10 @@
 		return $Result;
 	}
 	// 获取楼栋列表
-	function GetBuildingList($link, $Offset = 0, $Num = 0, $AID, $BNo)
+	function GetBuildingList($link, $Offset = 0, $Num = 0, $UserID, $AID, $BNo)
 	{
-		$stmt = $link->prepare("CALL GetBuildingList(?, ?, ?, ?)");
-		$stmt->bind_param("iiss", $Offset, $Num, $AID, $BNo);
+		$stmt = $link->prepare("CALL GetBuildingList(?, ?, ?, ?, ?)");
+		$stmt->bind_param("iisss", $Offset, $Num, $UserID, $AID, $BNo);
 		$stmt->execute();
 		$stmt->bind_result($R1, $R2, $R3);
 		// 数据行下标
@@ -668,10 +668,10 @@
 		return $Result;
 	}
 	// 获取住户列表
-	function GetHouseHoldList($link, $Offset = 0, $Num = 0, $AID, $BID, $RoomCode, $Name, $TEL, $square)
+	function GetHouseHoldList($link, $Offset = 0, $Num = 0, $UserID, $AID, $BID, $RoomCode, $Name, $TEL, $square)
 	{
-		$stmt = $link->prepare("CALL GetHouseHoldList(?, ?, ?, ?, ?, ?, ?, ?)");
-		$stmt->bind_param("iissssss", $Offset, $Num, $AID, $BID, $RoomCode, $Name, $TEL, $square);
+		$stmt = $link->prepare("CALL GetHouseHoldList(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("iisssssss", $Offset, $Num, $UserID, $AID, $BID, $RoomCode, $Name, $TEL, $square);
 		$stmt->execute();
 		$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
 		// 数据行下标
@@ -687,10 +687,10 @@
 		return $Result;
 	}
 	// 获取商铺列表
-	function GetShopList($link, $Offset = 0, $Num = 0, $AID, $ShopName, $Name, $TEL)
+	function GetShopList($link, $Offset = 0, $Num = 0, $UserID, $AID, $ShopName, $Name, $TEL)
 	{
-		$stmt = $link->prepare("CALL GetShopList(?, ?, ?, ?, ?, ?)");
-		$stmt->bind_param("iissss", $Offset, $Num, $AID, $ShopName, $Name, $TEL);
+		$stmt = $link->prepare("CALL GetShopList(?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("iisssss", $Offset, $Num, $UserID, $AID, $ShopName, $Name, $TEL);
 		$stmt->execute();
 		$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
 		// 数据行下标
@@ -706,10 +706,10 @@
 		return $Result;
 	}
 	// 获取车辆列表
-	function GetCarList($link, $Offset = 0, $Num = 0, $AID, $CarCode, $Name, $TEL)
+	function GetCarList($link, $Offset = 0, $Num = 0, $UserID, $AID, $CarCode, $Name, $TEL)
 	{
-		$stmt = $link->prepare("CALL GetCarList(?, ?, ?, ?, ?, ?)");
-		$stmt->bind_param("iissss", $Offset, $Num, $AID, $CarCode, $Name, $TEL);
+		$stmt = $link->prepare("CALL GetCarList(?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("iisssss", $Offset, $Num, $UserID, $AID, $CarCode, $Name, $TEL);
 		$stmt->execute();
 		$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
 		// 数据行下标

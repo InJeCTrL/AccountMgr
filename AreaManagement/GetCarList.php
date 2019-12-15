@@ -79,7 +79,7 @@
 		}
 		$ret = [];
 		// 获取车辆数量
-		$row_CarCount = GetCarCount($conn, $AID, $CarCode, $Name, $TEL);
+		$row_CarCount = GetCarCount($conn, $_SESSION['UserID'], $AID, $CarCode, $Name, $TEL);
 		// 车辆总数
 		$CarCount = (int)($row_CarCount['@Result']);
 		$ret['CarCount'] = $CarCount;
@@ -111,7 +111,7 @@
 		// 页码为自然数
 		$Offset = ($Page - 1) * 10;
 		// 获取车辆列表
-		$Res = GetCarList($conn, $Offset, 10, $AID, $CarCode, $Name, $TEL);
+		$Res = GetCarList($conn, $Offset, 10, $_SESSION['UserID'], $AID, $CarCode, $Name, $TEL);
 		$ret['Res'] = "";
 		for ($i = 0; $i < count($Res); $i++)
 		{
