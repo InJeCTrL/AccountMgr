@@ -32,7 +32,7 @@
 		    	楼盘管辖
 		    </li>
 		    <li class="active">
-		    	商铺信息
+		    	车辆信息
 		    </li>
 		</ol>
         <h3>条件筛选</h3>
@@ -47,15 +47,15 @@
             </div>
             <div class="form-group col-lg-6">
                 <div class="input-group">
-                    <span class="input-group-addon">商铺名称</span>
-                    <input id="ShopName" type="text" class="form-control" />
+                    <span class="input-group-addon">车牌号</span>
+                    <input id="CarCode" type="text" class="form-control" />
                 </div>
             </div>
         </div>
         <div class="row">
         	<div class="form-group col-lg-6">
                 <div class="input-group">
-                    <span class="input-group-addon">店主姓名</span>
+                    <span class="input-group-addon">车主姓名</span>
                     <input id="Name" type="text" class="form-control" />
                 </div>
             </div>
@@ -68,7 +68,7 @@
         </div>
         <div class="row">
         	<?php
-        		// 管理员及以上权限可新增商铺
+        		// 管理员及以上权限可新增车辆
         		if ($_SESSION['Type'] === '超级管理员' || $_SESSION['Type'] === '管理员')
 				{
         	?>
@@ -76,7 +76,7 @@
         		<button id="doquery" class="btn btn-success btn-block">查询</button>
         	</div>
         	<div class="form-group col-lg-6">
-        		<button id="newshop" class="btn btn-primary btn-block">新增商铺</button>
+        		<button id="newcar" class="btn btn-primary btn-block">新增车辆</button>
         	</div>
         	<?php
         		}
@@ -96,13 +96,13 @@
 		            <tr>
 		            	<th class="col-lg-1"><input type="checkbox" id="chkall" /></th>
 		                <th class="col-lg-2">楼盘名称</th>
-		                <th class="col-lg-2">商铺名称</th>
-		                <th class="col-lg-2">店主姓名</th>
+		                <th class="col-lg-2">车牌号</th>
+		                <th class="col-lg-2">车主姓名</th>
 		                <th class="col-lg-2">电话号码</th>
 		                <th class="col-lg-3">操作</th>
 		            </tr>
 		        </thead>
-		        <tbody id="shoplist" name="shoplist">
+		        <tbody id="carlist" name="carlist">
 		        </tbody>
 		    </table>
 		</div>
@@ -126,39 +126,39 @@
 		</ul>
 		<ul class="nav nav-pills pagination" style="float: left;">
 			<li class="active">
-				 <a href="#"><span id="ShopCount" name="ShopCount" class="badge pull-right"></span>查得商铺数量：</a>
+				 <a href="#"><span id="CarCount" name="CarCount" class="badge pull-right"></span>查得车辆数量：</a>
 			</li>
 		</ul>
 	</body>
 	<script>
-		var search_AreaID = '', search_ShopName = '',
+		var search_AreaID = '', search_CarCode = '',
 			search_Name = '', search_TEL = '',
 			page = 1;
-		// 删除指定ID的商铺
-		function deleteShop(sid)
+		// 删除指定ID的车辆
+		function deleteCar(cid)
 		{
 			var ret = $.ajax
 			(
 				{
-	        		url : './AreaManagement/deleteShop.php',
+	        		url : './AreaManagement/deleteCar.php',
 	         		type : "post",
-	         		data : {SID:sid},
+	         		data : {CID:cid},
 	        		async : false,
     			}
     		).responseText;
-    		// 删除商铺
+    		// 删除车辆
 			if (ret != '')
 			{
 				// 没有有效删除
 				if (ret === '0')
 				{
-					alert('商铺删除失败！');
+					alert('车辆删除失败！');
 				}
 				else
 				{
-					alert('商铺已删除！');
+					alert('车辆已删除！');
 				}
-				SetShopListShow();
+				SetCarListShow();
 			}
 			// 返回为空则认为用户下线，刷新页面
 			else
@@ -166,24 +166,24 @@
 				window.location.reload();
 			}
 		}
-		// 获取商铺列表并显示
-		function SetShopListShow()
+		// 获取车辆列表并显示
+		function SetCarListShow()
 		{
 			var ret = $.ajax
 			(
 				{
-	        		url : './AreaManagement/GetShopList.php',
+	        		url : './AreaManagement/GetCarList.php',
 	         		type : "post",
-	         		data : {Page:page, aid:search_AreaID, shopname:search_ShopName, name:search_Name, tel:search_TEL},
+	         		data : {Page:page, aid:search_AreaID, carcode:search_CarCode, name:search_Name, tel:search_TEL},
 	        		async : false,
     			}
     		).responseText;
-    		// 获取传回的json，根据json设置商铺列表与翻页显示
+    		// 获取传回的json，根据json设置车辆列表与翻页显示
 			if (ret != '')
 			{
 				var obj_ret = JSON.parse(ret);
-				$('#shoplist').html(obj_ret['Res']);
-				$('#ShopCount').text(obj_ret['ShopCount']);
+				$('#carlist').html(obj_ret['Res']);
+				$('#CarCount').text(obj_ret['CarCount']);
 				$('#pagelimit').html(obj_ret['PageLimit']);
 			}
 			// 返回为空则认为用户下线，刷新页面
@@ -196,13 +196,13 @@
 				// 单击按钮时获取按钮字符串并传入翻页页面
 				$(this).bind('click', function(){
 					page = $(this).children()[0].innerText;
-					SetShopListShow();
+					SetCarListShow();
 				});
 			});
 			// 为每个删除按钮添加事件
 			$('.del').each(function(){
 				$(this).bind('click', function(){
-					if (confirm('请谨慎操作！\n删除商铺会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的商铺？'))
+					if (confirm('请谨慎操作！\n删除车辆会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的车辆？'))
 					{
 						var sid = $(this).parent().attr('id');
 						deleteShop(sid);
@@ -212,8 +212,8 @@
 			// 为每个查看修改按钮添加事件
 			$('.mdf').each(function(){
 				$(this).bind('click', function(){
-					var sid = $(this).parent().attr('id');
-					$('#mainview').load('./AreaManagement/ShowShop.php?SID=' + sid);
+					var cid = $(this).parent().attr('id');
+					$('#mainview').load('./AreaManagement/ShowCar.php?CID=' + cid);
 				});
 			});
 		}
@@ -226,14 +226,14 @@
 		});
 		// 批量删除
 		$('#multidel').bind('click', function(){
-			if (confirm('请谨慎操作！\n删除商铺会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的商铺？'))
+			if (confirm('请谨慎操作！\n删除车辆会级联删除其下属的所有其它数据(缴费记录等)！\n确认批量删除选中的车辆？'))
 			{
 				$('.chksel').each(function(){
 					// 获取选中行的ID并提交删除
 					if ($(this).is(':checked') == true)
 					{
-						var sid = $(this).parent().parent().children().eq(5).children().eq(0).attr('id');
-						deleteShop(sid);
+						var cid = $(this).parent().parent().children().eq(5).children().eq(0).attr('id');
+						deleteCar(cid);
 					}
 				});
 			}
@@ -242,14 +242,14 @@
 		$('#doquery').bind('click', function(){
 			// 查询赋值
 			search_AreaID = $('#AreaID').val();
-			search_ShopName = $('#ShopName').val();
+			search_CarCode = $('#CarCode').val();
 			search_Name = $('#Name').val();
 			search_TEL = $('#TEL').val();
-			SetShopListShow();
+			SetCarListShow();
 		});
-		// 新增商铺
-		$('#newshop').bind('click', function(){
-			$('#mainview').load('./AreaManagement/AddShop.php');
+		// 新增车辆
+		$('#newcar').bind('click', function(){
+			$('#mainview').load('./AreaManagement/AddCar.php');
 		});
 		$(document).ready(function(){
 			var ret_arealist = $.ajax
@@ -262,7 +262,7 @@
     			}
     		).responseText;
     		$('#AreaID').html($('#AreaID').html() + JSON.parse(ret_arealist));
-			SetShopListShow();
+			SetCarListShow();
 		});
 	</script>
 </html>

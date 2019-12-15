@@ -58,7 +58,7 @@
 		            <li><a id="BuildingList" href="#"><i class="glyphicon glyphicon-home"></i>楼栋列表</a></li>
 		            <li><a id="HouseHoldList" href="#"><i class="glyphicon glyphicon-asterisk"></i>住户信息</a></li>
 		            <li><a id="ShopList" href="#"><i class="glyphicon glyphicon-shopping-cart"></i>商铺信息</a></li>
-		            <li><a href="#"><i class="glyphicon glyphicon-flag"></i>车辆信息</a></li>
+		            <li><a id="CarList" href="#"><i class="glyphicon glyphicon-flag"></i>车辆信息</a></li>
 		        </ul>
 		    </li>
 		    <li>
@@ -123,6 +123,10 @@
 		// 单击商铺信息
 		$('#ShopList').bind('click', function(){
 			$('#mainview').load('./AreaManagement/ShopList.php');
+		});
+		// 单击车辆信息
+		$('#CarList').bind('click', function(){
+			$('#mainview').load('./AreaManagement/CarList.php');
 		});
 	</script>
 </html>

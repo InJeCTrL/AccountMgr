@@ -97,6 +97,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 删除车辆
+	function DeleteCar($link, $opUserID, $targetCarID)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL DeleteCar(?, ?, ?, @Result)");
+		$stmt->bind_param("sss", $opUserID, $targetCarID, $remoteIP);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 修改用户账户密码
 	function SetUserPassword($link, $opUserID, $targetUserID, $Password, $ModName)
 	{
@@ -179,6 +190,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 尝试新增车辆
+	function AddCar($link, $opUserID, $AreaID, $CarCode, $Name, $TEL, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL AddCar(?, ?, ?, ?, ?, ?, ?, @Result, @ID)");
+		$stmt->bind_param("issssss", $opUserID, $AreaID, $CarCode, $Name, $TEL, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result, @ID');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 设置用户账号的个人信息
 	function SetPersonalInfo($link, $opUserID, $targetUserID, $Name, $TEL, $UID, $ModName)
 	{
@@ -245,6 +267,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 设置车辆信息
+	function SetCarInfo($link, $opUserID, $targetCarID, $AreaID, $CarCode, $Name, $TEL, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL SetCarInfo(?, ?, ?, ?, ?, ?, ?, ?, @Result)");
+		$stmt->bind_param("ssssssss", $opUserID, $targetCarID, $AreaID, $CarCode, $Name, $TEL, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取用户账号信息
 	function GetUser($link, $userID)
 	{
@@ -295,6 +328,16 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 获取车辆信息
+	function GetCar($link, $CID)
+	{
+		$stmt = $link->prepare("CALL GetCar(?, @AreaID, @CarCode, @Name, @TEL)");
+		$stmt->bind_param("s", $CID);
+		$stmt->execute();
+		$res = $link->query('SELECT @AreaID, @CarCode, @Name, @TEL');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 检查用户对楼盘的访问是否合法
 	function IsLegalArea($link, $UserID, $AreaID)
 	{
@@ -325,11 +368,21 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
-	// 检查用户对住户的访问是否合法
+	// 检查用户对商铺的访问是否合法
 	function IsLegalShop($link, $UserID, $SID)
 	{
 		$stmt = $link->prepare("CALL IsLegalShop(?, ?, @Result)");
 		$stmt->bind_param("ss", $UserID, $SID);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 检查用户对车辆的访问是否合法
+	function IsLegalCar($link, $UserID, $CID)
+	{
+		$stmt = $link->prepare("CALL IsLegalCar(?, ?, @Result)");
+		$stmt->bind_param("ss", $UserID, $CID);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
 		$result = $res->fetch_assoc();
@@ -638,6 +691,25 @@
 	{
 		$stmt = $link->prepare("CALL GetShopList(?, ?, ?, ?, ?, ?)");
 		$stmt->bind_param("iissss", $Offset, $Num, $AID, $ShopName, $Name, $TEL);
+		$stmt->execute();
+		$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
+		// 数据行下标
+		$i = 0;
+		// 待返回的数据集合
+		$Result = [];
+		// 循环获取数据
+		while ($res = $stmt->fetch())
+		{
+			$Result[$i] = [$R1, $R2, $R3, $R4, $R5];
+			$i++;
+		}
+		return $Result;
+	}
+	// 获取车辆列表
+	function GetCarList($link, $Offset = 0, $Num = 0, $AID, $CarCode, $Name, $TEL)
+	{
+		$stmt = $link->prepare("CALL GetCarList(?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("iissss", $Offset, $Num, $AID, $CarCode, $Name, $TEL);
 		$stmt->execute();
 		$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
 		// 数据行下标

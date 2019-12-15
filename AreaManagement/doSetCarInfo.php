@@ -1,5 +1,5 @@
 <?php
-	/* 楼盘管辖-商铺信息-修改商铺信息 */
+	/* 楼盘管辖-车辆信息-修改车辆信息 */
 	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
@@ -19,28 +19,28 @@
 		// 不是管理员及以上，强制注销
 		if ($_SESSION['Type'] != '超级管理员' && $_SESSION['Type'] != '管理员')
 		{
-			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问商铺信息-查看/修改');
+			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问车辆信息-查看/修改');
 			unset($_SESSION['Online']);
 			exit();
 		}
 		else
 		{
-			// 商铺ID
-			if (isset($_REQUEST['SID']) && $_REQUEST['SID'] != '')
+			// 车辆ID
+			if (isset($_REQUEST['CID']) && $_REQUEST['CID'] != '')
 			{
-				$SID = $_REQUEST['SID'];
-				$SID = (int)$SID;
+				$CID = $_REQUEST['CID'];
+				$CID = (int)$CID;
 			}
 			else
 			{
 				exit();
 			}
-			// 标志当前用户对商铺的访问是否合法
-			$legal_shop = (int)(IsLegalShop($conn, $_SESSION['UserID'], $SID)['@Result']);
-			// 非法获取其它商铺信息
-			if ($legal_shop === 0)
+			// 标志当前用户对车辆的访问是否合法
+			$legal_car = (int)(IsLegalCar($conn, $_SESSION['UserID'], $CID)['@Result']);
+			// 非法获取其它车辆信息
+			if ($legal_car === 0)
 			{
-				SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限修改其它商铺信息');
+				SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限修改其它车辆信息');
 				unset($_SESSION['Online']);
 				exit();
 			}
@@ -61,15 +61,15 @@
 				unset($_SESSION['Online']);
 				exit();
 			}
-			// 商铺名称
-			if (isset($_REQUEST['shopname']) && $_REQUEST['shopname'] != '')
-				$ShopName = $_REQUEST['shopname'];
+			// 车牌号
+			if (isset($_REQUEST['carcode']) && $_REQUEST['carcode'] != '')
+				$CarCode = $_REQUEST['carcode'];
 			else
 			{
-				echo '商铺名称为空！';
+				echo '车牌号为空！';
 				exit();
 			}
-			// 店主姓名
+			// 车主姓名
 			if (isset($_REQUEST['name']) && $_REQUEST['name'] != '')
 				$Name = $_REQUEST['name'];
 			else
@@ -83,29 +83,8 @@
 			{
 				$TEL = '';
 			}
-			// 预设物业费单价
-			if (isset($_REQUEST['pmcu']) && $_REQUEST['pmcu'] != '')
-				$PMCU = $_REQUEST['pmcu'];
-			else
-			{
-				$PMCU = 0;
-			}
-			// 预设电费单价
-			if (isset($_REQUEST['elu']) && $_REQUEST['elu'] != '')
-				$ELU = $_REQUEST['elu'];
-			else
-			{
-				$ELU = 0;
-			}
-			// 预设垃圾清运费
-			if (isset($_REQUEST['tf']) && $_REQUEST['tf'] != '')
-				$TF = $_REQUEST['tf'];
-			else
-			{
-				$TF = 0;
-			}
-			// 设置商铺信息
-			$Result = SetShopInfo($conn, $_SESSION['UserID'], $SID, $AreaID, $ShopName, $Name, $TEL, $PMCU, $ELU, $TF, "楼盘管辖-商铺信息-修改商铺信息");
+			// 设置车辆信息
+			$Result = SetCarInfo($conn, $_SESSION['UserID'], $CID, $AreaID, $CarCode, $Name, $TEL, "楼盘管辖-车辆信息-修改车辆信息");
 			echo $Result['@Result'];
 		}
 	}

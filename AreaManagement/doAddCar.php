@@ -1,5 +1,5 @@
 <?php
-	/* 新增商铺 */
+	/* 新增车辆 */
 	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
@@ -19,7 +19,7 @@
 		// 不是管理员及以上权限，强制注销
 		if ($_SESSION['Type'] != '超级管理员' && $_SESSION['Type'] != '管理员')
 		{
-			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问新增商铺');
+			SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问新增车辆');
 			unset($_SESSION['Online']);
 			exit();
 		}
@@ -42,21 +42,20 @@
 				unset($_SESSION['Online']);
 				exit();
 			}
-			// 商铺名称
-			if (isset($_REQUEST['shopname']) && $_REQUEST['shopname'] != '')
-				$ShopName = $_REQUEST['shopname'];
+			// 车牌号
+			if (isset($_REQUEST['carcode']) && $_REQUEST['carcode'] != '')
+				$CarCode = $_REQUEST['carcode'];
 			else
 			{
-				echo '商铺名称为空！';
+				echo '车牌号为空！';
 				exit();
 			}
-			// 店主姓名
+			// 车主姓名
 			if (isset($_REQUEST['name']) && $_REQUEST['name'] != '')
 				$Name = $_REQUEST['name'];
 			else
 			{
-				echo '店主姓名为空！';
-				exit();
+				$Name = '';
 			}
 			// 电话号码
 			if (isset($_REQUEST['tel']) && $_REQUEST['tel'] != '')
@@ -65,29 +64,8 @@
 			{
 				$TEL = '';
 			}
-			// 物业费单价
-			if (isset($_REQUEST['pmcu']) && $_REQUEST['pmcu'] != '')
-				$PMCU = $_REQUEST['pmcu'];
-			else
-			{
-				$PMCU = 0;
-			}
-			// 电费单价
-			if (isset($_REQUEST['elu']) && $_REQUEST['elu'] != '')
-				$ELU = $_REQUEST['elu'];
-			else
-			{
-				$ELU = 0;
-			}
-			// 垃圾清运费
-			if (isset($_REQUEST['tf']) && $_REQUEST['tf'] != '')
-				$TF = $_REQUEST['tf'];
-			else
-			{
-				$TF = 0;
-			}
-			// 新增商铺
-			$Result = AddShop($conn, $_SESSION['UserID'], $AreaID, $ShopName, $Name, $TEL, $PMCU, $ELU, $TF, "楼盘管辖-商铺信息-新增商铺");
+			// 新增车辆
+			$Result = AddCar($conn, $_SESSION['UserID'], $AreaID, $CarCode, $Name, $TEL, "楼盘管辖-车辆信息-新增车辆");
 			echo $Result['@Result'];
 		}
 	}
