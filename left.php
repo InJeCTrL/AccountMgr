@@ -62,10 +62,17 @@
 		        </ul>
 		    </li>
 		    <li>
-		        <a href="#" style="background: darkorange;color: white;">
-		            <i class="glyphicon glyphicon-credit-card"></i>
-					缴费与账目
+		        <a href="#systemSetting3" class="nav-header collapsed" data-toggle="collapse" style="background: darkorange;color: white;">
+		        	<i class="glyphicon glyphicon-credit-card"></i>
+					收费与账目
+		            <span class="pull-right glyphicon glyphicon-chevron-down"></span>
 		        </a>
+		        <ul id="systemSetting3" class="nav nav-list collapse secondmenu" style="height: 0px;">
+		            <li><a id="" href="#"><i class="glyphicon glyphicon-calendar"></i>账目清单</a></li>
+		            <li><a href="#"><i class="glyphicon glyphicon-print"></i>收费打票</a></li>
+		            <li><a href="#"><i class="glyphicon glyphicon-tags"></i>缴费月份</a></li>
+		            <li><a href="#"><i class="glyphicon glyphicon-plus"></i>历史票据导入</a></li>
+		        </ul>
 		    </li>
 		    <?php
             	if ($_SESSION['Type'] === '超级管理员')
