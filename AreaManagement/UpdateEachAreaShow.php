@@ -52,11 +52,11 @@
 		// 当前查看的楼盘名称
 		$ret['EachArea_Name'] = $AreaName;
 		// 单个楼盘内三种缴费个体的数量列表
-		$ret['EachArea_Rate'][0]['value'] = (int)(GetHouseHoldCount($conn, $AreaID, '', '', '', '', '')['@Result']);
+		$ret['EachArea_Rate'][0]['value'] = (int)(GetHouseHoldCount($conn, $_SESSION['UserID'], $AreaID, '', '', '', '', '')['@Result']);
 		$ret['EachArea_Rate'][0]['name'] = '住户';
-		$ret['EachArea_Rate'][1]['value'] = (int)(GetShopCount($conn, $AreaID, '', '', '')['@Result']);
+		$ret['EachArea_Rate'][1]['value'] = (int)(GetShopCount($conn, $_SESSION['UserID'], $AreaID, '', '', '')['@Result']);
 		$ret['EachArea_Rate'][1]['name'] = '商铺';
-		$ret['EachArea_Rate'][2]['value'] = (int)(GetCarCount($conn, $AreaID, '', '', '')['@Result']);
+		$ret['EachArea_Rate'][2]['value'] = (int)(GetCarCount($conn, $_SESSION['UserID'], $AreaID, '', '', '')['@Result']);
 		$ret['EachArea_Rate'][2]['name'] = '车辆';
 		
         echo json_encode($ret);
