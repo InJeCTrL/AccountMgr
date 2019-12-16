@@ -616,7 +616,7 @@
 	{
 		$stmt = $link->prepare("CALL GetTblList()");
 		$stmt->execute();
-		$stmt->bind_result($R1);
+		$stmt->bind_result($R1, $R2, $R3, $R4);
 		// 数据行下标
 		$i = 0;
 		// 待返回的数据集合
@@ -624,7 +624,7 @@
 		// 循环获取数据
 		while ($res = $stmt->fetch())
 		{
-			$Result[$i] = [$R1];
+			$Result[$i] = [$R1, $R2, $R3, $R4];
 			$i++;
 		}
 		return $Result;
