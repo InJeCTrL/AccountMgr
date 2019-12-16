@@ -66,13 +66,12 @@
 			if ($i_tbl < $count_tbl - 1)
 			{
 				$ret['increment'] = (double)($Result['@Result']);
-				$ret['link'] = '';
 			}
 			// 备份完最后一个表，ZIP打包
 			else
 			{
 				$ret['increment'] = -1;
-				//$ret['link'] = PackBak();
+				$ret['link'] = PackBak('./tmp/');
 			}
 			echo json_encode($ret);
 		}
@@ -83,4 +82,26 @@
 		exit();
 	}
 	DisConnect($conn);
+?>
+<?php
+	// 打包临时文件夹下的csv文件
+	function PackBak($FolderPath)
+	{
+		// 时区设置
+		date_default_timezone_set('PRC');
+		$zip = new ZipArchive();
+		$zipname = 'amgrBAK_' . date('Y年m月d日H时i分s秒', time()) . '.zip';
+		$zip->open(iconv('utf-8', 'gbk', $FolderPath . $zipname), ZipArchive::CREATE);
+		$path = scandir($FolderPath);
+		foreach ($path as $file)
+		{
+			if($file !="." && $file !=".." && $file != $zipname)
+			{
+				$filepath = iconv('utf-8', 'gbk', $FolderPath . $file);
+				$zip->addFile($filepath, $file);
+			}
+		}
+		$zip->close();
+		return $FolderPath . $zipname;
+	}
 ?>

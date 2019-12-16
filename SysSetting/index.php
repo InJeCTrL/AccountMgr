@@ -121,7 +121,7 @@
 	    		else
 	    		{
 	    			$('#BakProgress').css('width', '100%').attr('aria-valuenow', '100.00').text('备份完成');
-	    			// obj_ret_progress['link']
+					window.location.href = './SysSetting/' + obj_ret_progress['link'];
 	    		}
     		}
 		});
