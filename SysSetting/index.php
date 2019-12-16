@@ -96,6 +96,7 @@
 		}
 		// 点击备份按钮
 		$('#dobak').bind('click', function(){
+			$('#BakProgress').css('width', '0%').attr('aria-valuenow', '0.00').text('0.00%');
 			// 每个表执行一次（多次生成数据表备份文件）
 			for (var i = 0; i < num_Table; i++)
 			{
@@ -113,7 +114,8 @@
 	    		if (obj_ret_progress['increment'] != -1)
 	    		{
 	    			var now = $('#BakProgress').attr('aria-valuenow');
-	    			$('#BakProgress').css('width', (now + obj_ret_progress['increment']) + '%').attr('aria-valuenow', (now + obj_ret_progress['increment'])).text((now + obj_ret_progress['increment']) + '%');
+	    			var change = parseFloat(now) + obj_ret_progress['increment'];
+	    			$('#BakProgress').css('width', change + '%').attr('aria-valuenow', change).text(change + '%');
 	    		}
 	    		// 最后一个表备份完成
 	    		else

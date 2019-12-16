@@ -45,20 +45,34 @@
 			{
 				exit();
 			}
+			$FolderPath = str_replace('\\', '/', __DIR__ . '/tmp/');
+			// 开始备份前清空临时文件夹
+			if ($i_tbl === 0)
+			{
+				
+				$path = scandir($FolderPath);
+				foreach ($path as $file)
+				{
+					if($file !="." && $file !="..")
+					{
+						unlink(iconv('utf-8', 'gbk', $FolderPath) . $file);
+					}
+				}
+			}
 			$ret = [];
 			// 备份数据表到允许目录，传回备份表的占比
-			$Result = BakTable($conn, $i_tbl, "系统维护-数据备份-备份数据到本地");
+			$Result = BakTable($conn, $_SESSION['UserID'], $i_tbl, $FolderPath, "系统维护-数据备份-备份数据到本地");
 			// 尚未备份到最后一个表
 			if ($i_tbl < $count_tbl - 1)
 			{
-				$ret['increment'] = $Result['@Result'];
+				$ret['increment'] = (double)($Result['@Result']);
 				$ret['link'] = '';
 			}
 			// 备份完最后一个表，ZIP打包
 			else
 			{
 				$ret['increment'] = -1;
-				$ret['link'] = PackBak();
+				//$ret['link'] = PackBak();
 			}
 			echo json_encode($ret);
 		}

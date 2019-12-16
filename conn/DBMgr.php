@@ -759,4 +759,16 @@
 			$stmt->execute();
 		}
 	}
+	// 备份指定编号的数据表, 返回数据占比
+	function BakTable($link, $opUserID, $i_tbl, $FolderPath, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		// 备份表到csv文件
+		$stmt = $link->prepare("CALL BakTable(?, ?, ?, ?, ?, @Result)");
+		$stmt->bind_param("sssss", $opUserID, $i_tbl, $FolderPath, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 ?>
