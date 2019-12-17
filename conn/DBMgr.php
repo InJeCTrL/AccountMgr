@@ -771,4 +771,23 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 恢复csv中的数据到指定名称的数据表, 返回导入的数据条数
+	function RecTable($link, $opUserID, $FileName, $FilePath, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		// 关闭外键约束
+		$link->query("SET FOREIGN_KEY_CHECKS=0");
+		// 恢复csv到数据表
+		$sql = "LOAD DATA INFILE '" . $FilePath . "' REPLACE INTO TABLE " . $FileName . " fields terminated by ',' optionally enclosed by '\"' lines terminated by '\r\n';";
+		$res = $link->query($sql);
+		$res = $link->query('SELECT ROW_COUNT() AS Result');
+		$result = $res->fetch_assoc();
+		// 启用外键约束
+		$link->query("SET FOREIGN_KEY_CHECKS=1");
+		// 记录日志
+		$stmt = $link->prepare("INSERT INTO operationlog VALUES(null, CURRENT_TIMESTAMP(), ?, ?, ?, '恢复数据表', ?, -1)");
+		$stmt->bind_param("ssss", $remoteIP, $opUserID, $ModName, $FileName);
+		$stmt->execute();
+		return $result;
+	}
 ?>
