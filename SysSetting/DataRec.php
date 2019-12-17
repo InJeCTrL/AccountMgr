@@ -22,7 +22,7 @@
 	// 不是超级管理员，强制注销
 	if ($_SESSION['Type'] != '超级管理员')
 	{
-		SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问数据备份');
+		SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问数据恢复');
 		unset($_SESSION['Online']);
 		exit();
 	}
@@ -39,71 +39,62 @@
 		    	系统维护
 		    </li>
 		    <li class="active">
-		    	数据备份
+		    	数据恢复
 		    </li>
 		</ol>
-        <h2>当前数据负载情况</h2>
-        <div class="table-responsive">
-		    <table class="table table-striped ">
-		        <thead>
-		            <tr>
-		                <th class="col-lg-3">数据表名称</th>
-		                <th class="col-lg-3">描述</th>
-		                <th class="col-lg-3">数据总行数</th>
-		                <th class="col-lg-3">占比</th>
-		            </tr>
-		        </thead>
-		        <tbody id="tablelist" name="tablelist">
-		        </tbody>
-		    </table>
-		</div>
-        <h3 style="text-align: center;">所有表中的数据将备份到ZIP压缩文件中的CSV文件内</h3>
+        <h3 style="text-align: center;">这个操作会将ZIP压缩文件中的CSV文件内容恢复到数据库中</h3>
+        <h4 style="text-align: center;">与当前数据库重复(冲突)的数据将被更新/覆盖</h4>
         <div class="row">
         	<div class="form-group col-lg-12">
         		<div class="progress progress-striped active">
-					<div id="BakProgress" aria-valuemin = "0.00" aria-valuemax = "100.00" aria-valuenow = "0.00" style="width: 0%;" class="progress-bar progress-bar-primary" role="progressbar">
+					<div id="RecProgress" aria-valuemin = "0.00" aria-valuemax = "100.00" aria-valuenow = "0.00" style="width: 0%;" class="progress-bar progress-bar-primary" role="progressbar">
 						0.00%
 					</div>
 				</div>
         	</div>
+        	<form id="upform" name="upform" enctype="multipart/form-data" class="form-group col-lg-12">
+        		<input id="upfile" name="upfile" type="file" accept="application/x-zip-compressed" />	
+        	</form>
         </div>
         <div class="row">
         	<div class="form-group col-lg-12">
-        		<button id="dobak" class="btn btn-success btn-block">备份数据到本地</button>
+        		<button id="uploadrec" class="btn btn-primary btn-block">上传备份文件</button>
+        	</div>
+        	<div class="form-group col-lg-12">
+        		<button id="dorec" class="btn btn-success btn-block">恢复数据到数据库</button>
         	</div>
         </div>
 	</body>
 	<script>
-		// 数据库中数据表的数量
+		// 需要恢复的数据表数量
 		var num_Table = 0;
-		// 获取数据表列表并显示
-		function SetTableListShow()
-		{
-			var ret = $.ajax
-			(
-				{
-	        		url : './SysSetting/GetTableList.php',
-	         		type : "post",
-	         		data : {},
-	        		async : false,
-    			}
-    		).responseText;
-    		// 获取传回的json，根据json设置数据表列表
-			if (ret != '')
-			{
-				var obj_ret = JSON.parse(ret);
-				$('#tablelist').html(obj_ret['Res']);
-				num_Table = obj_ret['num'];
-			}
-			// 返回为空则认为用户下线，刷新页面
-			else
-			{
-				window.location.reload();
-			}
-		}
-		// 点击备份按钮
-		$('#dobak').bind('click', function(){
-			$('#BakProgress').css('width', '0%').attr('aria-valuenow', '0.00').text('0.00%');
+		// 上传备份文件
+		$('#uploadrec').bind('click', function(){
+			$('#RecProgress').css('width', '0%').attr('class', 'progress-bar progress-bar-primary').attr('aria-valuenow', '0.00').text('0.00%');
+			// 实例化FormData对象，获取form表单内的文件对象
+			var FD = new FormData($('#upform')[0]);
+			$.ajax({
+				url:"./SysSetting/UploadRec.php",
+				type:"post",
+				data:FD,
+				processData:false,
+				contentType:false,
+				xhr:function(){
+					var xhr = new XMLHttpRequest();
+					xhr.upload.addEventListener('progress', function(e){
+						$('#RecProgress').css('width', (e.loaded / e.total * 100) + '%').attr('aria-valuenow', (e.loaded / e.total * 100)).text((e.loaded / e.total * 100) + '%');
+					});
+					return xhr;
+				},
+			}).error(function(){
+				alert('上传失败！');
+			}).success(function(data){
+				//alert(data);
+			});
+		});
+		// 点击恢复按钮
+		$('#dorec').bind('click', function(){
+			$('#RecProgress').css('width', '0%').attr('class', 'progress-bar progress-bar-success').attr('aria-valuenow', '0.00').text('0.00%');
 			// 每个表执行一次（多次生成数据表备份文件）
 			for (var i = 0; i < num_Table; i++)
 			{
@@ -131,10 +122,6 @@
 					window.location.href = './SysSetting/' + obj_ret_progress['link'];
 	    		}
     		}
-		});
-		$(document).ready(function(){
-			$('#BakProgress').css('width', '0%').attr('aria-valuenow', '0.00').text('0.00%');
-			SetTableListShow();
 		});
 	</script>
 </html>
