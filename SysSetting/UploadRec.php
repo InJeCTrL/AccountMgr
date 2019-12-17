@@ -55,7 +55,6 @@
 				{
 					$ret['err'] = 0;
 					$ret['msg'] = '备份文件上传成功！';
-					$ret['name'] = $name;
 					$ret['num'] = $num_tbl;
 				}
 				// 检查未通过
@@ -63,8 +62,8 @@
 				{
 					$ret['err'] = 1;
 					$ret['msg'] = '上传的备份文件不能通过校验！';
-					unlink($path);
 				}
+				unlink($path);
 			}
 			
 			echo json_encode($ret);
@@ -97,13 +96,15 @@
 				break;
 			}
 		}
-		$zip->close();
 		if ($invalid === true)
 		{
+			$zip->close();
 			return -1;
 		}
 		else
 		{
+			$zip->extractTo(dirname($FilePath));
+			$zip->close();
 			return count($Result);
 		}
 	}

@@ -149,7 +149,7 @@
 			    		{
 			    			var now = $('#RecProgress').attr('aria-valuenow');
 			    			var change = parseFloat(now) + obj_ret_progress['increment'];
-			    			$('#RecProgress').css('width', change + '%').attr('aria-valuenow', change).text(change + '%');
+			    			$('#RecProgress').css('width', change + '%').attr('aria-valuenow', change).text(obj_ret_progress['msg']);
 			    		}
 			    		// 最后一个表恢复完成
 			    		else
