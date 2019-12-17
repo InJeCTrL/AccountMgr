@@ -68,8 +68,8 @@
 	<script>
 		// 需要恢复的数据表数量
 		var num_Table = 0;
-		// 备份文件路径
-		var path_bak = '';
+		// 备份文件名
+		var name_bak = '';
 		// 上传备份文件
 		$('#uploadrec').bind('click', function(){
 			$('#RecProgress').css('width', '0%').attr('class', 'progress-bar progress-bar-primary').attr('aria-valuenow', '0.00').text('0.00%');
@@ -106,7 +106,7 @@
 					}
 					else
 					{
-						path_bak = obj_data['path'];
+						name_bak = obj_data['name'];
 						num_Table = obj_data['num'];
 						$('#RecProgress').text(obj_data['msg']);
 					}
@@ -116,14 +116,14 @@
 		// 点击恢复按钮
 		$('#dorec').bind('click', function(){
 			// 尚未上传备份文件
-			if (path_bak === '' || num_Table === 0)
+			if (name_bak === '' || num_Table === 0)
 			{
 				alert('请上传备份文件！');
 			}
 			else
 			{
 				$('#RecProgress').css('width', '0%').attr('class', 'progress-bar progress-bar-success').attr('aria-valuenow', '0.00').text('0.00%');
-				// 每个表执行一次（多次生成数据表备份文件）
+				// 按顺序恢复数据
 				for (var i = 0; i < num_Table; i++)
 				{
 					var ret_progress = $.ajax
@@ -131,7 +131,7 @@
 						{
 			        		url : './SysSetting/doRec.php',
 			         		type : "post",
-			         		data : {path:path_bak, i_tbl:i, count_tbl:num_Table},
+			         		data : {name:name_bak, i_tbl:i, count_tbl:num_Table},
 			        		async : false,
 		    			}
 		    		).responseText;
