@@ -68,60 +68,97 @@
 	<script>
 		// 需要恢复的数据表数量
 		var num_Table = 0;
+		// 备份文件路径
+		var path_bak = '';
 		// 上传备份文件
 		$('#uploadrec').bind('click', function(){
 			$('#RecProgress').css('width', '0%').attr('class', 'progress-bar progress-bar-primary').attr('aria-valuenow', '0.00').text('0.00%');
-			// 实例化FormData对象，获取form表单内的文件对象
-			var FD = new FormData($('#upform')[0]);
-			$.ajax({
-				url:"./SysSetting/UploadRec.php",
-				type:"post",
-				data:FD,
-				processData:false,
-				contentType:false,
-				xhr:function(){
-					var xhr = new XMLHttpRequest();
-					xhr.upload.addEventListener('progress', function(e){
-						$('#RecProgress').css('width', (e.loaded / e.total * 100) + '%').attr('aria-valuenow', (e.loaded / e.total * 100)).text((e.loaded / e.total * 100) + '%');
-					});
-					return xhr;
-				},
-			}).error(function(){
-				alert('上传失败！');
-			}).success(function(data){
-				//alert(data);
-			});
+			// 没有上传文件
+			if ($('#upfile').val() === '')
+			{
+				alert('请选择文件！');
+			}
+			else
+			{
+				// 实例化FormData对象，获取form表单内的文件对象
+				var FD = new FormData($('#upform')[0]);
+				$.ajax({
+					url:"./SysSetting/UploadRec.php",
+					type:"post",
+					data:FD,
+					processData:false,
+					contentType:false,
+					xhr:function(){
+						var xhr = new XMLHttpRequest();
+						xhr.upload.addEventListener('progress', function(e){
+							$('#RecProgress').css('width', (e.loaded / e.total * 100) + '%').attr('aria-valuenow', (e.loaded / e.total * 100)).text((e.loaded / e.total * 100) + '%');
+						});
+						return xhr;
+					},
+				}).error(function(){
+					alert('上传失败！');
+				}).success(function(data){
+					var obj_data = JSON.parse(data);
+					// 报错
+					if (obj_data['err'] === 1)
+					{
+						$('#RecProgress').attr('class', 'progress-bar progress-bar-danger').text(obj_data['msg']);
+					}
+					else
+					{
+						path_bak = obj_data['path'];
+						num_Table = obj_data['num'];
+						$('#RecProgress').text(obj_data['msg']);
+					}
+				});
+			}
 		});
 		// 点击恢复按钮
 		$('#dorec').bind('click', function(){
-			$('#RecProgress').css('width', '0%').attr('class', 'progress-bar progress-bar-success').attr('aria-valuenow', '0.00').text('0.00%');
-			// 每个表执行一次（多次生成数据表备份文件）
-			for (var i = 0; i < num_Table; i++)
+			// 尚未上传备份文件
+			if (path_bak === '' || num_Table === 0)
 			{
-				var ret_progress = $.ajax
-				(
-					{
-		        		url : './SysSetting/doBak.php',
-		         		type : "post",
-		         		data : {i_tbl:i, count_tbl:num_Table},
-		        		async : false,
-	    			}
-	    		).responseText;
-	    		var obj_ret_progress = JSON.parse(ret_progress);
-	    		// 尚未备份到最后一个表
-	    		if (obj_ret_progress['increment'] != -1)
-	    		{
-	    			var now = $('#BakProgress').attr('aria-valuenow');
-	    			var change = parseFloat(now) + obj_ret_progress['increment'];
-	    			$('#BakProgress').css('width', change + '%').attr('aria-valuenow', change).text(change + '%');
+				alert('请上传备份文件！');
+			}
+			else
+			{
+				$('#RecProgress').css('width', '0%').attr('class', 'progress-bar progress-bar-success').attr('aria-valuenow', '0.00').text('0.00%');
+				// 每个表执行一次（多次生成数据表备份文件）
+				for (var i = 0; i < num_Table; i++)
+				{
+					var ret_progress = $.ajax
+					(
+						{
+			        		url : './SysSetting/doRec.php',
+			         		type : "post",
+			         		data : {path:path_bak, i_tbl:i, count_tbl:num_Table},
+			        		async : false,
+		    			}
+		    		).responseText;
+		    		var obj_ret_progress = JSON.parse(ret_progress);
+		    		// 恢复过程出错
+		    		if (obj_ret_progress['err'] === 1)
+		    		{
+		    			alert(obj_ret_progress['msg']);
+		    			break;
+		    		}
+		    		else
+		    		{
+		    			// 尚未恢复到最后一个表
+			    		if (obj_ret_progress['increment'] != -1)
+			    		{
+			    			var now = $('#RecProgress').attr('aria-valuenow');
+			    			var change = parseFloat(now) + obj_ret_progress['increment'];
+			    			$('#RecProgress').css('width', change + '%').attr('aria-valuenow', change).text(change + '%');
+			    		}
+			    		// 最后一个表恢复完成
+			    		else
+			    		{
+			    			$('#RecProgress').css('width', '100%').attr('aria-valuenow', '100.00').text('数据恢复完成');
+			    		}
+		    		}
 	    		}
-	    		// 最后一个表备份完成
-	    		else
-	    		{
-	    			$('#BakProgress').css('width', '100%').attr('aria-valuenow', '100.00').text('备份完成');
-					window.location.href = './SysSetting/' + obj_ret_progress['link'];
-	    		}
-    		}
+			}
 		});
 	</script>
 </html>

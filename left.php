@@ -86,7 +86,7 @@
 		        </a>
 		        <ul id="systemSetting4" class="nav nav-list collapse secondmenu" style="height: 0px;">
 		            <li><a id="DataBak" href="#"><i class="glyphicon glyphicon-floppy-save"></i>数据备份</a></li>
-		            <li><a href="#"><i class="glyphicon glyphicon-saved"></i>数据恢复</a></li>
+		            <li><a id="DataRec" href="#"><i class="glyphicon glyphicon-saved"></i>数据恢复</a></li>
 		        </ul>
 		    </li>
 		    <?php
@@ -138,6 +138,10 @@
 		// 单击数据备份
 		$('#DataBak').bind('click', function(){
 			$('#mainview').load('./SysSetting/index.php');
+		});
+		// 单击数据恢复
+		$('#DataRec').bind('click', function(){
+			$('#mainview').load('./SysSetting/DataRec.php');
 		});
 	</script>
 </html>
