@@ -68,8 +68,8 @@
 		            <span class="pull-right glyphicon glyphicon-chevron-down"></span>
 		        </a>
 		        <ul id="systemSetting3" class="nav nav-list collapse secondmenu" style="height: 0px;">
-		            <li><a id="" href="#"><i class="glyphicon glyphicon-calendar"></i>账目清单</a></li>
-		            <li><a href="#"><i class="glyphicon glyphicon-print"></i>收费打票</a></li>
+		            <li><a id="AccountList" href="#"><i class="glyphicon glyphicon-calendar"></i>账目清单</a></li>
+		            <li><a id="Charge" href="#"><i class="glyphicon glyphicon-print"></i>收费打票</a></li>
 		            <li><a href="#"><i class="glyphicon glyphicon-tags"></i>缴费月份</a></li>
 		            <li><a href="#"><i class="glyphicon glyphicon-plus"></i>历史票据导入</a></li>
 		        </ul>
@@ -142,6 +142,14 @@
 		// 单击数据恢复
 		$('#DataRec').bind('click', function(){
 			$('#mainview').load('./SysSetting/DataRec.php');
+		});
+		// 单击账目清单
+		$('#AccountList').bind('click', function(){
+			$('#mainview').load('./Payment/index.php');
+		});
+		// 单击收费打票
+		$('#Charge').bind('click', function(){
+			$('#mainview').load('./Payment/Charge.php');
 		});
 	</script>
 </html>
