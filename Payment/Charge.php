@@ -32,7 +32,7 @@
 		    	收费与账目
 		    </li>
 		    <li class="active">
-		    	收费打票
+		    	筛选列表
 		    </li>
 		</ol>
 		<div class="tabbable" id="tabs">
