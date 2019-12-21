@@ -258,7 +258,7 @@
 			var ret = $.ajax
 			(
 				{
-	        		url : './Payment/GetHouseHoldList.php',
+	        		url : './AreaManagement/GetHouseHoldList.php',
 	         		type : "post",
 	         		data : {Page:page_household, aid:search_AreaID_household, bid:search_BuildingID, roomcode:search_RoomCode, name:search_Name_household, tel:search_TEL_household, square:search_square},
 	        		async : false,
@@ -268,7 +268,17 @@
 			if (ret != '')
 			{
 				var obj_ret = JSON.parse(ret);
-				$('#householdlist').html(obj_ret['Res']);
+				$('#householdlist').html('');
+				for (var i = 0; i < obj_ret['Res'].length; i++)
+				{
+					$('#householdlist').html($('#householdlist').html() + '<tr><td>' + obj_ret['Res'][i][1] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][2] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][3] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][4] + '</td>' + 
+											'<td><div id=' + obj_ret['Res'][i][0] + " class='btn-group'>" + 
+											"<a href='#' class='btn btn-success charge_household'>收费打票</a>" + 
+                    						"</div></td></tr>");
+				}
 				$('#HouseHoldCount').text(obj_ret['HouseHoldCount']);
 				$('#pagelimit_household').html(obj_ret['PageLimit']);
 			}

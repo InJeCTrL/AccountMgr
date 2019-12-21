@@ -196,7 +196,19 @@
 			if (ret != '')
 			{
 				var obj_ret = JSON.parse(ret);
-				$('#householdlist').html(obj_ret['Res']);
+				$('#householdlist').html('');
+				for (var i = 0; i < obj_ret['Res'].length; i++)
+				{
+					$('#householdlist').html($('#householdlist').html() + "<tr><td><input type='checkbox' class='chksel' /></td>" + 
+											'<td>' + obj_ret['Res'][i][1] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][2] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][3] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][4] + '</td>' + 
+											'<td><div id=' + obj_ret['Res'][i][0] + " class='btn-group'>" + 
+											"<a href='#' class='btn btn-success mdf'>" + <?php echo (($_SESSION['Type'] === '超级管理员' || $_SESSION['Type'] === '管理员') ? "'查看/修改'" : "'查看'"); ?> + "</a>" + 
+											<?php echo (($_SESSION['Type'] === '超级管理员' || $_SESSION['Type'] === '管理员') ? "\"<a href='#' class='btn btn-danger del'>删除</a>\"" : "\"\""); ?> +  
+                    						"</div></td></tr>");
+				}
 				$('#HouseHoldCount').text(obj_ret['HouseHoldCount']);
 				$('#pagelimit').html(obj_ret['PageLimit']);
 			}
