@@ -182,7 +182,19 @@
 			if (ret != '')
 			{
 				var obj_ret = JSON.parse(ret);
-				$('#shoplist').html(obj_ret['Res']);
+				$('#shoplist').html('');
+				for (var i = 0; i < obj_ret['Res'].length; i++)
+				{
+					$('#shoplist').html($('#shoplist').html() + "<tr><td><input type='checkbox' class='chksel' /></td>" + 
+											'<td>' + obj_ret['Res'][i][1] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][2] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][3] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][4] + '</td>' + 
+											'<td><div id=' + obj_ret['Res'][i][0] + " class='btn-group'>" + 
+											"<a href='#' class='btn btn-primary mdf'>" + <?php echo (($_SESSION['Type'] === '超级管理员' || $_SESSION['Type'] === '管理员') ? "'查看/修改'" : "'查看'"); ?> + "</a>" + 
+											<?php echo (($_SESSION['Type'] === '超级管理员' || $_SESSION['Type'] === '管理员') ? "\"<a href='#' class='btn btn-danger del'>删除</a>\"" : "\"\""); ?> +  
+                    						"</div></td></tr>");
+				}
 				$('#ShopCount').text(obj_ret['ShopCount']);
 				$('#pagelimit').html(obj_ret['PageLimit']);
 			}

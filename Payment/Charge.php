@@ -335,7 +335,7 @@
 			var ret = $.ajax
 			(
 				{
-	        		url : './Payment/GetShopList.php',
+	        		url : './AreaManagement/GetShopList.php',
 	         		type : "post",
 	         		data : {Page:page_shop, aid:search_AreaID_shop, shopname:search_ShopName, name:search_Name_shop, tel:search_TEL_shop},
 	        		async : false,
@@ -345,7 +345,17 @@
 			if (ret != '')
 			{
 				var obj_ret = JSON.parse(ret);
-				$('#shoplist').html(obj_ret['Res']);
+				$('#shoplist').html('');
+				for (var i = 0; i < obj_ret['Res'].length; i++)
+				{
+					$('#shoplist').html($('#shoplist').html() + '<tr><td>' + obj_ret['Res'][i][1] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][2] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][3] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][4] + '</td>' + 
+											'<td><div id=' + obj_ret['Res'][i][0] + " class='btn-group'>" + 
+											"<a href='#' class='btn btn-success charge_household'>收费打票</a>" + 
+                    						"</div></td></tr>");
+               	}
 				$('#ShopCount').text(obj_ret['ShopCount']);
 				$('#pagelimit_shop').html(obj_ret['PageLimit']);
 			}
@@ -385,7 +395,7 @@
 			var ret = $.ajax
 			(
 				{
-	        		url : './Payment/GetCarList.php',
+	        		url : './AreaManagement/GetCarList.php',
 	         		type : "post",
 	         		data : {Page:page_car, aid:search_AreaID_car, carcode:search_CarCode, name:search_Name_car, tel:search_TEL_car},
 	        		async : false,
@@ -395,7 +405,17 @@
 			if (ret != '')
 			{
 				var obj_ret = JSON.parse(ret);
-				$('#carlist').html(obj_ret['Res']);
+				$('#carlist').html('');
+				for (var i = 0; i < obj_ret['Res'].length; i++)
+				{
+					$('#carlist').html($('#carlist').html() + '<tr><td>' + obj_ret['Res'][i][1] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][2] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][3] + '</td>' + 
+											'<td>' + obj_ret['Res'][i][4] + '</td>' + 
+											'<td><div id=' + obj_ret['Res'][i][0] + " class='btn-group'>" + 
+											"<a href='#' class='btn btn-success charge_household'>收费打票</a>" + 
+                    						"</div></td></tr>");
+               	}
 				$('#CarCount').text(obj_ret['CarCount']);
 				$('#pagelimit_car').html(obj_ret['PageLimit']);
 			}
