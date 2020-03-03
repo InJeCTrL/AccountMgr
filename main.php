@@ -29,7 +29,10 @@
 		<meta charset="UTF-8">
 		<script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<script src="js/bootstrap-datetimepicker.min.js"></script>
+		<script src="js/bootstrap-datetimepicker.zh-CN.js"></script>
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css" />
 		<title>物业系统</title>
 	</head>
 	<body style="padding-top: 70px;">

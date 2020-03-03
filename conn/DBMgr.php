@@ -201,6 +201,126 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 新增住户关联车辆的缴费记录
+	function AddHouseHoldCarPayment($link, $opUserID, $HID, $CarMonth, $Name, $TEL, $TicketTime, $CID, $CarCode, $CFee, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL AddHouseHoldCarPayment(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @Result, @ID)");
+		$stmt->bind_param("isssssssss", $opUserID, $HID, $TicketTime, $CID, $CFee, $CarCode, $Name, $TEL, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result, @ID');
+		$result = $res->fetch_assoc();
+		$ID = $result['@ID'];
+		if ($CarMonth != null)
+		{
+			foreach ($CarMonth as $Line)
+			{
+				$YearMonth = explode(".", $Line);
+				$Year = $YearMonth[0];
+				$Month = $YearMonth[1];
+				$stmt = $link->prepare("CALL AddHouseHoldCarPaymentMonth(?, ?, ?, ?, ?, ?)");
+				$stmt->bind_param("isssss", $opUserID, $ID, $Year, $Month, $remoteIP, $ModName);
+				$stmt->execute();
+			}
+		}
+		return $result;
+	}
+	// 新增住户缴费记录
+	function AddHouseHoldPayment($link, $opUserID, $HID, $Month, $Name, $TEL, $PMC, $PRSF, $TF, $CPId, $TicketTime, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL AddHouseHoldPayment(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @Result, @ID)");
+		$stmt->bind_param("issssssssss", $opUserID, $HID, $TicketTime, $CPId, $PMC, $PRSF, $TF, $Name, $TEL, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result, @ID');
+		$result = $res->fetch_assoc();
+		$ID = $result['@ID'];
+		if ($Month != null)
+		{
+			foreach ($Month as $Line)
+			{
+				$YearMonth = explode(".", $Line);
+				$Year = $YearMonth[0];
+				$Month = $YearMonth[1];
+				$stmt = $link->prepare("CALL AddHouseHoldPaymentMonth(?, ?, ?, ?, ?, ?)");
+				$stmt->bind_param("isssss", $opUserID, $ID, $Year, $Month, $remoteIP, $ModName);
+				$stmt->execute();
+			}
+		}
+		return $result;
+	}
+	// 新增商铺关联车辆的缴费记录
+	function AddShopCarPayment($link, $opUserID, $SID, $CarMonth, $Name, $TEL, $TicketTime, $CID, $CarCode, $CFee, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL AddShopCarPayment(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @Result, @ID)");
+		$stmt->bind_param("isssssssss", $opUserID, $SID, $TicketTime, $CID, $CFee, $CarCode, $Name, $TEL, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result, @ID');
+		$result = $res->fetch_assoc();
+		$ID = $result['@ID'];
+		if ($CarMonth != null)
+		{
+			foreach ($CarMonth as $Line)
+			{
+				$YearMonth = explode(".", $Line);
+				$Year = $YearMonth[0];
+				$Month = $YearMonth[1];
+				$stmt = $link->prepare("CALL AddShopCarPaymentMonth(?, ?, ?, ?, ?, ?)");
+				$stmt->bind_param("isssss", $opUserID, $ID, $Year, $Month, $remoteIP, $ModName);
+				$stmt->execute();
+			}
+		}
+		return $result;
+	}
+	// 新增商铺缴费记录
+	function AddShopPayment($link, $opUserID, $SID, $Month, $Name, $TEL, $PMC, $ELE, $TF, $CPId, $TicketTime, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL AddShopPayment(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @Result, @ID)");
+		$stmt->bind_param("issssssssss", $opUserID, $SID, $TicketTime, $CPId, $PMC, $ELE, $TF, $Name, $TEL, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result, @ID');
+		$result = $res->fetch_assoc();
+		$ID = $result['@ID'];
+		if ($Month != null)
+		{
+			foreach ($Month as $Line)
+			{
+				$YearMonth = explode(".", $Line);
+				$Year = $YearMonth[0];
+				$Month = $YearMonth[1];
+				$stmt = $link->prepare("CALL AddShopPaymentMonth(?, ?, ?, ?, ?, ?)");
+				$stmt->bind_param("isssss", $opUserID, $ID, $Year, $Month, $remoteIP, $ModName);
+				$stmt->execute();
+			}
+		}
+		return $result;
+	}
+	// 新增车辆缴费记录
+	function AddCarPayment($link, $opUserID, $CID, $Month, $Name, $TEL, $TicketTime, $CFee, $ModName)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL AddCarPayment(?, ?, ?, ?, ?, ?, ?, ?, @Result, @ID)");
+		$stmt->bind_param("isssssss", $opUserID, $TicketTime, $CID, $CFee, $Name, $TEL, $remoteIP, $ModName);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result, @ID');
+		$result = $res->fetch_assoc();
+		$ID = $result['@ID'];
+		if ($Month != null)
+		{
+			foreach ($Month as $Line)
+			{
+				$YearMonth = explode(".", $Line);
+				$Year = $YearMonth[0];
+				$Month = $YearMonth[1];
+				$stmt = $link->prepare("CALL AddCarPaymentMonth(?, ?, ?, ?, ?, ?)");
+				$stmt->bind_param("isssss", $opUserID, $ID, $Year, $Month, $remoteIP, $ModName);
+				$stmt->execute();
+			}
+		}
+		return $result;
+	}
 	// 设置用户账号的个人信息
 	function SetPersonalInfo($link, $opUserID, $targetUserID, $Name, $TEL, $UID, $ModName)
 	{
@@ -388,6 +508,36 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 检查指定住户指定月份是否已缴费
+	function IsHouseHoldPaidMonth($link, $HID, $Year, $Month)
+	{
+		$stmt = $link->prepare("CALL IsHouseHoldPaidMonth(?, ?, ?, @Result)");
+		$stmt->bind_param("sss", $HID, $Year, $Month);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 检查指定商铺指定月份是否已缴费
+	function IsShopPaidMonth($link, $SID, $Year, $Month)
+	{
+		$stmt = $link->prepare("CALL IsShopPaidMonth(?, ?, ?, @Result)");
+		$stmt->bind_param("sss", $SID, $Year, $Month);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 检查指定车辆指定月份是否已缴费
+	function IsCarPaidMonth($link, $CID, $Year, $Month)
+	{
+		$stmt = $link->prepare("CALL IsCarPaidMonth(?, ?, ?, @Result)");
+		$stmt->bind_param("sss", $CID, $Year, $Month);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取正式用户账号数量
 	function GetNormalUserCount($link, $UID, $TEL, $Name, $Type, $Online, $Area)
 	{
@@ -468,6 +618,16 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 获取住户预计缴费金额
+	function GetHouseHoldPay($link, $HID, $Count)
+	{
+		$stmt = $link->prepare("CALL GetHouseHoldPay(@PMC, @PRSF, @TF, ?, ?)");
+		$stmt->bind_param("ss", $HID, $Count);
+		$stmt->execute();
+		$res = $link->query('SELECT @PMC, @PRSF, @TF');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取住户一段时间的未缴费的交易数
 	function GetHouseHoldNotCount($link, $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square, $startDate, $endDate)
 	{
@@ -495,6 +655,16 @@
 		$stmt->bind_param("ssssss", $AreaID, $ShopName, $Name, $TEL, $startDate, $endDate);
 		$stmt->execute();
 		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取商铺预计缴费金额
+	function GetShopPay($link, $SID, $Count)
+	{
+		$stmt = $link->prepare("CALL GetShopPay(@PMC, @ELE, @TF, ?, ?)");
+		$stmt->bind_param("ss", $SID, $Count);
+		$stmt->execute();
+		$res = $link->query('SELECT @PMC, @ELE, @TF');
 		$result = $res->fetch_assoc();
 		return $result;
 	}

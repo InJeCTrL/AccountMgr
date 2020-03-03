@@ -14,12 +14,19 @@
 		$_SESSION['Type'] = $UserInfo['@strType'];
 		$_SESSION['Online'] = $UserInfo['@Online'];
 	}
-	DisConnect($conn);
 	// 未登录
 	if (!isset($_SESSION['Online']) || $_SESSION['Online'] == 0)
 	{	
 		exit();
 	}
+	// 不是管理员及以上，强制注销
+	if ($_SESSION['Type'] != '超级管理员' && $_SESSION['Type'] != '管理员')
+	{
+		SignOut($conn, $_SESSION['UserID'], $_SESSION['UserID'], '强制注销-低权限访问收费打票列表页');
+		unset($_SESSION['Online']);
+		exit();
+	}
+	DisConnect($conn);
 ?>
 <!DOCTYPE html>
 <html>
@@ -32,7 +39,7 @@
 		    	收费与账目
 		    </li>
 		    <li class="active">
-		    	筛选列表
+		    	票据录入筛选列表
 		    </li>
 		</ol>
 		<div class="tabbable" id="tabs">
@@ -276,7 +283,7 @@
 											'<td>' + obj_ret['Res'][i][3] + '</td>' + 
 											'<td>' + obj_ret['Res'][i][4] + '</td>' + 
 											'<td><div id=' + obj_ret['Res'][i][0] + " class='btn-group'>" + 
-											"<a href='#' class='btn btn-success charge_household'>收费打票</a>" + 
+											"<a href='#' class='btn btn-success charge_household'>录入票据</a>" + 
                     						"</div></td></tr>");
 				}
 				$('#HouseHoldCount').text(obj_ret['HouseHoldCount']);
@@ -295,11 +302,11 @@
 					SetHouseHoldListShow();
 				});
 			});
-			// 为每个住户收费打票按钮添加事件
+			// 为每个手工录入住户票据按钮添加事件
 			$('.charge_household').each(function(){
 				$(this).bind('click', function(){
 					var hid = $(this).parent().attr('id');
-					$('#mainview').load('./Payment/Pay_HouseHold.php?HID=' + hid);
+					$('#mainview').load('./Payment/AddHouseHoldPayment.php?HID=' + hid);
 				});
 			});
 		}
@@ -353,7 +360,7 @@
 											'<td>' + obj_ret['Res'][i][3] + '</td>' + 
 											'<td>' + obj_ret['Res'][i][4] + '</td>' + 
 											'<td><div id=' + obj_ret['Res'][i][0] + " class='btn-group'>" + 
-											"<a href='#' class='btn btn-success charge_household'>收费打票</a>" + 
+											"<a href='#' class='btn btn-success charge_shop'>录入票据</a>" + 
                     						"</div></td></tr>");
                	}
 				$('#ShopCount').text(obj_ret['ShopCount']);
@@ -372,11 +379,11 @@
 					SetShopListShow();
 				});
 			});
-			// 为每个商铺收费打票添加事件
+			// 为每个手工录入商铺票据添加事件
 			$('.charge_shop').each(function(){
 				$(this).bind('click', function(){
 					var sid = $(this).parent().attr('id');
-					$('#mainview').load('./Payment/Pay_Shop.php?SID=' + sid);
+					$('#mainview').load('./Payment/AddShopPayment.php?SID=' + sid);
 				});
 			});
 		}
@@ -413,7 +420,7 @@
 											'<td>' + obj_ret['Res'][i][3] + '</td>' + 
 											'<td>' + obj_ret['Res'][i][4] + '</td>' + 
 											'<td><div id=' + obj_ret['Res'][i][0] + " class='btn-group'>" + 
-											"<a href='#' class='btn btn-success charge_household'>收费打票</a>" + 
+											"<a href='#' class='btn btn-success charge_car'>录入票据</a>" + 
                     						"</div></td></tr>");
                	}
 				$('#CarCount').text(obj_ret['CarCount']);
@@ -432,11 +439,11 @@
 					SetCarListShow();
 				});
 			});
-			// 为每个仅车辆缴费添加事件
+			// 为每个手工录入车辆票据添加事件
 			$('.charge_car').each(function(){
 				$(this).bind('click', function(){
 					var cid = $(this).parent().attr('id');
-					$('#mainview').load('./Payment/Pay_Car.php?CID=' + cid);
+					$('#mainview').load('./Payment/AddCarPayment.php?CID=' + cid);
 				});
 			});
 		}

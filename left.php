@@ -69,9 +69,8 @@
 		        </a>
 		        <ul id="systemSetting3" class="nav nav-list collapse secondmenu" style="height: 0px;">
 		            <li><a id="AccountList" href="#"><i class="glyphicon glyphicon-calendar"></i>账目清单</a></li>
-		            <li><a id="Charge" href="#"><i class="glyphicon glyphicon-print"></i>收费打票</a></li>
-		            <li><a href="#"><i class="glyphicon glyphicon-tags"></i>缴费月份</a></li>
-		            <li><a href="#"><i class="glyphicon glyphicon-plus"></i>历史票据导入</a></li>
+		            <li><a id="ImportTicket" href="#"><i class="glyphicon glyphicon-plus"></i>票据录入</a></li>
+		            <li><a id="PaymentMonth" href="#"><i class="glyphicon glyphicon-tags"></i>缴费月份</a></li>
 		        </ul>
 		    </li>
 		    <?php
@@ -147,9 +146,13 @@
 		$('#AccountList').bind('click', function(){
 			$('#mainview').load('./Payment/index.php');
 		});
-		// 单击收费打票
-		$('#Charge').bind('click', function(){
-			$('#mainview').load('./Payment/Charge.php');
+		// 单击票据录入
+		$('#ImportTicket').bind('click', function(){
+			$('#mainview').load('./Payment/ImportTicket.php');
+		});
+		// 单击缴费月份
+		$('#PaymentMonth').bind('click', function(){
+			$('#mainview').load('./Payment/PaymentMonth.php');
 		});
 	</script>
 </html>
