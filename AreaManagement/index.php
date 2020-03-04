@@ -70,7 +70,7 @@
 	</body>
 	<script>
 		var obj_ret = null;
-		// 设置最近六个月各楼盘未缴费交易数
+		// 设置最近六个月各楼盘未缴费个体数
 		function SetMonthNotShow()
 		{
 			var dom_MonthNot = document.getElementById("EachMonthNot");
@@ -80,8 +80,8 @@
 			setTimeout(function () {
 			    option_MonthNot = {
 			    	title : {
-				        text: '最近六个月各楼盘未缴费交易数',
-				        subtext: '未缴费教育数(住户+商铺)及占比',
+				        text: '最近六个月各楼盘未缴费个体数',
+				        subtext: '未缴费个体数(住户+商铺)及占比',
 				        x:'left'
 				    },
 			        legend: {},

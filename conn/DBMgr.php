@@ -588,6 +588,36 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 获取商铺缴费月份数量
+	function GetShopCountByPaymentMonth($link, $UserID, $AreaID, $ShopName, $Name, $TEL, $Year, $Month, $ShowPaid)
+	{
+		$stmt = $link->prepare("CALL GetShopCountByPaymentMonth(@Result, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssssssss", $UserID, $AreaID, $ShopName, $Name, $TEL, $Year, $Month, $ShowPaid);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取车辆缴费月份数量
+	function GetCarCountByPaymentMonth($link, $UserID, $AreaID, $CarCode, $Name, $TEL, $Year, $Month, $ShowPaid)
+	{
+		$stmt = $link->prepare("CALL GetCarCountByPaymentMonth(@Result, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssssssss", $UserID, $AreaID, $CarCode, $Name, $TEL, $Year, $Month, $ShowPaid);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
+	// 获取住户缴费月份数量
+	function GetHouseHoldCountByPaymentMonth($link, $UserID, $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square, $Year, $Month, $ShowPaid)
+	{
+		$stmt = $link->prepare("CALL GetHouseHoldCountByPaymentMonth(@Result, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssssssssss", $UserID, $AreaID, $BuildingID, $RoomCode, $Name, $TEL, $square, $Year, $Month, $ShowPaid);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取商铺数量
 	function GetShopCount($link, $UserID, $AreaID, $ShopName, $Name, $TEL)
 	{
@@ -694,16 +724,20 @@
 		$stmt = $link->prepare("CALL GetUserList(?, ?, ?, ?, ?, ?, ?)");
 		$stmt->bind_param("issssss", $Offset, $UID, $TEL, $Name, $Type, $Online, $Area);
 		$stmt->execute();
-		$stmt->bind_result($R1, $R2, $R3, $R4, $R5, $R6);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1, $R2, $R3, $R4, $R5, $R6];
-			$i++;
+			$stmt->bind_result($R1, $R2, $R3, $R4, $R5, $R6);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2, $R3, $R4, $R5, $R6];
+				$i++;
+			}
 		}
 		return $Result;
 	}
@@ -713,16 +747,20 @@
 		$stmt = $link->prepare("CALL GetRegList(?, ?, ?, ?)");
 		$stmt->bind_param("isss", $Offset, $UID, $TEL, $Name);
 		$stmt->execute();
-		$stmt->bind_result($R1, $R2, $R3, $R4);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1, $R2, $R3, $R4];
-			$i++;
+			$stmt->bind_result($R1, $R2, $R3, $R4);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2, $R3, $R4];
+				$i++;
+			}
 		}
 		return $Result;
 	}
@@ -732,16 +770,20 @@
 		$stmt = $link->prepare("CALL GetLogList(?, ?, ?, ?, ?, ?, ?, ?)");
 		$stmt->bind_param("isssssss", $Offset, $Time, $IP, $OpName, $UID, $ModName, $tblName, $Action);
 		$stmt->execute();
-		$stmt->bind_result($R1, $R2, $R3, $R4, $R5, $R6, $R7, $R8, $R9);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1, $R2, $R3, $R4, $R5, $R6, $R7, $R8, $R9];
-			$i++;
+			$stmt->bind_result($R1, $R2, $R3, $R4, $R5, $R6, $R7, $R8, $R9);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2, $R3, $R4, $R5, $R6, $R7, $R8, $R9];
+				$i++;
+			}
 		}
 		return $Result;
 	}
@@ -750,16 +792,20 @@
 	{
 		$stmt = $link->prepare("CALL GetUserTypeList()");
 		$stmt->execute();
-		$stmt->bind_result($R1, $R2);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1, $R2];
-			$i++;
+			$stmt->bind_result($R1, $R2);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2];
+				$i++;
+			}
 		}
 		return $Result;
 	}
@@ -768,16 +814,20 @@
 	{
 		$stmt = $link->prepare("CALL GetModNameList()");
 		$stmt->execute();
-		$stmt->bind_result($R1);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1];
-			$i++;
+			$stmt->bind_result($R1);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1];
+				$i++;
+			}
 		}
 		return $Result;
 	}
@@ -786,16 +836,20 @@
 	{
 		$stmt = $link->prepare("CALL GetTblList()");
 		$stmt->execute();
-		$stmt->bind_result($R1, $R2, $R3, $R4);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1, $R2, $R3, $R4];
-			$i++;
+			$stmt->bind_result($R1, $R2, $R3, $R4);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2, $R3, $R4];
+				$i++;
+			}
 		}
 		return $Result;
 	}
@@ -805,16 +859,20 @@
 		$stmt = $link->prepare("CALL GetAreaList(?, ?, ?)");
 		$stmt->bind_param("iis", $Offset, $Num, $Name);
 		$stmt->execute();
-		$stmt->bind_result($R1, $R2);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1, $R2];
-			$i++;
+			$stmt->bind_result($R1, $R2);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2];
+				$i++;
+			}
 		}
 		return $Result;
 	}
@@ -824,16 +882,20 @@
 		$stmt = $link->prepare("CALL GetBuildingList(?, ?, ?, ?, ?)");
 		$stmt->bind_param("iisss", $Offset, $Num, $UserID, $AID, $BNo);
 		$stmt->execute();
-		$stmt->bind_result($R1, $R2, $R3);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1, $R2, $R3];
-			$i++;
+			$stmt->bind_result($R1, $R2, $R3);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2, $R3];
+				$i++;
+			}
 		}
 		return $Result;
 	}
@@ -843,16 +905,89 @@
 		$stmt = $link->prepare("CALL GetHouseHoldList(?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		$stmt->bind_param("iisssssss", $Offset, $Num, $UserID, $AID, $BID, $RoomCode, $Name, $TEL, $square);
 		$stmt->execute();
-		$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1, $R2, $R3, $R4, $R5];
-			$i++;
+			$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2, $R3, $R4, $R5];
+				$i++;
+			}
+		}
+		return $Result;
+	}
+	// 获取住户缴费月份列表
+	function GetHouseHoldListByPaymentMonth($link, $Offset = 0, $Num = 0, $UserID, $AID, $BID, $RoomCode, $Name, $TEL, $square, $Year, $Month, $ShowPaid)
+	{
+		$stmt = $link->prepare("CALL GetHouseHoldListByPaymentMonth(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("iissssssssss", $Offset, $Num, $UserID, $AID, $BID, $RoomCode, $Name, $TEL, $square, $Year, $Month, $ShowPaid);
+		$stmt->execute();
+		$stmt->store_result();
+		// 待返回的数据集合
+		$Result = [];
+		if ($stmt->num_rows != 0)
+		{
+			$stmt->bind_result($R1, $R2, $R3, $R4, $R5, $R6, $R7);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2, $R3, $R4, $R5, $R6, $R7];
+				$i++;
+			}
+		}
+		return $Result;
+	}
+	// 获取商铺缴费月份列表
+	function GetShopListByPaymentMonth($link, $Offset = 0, $Num = 0, $UserID, $AID, $ShopName, $Name, $TEL, $Year, $Month, $ShowPaid)
+	{
+		$stmt = $link->prepare("CALL GetShopListByPaymentMonth(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("iissssssss", $Offset, $Num, $UserID, $AID, $ShopName, $Name, $TEL, $Year, $Month, $ShowPaid);
+		$stmt->execute();
+		$stmt->store_result();
+		// 待返回的数据集合
+		$Result = [];
+		if ($stmt->num_rows != 0)
+		{
+			$stmt->bind_result($R1, $R2, $R3, $R4, $R5, $R6);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2, $R3, $R4, $R5, $R6];
+				$i++;
+			}
+		}
+		return $Result;
+	}
+	// 获取车辆缴费月份列表
+	function GetCarListByPaymentMonth($link, $Offset = 0, $Num = 0, $UserID, $AID, $CarCode, $Name, $TEL, $Year, $Month, $ShowPaid)
+	{
+		$stmt = $link->prepare("CALL GetCarListByPaymentMonth(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("iissssssss", $Offset, $Num, $UserID, $AID, $CarCode, $Name, $TEL, $Year, $Month, $ShowPaid);
+		$stmt->execute();
+		$stmt->store_result();
+		// 待返回的数据集合
+		$Result = [];
+		if ($stmt->num_rows != 0)
+		{
+			$stmt->bind_result($R1, $R2, $R3, $R4, $R5, $R6);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2, $R3, $R4, $R5, $R6];
+				$i++;
+			}
 		}
 		return $Result;
 	}
@@ -862,16 +997,20 @@
 		$stmt = $link->prepare("CALL GetShopList(?, ?, ?, ?, ?, ?, ?)");
 		$stmt->bind_param("iisssss", $Offset, $Num, $UserID, $AID, $ShopName, $Name, $TEL);
 		$stmt->execute();
-		$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1, $R2, $R3, $R4, $R5];
-			$i++;
+			$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2, $R3, $R4, $R5];
+				$i++;
+			}
 		}
 		return $Result;
 	}
@@ -881,16 +1020,20 @@
 		$stmt = $link->prepare("CALL GetCarList(?, ?, ?, ?, ?, ?, ?)");
 		$stmt->bind_param("iisssss", $Offset, $Num, $UserID, $AID, $CarCode, $Name, $TEL);
 		$stmt->execute();
-		$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1, $R2, $R3, $R4, $R5];
-			$i++;
+			$stmt->bind_result($R1, $R2, $R3, $R4, $R5);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2, $R3, $R4, $R5];
+				$i++;
+			}
 		}
 		return $Result;
 	}
@@ -900,16 +1043,43 @@
 		$stmt = $link->prepare("CALL GetUserAreaList(?)");
 		$stmt->bind_param("i", $UserID);
 		$stmt->execute();
-		$stmt->bind_result($R1, $R2);
-		// 数据行下标
-		$i = 0;
+		$stmt->store_result();
 		// 待返回的数据集合
 		$Result = [];
-		// 循环获取数据
-		while ($res = $stmt->fetch())
+		if ($stmt->num_rows != 0)
 		{
-			$Result[$i] = [$R1, $R2];
-			$i++;
+			$stmt->bind_result($R1, $R2);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2];
+				$i++;
+			}
+		}
+		return $Result;
+	}
+	// 获取用户可管理缴费月份列表
+	function GetYearMonth($link, $UserID, $target)
+	{
+		$stmt = $link->prepare("CALL GetYearMonth(?, ?)");
+		$stmt->bind_param("ii", $UserID, $target);
+		$stmt->execute();
+		$stmt->store_result();
+		// 待返回的数据集合
+		$Result = [];
+		if ($stmt->num_rows != 0)
+		{
+			$stmt->bind_result($R1, $R2);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1, $R2];
+				$i++;
+			}
 		}
 		return $Result;
 	}
