@@ -108,6 +108,17 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 删除账目
+	function DeletePayment($link, $opUserID, $PID, $Type, $Cascade)
+	{
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$stmt = $link->prepare("CALL DeletePayment(?, ?, ?, ?, ?, @Result)");
+		$stmt->bind_param("sssss", $opUserID, $PID, $Type, $Cascade, $remoteIP);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 修改用户账户密码
 	function SetUserPassword($link, $opUserID, $targetUserID, $Password, $ModName)
 	{
@@ -718,6 +729,16 @@
 		$result = $res->fetch_assoc();
 		return $result;
 	}
+	// 获取账目数量
+	function GetAccountCount($link, $UserID, $Year, $Month, $Day, $Type, $Name, $Tel, $AID, $AddTarget)
+	{
+		$stmt = $link->prepare("CALL GetAccountCount(@Result, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("sssssssss", $UserID, $Year, $Month, $Day, $Type, $Name, $Tel, $AID, $AddTarget);
+		$stmt->execute();
+		$res = $link->query('SELECT @Result');
+		$result = $res->fetch_assoc();
+		return $result;
+	}
 	// 获取正式用户账号列表
 	function GetUserList($link, $Offset, $UID, $TEL, $Name, $Type, $Online, $Area)
 	{
@@ -1037,6 +1058,41 @@
 		}
 		return $Result;
 	}
+	// 获取账目清单列表
+	function GetAccountList($link, $Offset = 0, $Num = 0, $UserID, $Year, $Month, $Day, $Type, $Name, $Tel, $AID, $AddTarget)
+	{
+		// 待返回的数据集合
+		$Result = [];
+		// 获取所有类型
+		if ($Type === '')
+		{
+			for ($i = 0; $i < 5; $i++)
+			{
+				$Result = array_merge($Result, GetAccountList($link, 0, 0, $UserID, $Year, $Month, $Day, $i, $Name, $Tel, $AID, $AddTarget));
+			}
+			$Result = array_slice($Result, $Offset, $Num);
+		}
+		else
+		{
+			$stmt = $link->prepare("CALL GetAccountList(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			$stmt->bind_param("iisssssssss", $Offset, $Num, $UserID, $Year, $Month, $Day, $Type, $Name, $Tel, $AID, $AddTarget);
+			$stmt->execute();
+			$stmt->store_result();
+			if ($stmt->num_rows != 0)
+			{
+				$stmt->bind_result($R1, $R2, $R3, $R4, $R5, $R6, $R7);
+				// 数据行下标
+				$i = 0;
+				// 循环获取数据
+				while ($res = $stmt->fetch())
+				{
+					$Result[$i] = [$R1, $R2, $R3, $R4, $R5, $R6, $R7];
+					$i++;
+				}
+			}
+		}
+		return $Result;
+	}
 	// 获取用户所属管辖范围(楼盘)列表
 	function GetUserAreaList($link, $UserID)
 	{
@@ -1055,6 +1111,29 @@
 			while ($res = $stmt->fetch())
 			{
 				$Result[$i] = [$R1, $R2];
+				$i++;
+			}
+		}
+		return $Result;
+	}
+	// 获取用户所属账目年份列表
+	function GetUserAccountYearList($link, $UserID)
+	{
+		$stmt = $link->prepare("CALL GetUserAccountYearList(?)");
+		$stmt->bind_param("i", $UserID);
+		$stmt->execute();
+		$stmt->store_result();
+		// 待返回的数据集合
+		$Result = [];
+		if ($stmt->num_rows != 0)
+		{
+			$stmt->bind_result($R1);
+			// 数据行下标
+			$i = 0;
+			// 循环获取数据
+			while ($res = $stmt->fetch())
+			{
+				$Result[$i] = [$R1];
 				$i++;
 			}
 		}

@@ -268,6 +268,7 @@
     	function SetCarCode()
     	{
     		var CarSearchTxt = $('#CarSearch').val();
+    		var aid = $('#AreaID').val();
     		if (CarSearchTxt != '')
     		{
 	    		var ret = $.ajax
@@ -275,7 +276,7 @@
 					{
 		        		url : './Payment/GetCarList.php',
 		         		type : "post",
-		         		data : {CarCode:CarSearchTxt},
+		         		data : {CarCode:CarSearchTxt, AID:aid},
 		        		async : false,
 	    			}
 	    		).responseText;

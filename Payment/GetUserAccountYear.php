@@ -1,5 +1,5 @@
 <?php
-	// 以json方式返回车辆列表
+	// 以json方式返回账目年份列表
 	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
@@ -13,35 +13,16 @@
 		$_SESSION['Type'] = $UserInfo['@strType'];
 		$_SESSION['Online'] = $UserInfo['@Online'];
 	}
-	// 已登录，获取车辆列表
+	// 已登录，获取用户身份列表
 	if (isset($_SESSION['Online']) && $_SESSION['Online'] == 1)
 	{
-		// 车牌号
-		if (isset($_REQUEST['CarCode']) && $_REQUEST['CarCode'] != '')
+		// 获取当前用户所属账目年份列表
+		$Res = GetUserAccountYearList($conn, $_SESSION['UserID']);
+		$ret = "";
+		for ($i = 0; $i < count($Res); $i++)
 		{
-			$CarCode = $_REQUEST['CarCode'];
-		}
-		else
-		{
-			exit();
-		}
-		// 楼盘ID
-		if (isset($_REQUEST['AID']))
-		{
-			$AID = $_REQUEST['AID'];
-		}
-		else
-		{
-			exit();
-		}
-		// 获取当前车辆列表
-		$Res = GetCarList($conn, 0, 0, $_SESSION['UserID'], $AID, $CarCode, "", "");
-		$ret['List'] = "";
-		$ret['Num'] = count($Res);
-		for ($i = 0; $i < $ret['Num']; $i++)
-		{
-			$ret['List'] .= 
-			"<option value = '" . $Res[$i][0] . "'>" . $Res[$i][2] . "</option>";
+			$ret .= 
+			"<option value = '" . $Res[$i][0] . "'>" . $Res[$i][0] . "年</option>";
 		}
         echo json_encode($ret);
 	}

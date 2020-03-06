@@ -97,9 +97,9 @@
 			$ret['MonthGetSource'][$i_line + 1][0] = $UserArea[$i_line][1];
 			for ($i_col = 0; $i_col < 6; $i_col++)
 			{
-				$ret['MonthGetSource'][$i_line + 1][$i_col + 1] = (double)(GetHouseHoldSumFee($conn, $UserArea[$i_line][0], '', '', '', '', '', $MonthList[$i_line] . '-01', date('Y-m-d', strtotime("+1months", strtotime($MonthList[$i_line]))))['@Result']) + 
-																	(double)(GetShopSumFee($conn, $UserArea[$i_line][0], '', '', '', $MonthList[$i_line] . '-01', date('Y-m-d', strtotime("+1months", strtotime($MonthList[$i_line]))))['@Result']) + 
-																	(double)(GetCarSumFee($conn, $UserArea[$i_line][0], '', '', '', $MonthList[$i_line] . '-01', date('Y-m-d', strtotime("+1months", strtotime($MonthList[$i_line]))))['@Result']);
+				$ret['MonthGetSource'][$i_line + 1][$i_col + 1] = (double)(GetHouseHoldSumFee($conn, $UserArea[$i_line][0], '', '', '', '', '', $MonthList[$i_col] . '-01', date('Y-m-d', strtotime("+1months", strtotime($MonthList[$i_col]))))['@Result']) + 
+																	(double)(GetShopSumFee($conn, $UserArea[$i_line][0], '', '', '', $MonthList[$i_col] . '-01', date('Y-m-d', strtotime("+1months", strtotime($MonthList[$i_col]))))['@Result']) + 
+																	(double)(GetCarSumFee($conn, $UserArea[$i_line][0], '', '', '', $MonthList[$i_col] . '-01', date('Y-m-d', strtotime("+1months", strtotime($MonthList[$i_col]))))['@Result']);
 			}
 		}
 		// 最近六个月各楼盘收费金额列表(线)
@@ -132,8 +132,8 @@
 			$ret['MonthNotSource'][$i_line + 1][0] = $UserArea[$i_line][1];
 			for ($i_col = 0; $i_col < 6; $i_col++)
 			{
-				$ret['MonthNotSource'][$i_line + 1][$i_col + 1] = (int)(GetHouseHoldNotCount($conn, $UserArea[$i_line][0], '', '', '', '', '', $MonthList[$i_line] . '-01', date('Y-m-d', strtotime("+1months", strtotime($MonthList[$i_line]))))['@Result']) + 
-																	(int)(GetShopNotCount($conn, $UserArea[$i_line][0], '', '', '', $MonthList[$i_line] . '-01', date('Y-m-d', strtotime("+1months", strtotime($MonthList[$i_line]))))['@Result']);
+				$ret['MonthNotSource'][$i_line + 1][$i_col + 1] = (int)(GetHouseHoldNotCount($conn, $UserArea[$i_line][0], '', '', '', '', '', $MonthList[$i_col] . '-01', date('Y-m-d', strtotime("+1months", strtotime($MonthList[$i_col]))))['@Result']) + 
+																	(int)(GetShopNotCount($conn, $UserArea[$i_line][0], '', '', '', $MonthList[$i_col] . '-01', date('Y-m-d', strtotime("+1months", strtotime($MonthList[$i_col]))))['@Result']);
 			}
 		}
 		// 最近六个月各楼盘未缴费交易数量列表(线)
