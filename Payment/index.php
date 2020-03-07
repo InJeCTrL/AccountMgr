@@ -116,8 +116,11 @@
             </div>
         </div>
         <div class="row">
-			<div class="form-group col-lg-12">
+			<div class="form-group col-lg-6">
         		<button id="doquery" class="btn btn-success btn-block">查询</button>
+        	</div>
+        	<div class="form-group col-lg-6">
+        		<button id="doexport" class="btn btn-primary btn-block">导出查询内容到CSV</button>
         	</div>
         </div>
 		<div class="table-responsive">
@@ -181,6 +184,26 @@
 			{
 				window.location.reload();
 			}
+		}
+		// 导出搜索结果到CSV文件
+		function ExportCSV()
+		{
+			var _form = $("<form></form>",{
+						'id':'tempForm',
+						'method':'post',
+						'action':'./Payment/ExportAccountList.php',
+						'style':'display:none'
+						}).appendTo($("body"));
+			_form.append($("<input>",{'type':'hidden','name':'year','value':search_Year}));
+			_form.append($("<input>",{'type':'hidden','name':'month','value':search_Month}));
+			_form.append($("<input>",{'type':'hidden','name':'day','value':search_Day}));
+			_form.append($("<input>",{'type':'hidden','name':'type','value':search_Type}));
+			_form.append($("<input>",{'type':'hidden','name':'name','value':search_Name}));
+			_form.append($("<input>",{'type':'hidden','name':'tel','value':search_TEL}));
+			_form.append($("<input>",{'type':'hidden','name':'aid','value':search_AreaID}));
+			_form.append($("<input>",{'type':'hidden','name':'addtarget','value':search_AddTarget}));
+			_form.trigger("submit");
+			_form.remove();
 		}
 		// 获取账目清单列表并显示
 		function SetAccountListShow()
@@ -284,6 +307,10 @@
 			search_AreaID = $('#AreaID').val();
 			search_AddTarget = $('#AddTarget').val();
 			SetAccountListShow();
+		});
+		// 账目清单列表导出
+		$('#doexport').bind('click', function(){
+			ExportCSV();
 		});
 		$(document).ready(function(){
 			var ret_arealist = $.ajax

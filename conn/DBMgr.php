@@ -1070,7 +1070,10 @@
 			{
 				$Result = array_merge($Result, GetAccountList($link, 0, 0, $UserID, $Year, $Month, $Day, $i, $Name, $Tel, $AID, $AddTarget));
 			}
-			$Result = array_slice($Result, $Offset, $Num);
+			if ($Num != 0)
+			{
+				$Result = array_slice($Result, $Offset, $Num);
+			}
 		}
 		else
 		{

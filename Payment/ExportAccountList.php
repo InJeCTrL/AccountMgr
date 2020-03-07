@@ -1,5 +1,5 @@
 <?php
-	// 以json方式返回翻页列表与账目清单列表
+	// 导出账目清单列表到CSV
 	session_start();
 	include_once('../conn/DBMgr.php');
 	$conn = Connect();
@@ -13,18 +13,9 @@
 		$_SESSION['Type'] = $UserInfo['@strType'];
 		$_SESSION['Online'] = $UserInfo['@Online'];
 	}
-	// 已登录，获取翻页列表与账目清单列表
+	// 已登录，获取账目清单列表
 	if (isset($_SESSION['Online']) && $_SESSION['Online'] == 1)
 	{
-		// 页码
-		if (isset($_REQUEST['Page']) && $_REQUEST['Page'] != '')
-		{
-			$Page = $_REQUEST['Page'];
-		}
-		else
-		{
-			exit();
-		}
 		// 缴费年份
 		if (isset($_REQUEST['year']))
 		{
@@ -115,75 +106,42 @@
 		}
 		$ret = [];
 		// 获取账目清单列表
-		$row_AccountCount = GetAccountCount($conn, $_SESSION['UserID'], $Year, $Month, $Day, $Type, $Name, $Tel, $AID, $AddTarget);
-		// 结果总数
-		$AccountCount = (int)($row_AccountCount['@Result']);
-		$ret['AccountCount'] = $AccountCount;
-		// 总页数
-		$PageNum = max(ceil($AccountCount / 10), 1);
-		// 返回首页
-		if ($Page === '«')
-		{
-			$Page = 1;
-		}
-		// 转到尾页
-		else if ($Page === '»')
-		{
-			$Page = $PageNum;
-		}
-		else if ($Page <= 0)
-		{
-			$Page = 1;
-		}
-		else if ($Page > $PageNum)
-		{
-			$Page = $PageNum;
-		}
-		else
-		{
-			$Page = 1;
-		}
-		$Page = (int)$Page;
-		// 页码为自然数
-		$Offset = ($Page - 1) * 10;
-		// 获取账目清单列表
-		$Res = GetAccountList($conn, $Offset, 0, $_SESSION['UserID'], $Year, $Month, $Day, $Type, $Name, $Tel, $AID, $AddTarget);
-		$ret['Res'] = "";
+		$Res = GetAccountList($conn, 0, 0, $_SESSION['UserID'], $Year, $Month, $Day, $Type, $Name, $Tel, $AID, $AddTarget);
+		ob_clean();
+		header("Content-Type: application/force-download");
+		header("Content-type:text/csv;charset=gb2312");
+		header("Content-Disposition:filename=账目清单.csv");
+		echo iconv("utf-8", "gb2312", "\"缴费时间\",\"缴费类型\",\"缴费人姓名\",\"缴费人电话号码\",\"缴费目标\",\"缴费内容\"\r");
+		ob_end_flush();
 		for ($i = 0; $i < count($Res); $i++)
 		{
-			$ret['Res'][$i] = [$Res[$i][0], $Res[$i][1], $Res[$i][2], $Res[$i][3], $Res[$i][4], $Res[$i][5], $Res[$i][6]];
-		}
-		$ret['PageLimit'] = "
-			<li><a href='#'>&laquo;</a>
-	    	</li>";
-		// 跳转到首页之后插入省略号
-		if ($Page - 3 > 1)
-		{
-			$ret['PageLimit'] .= "
-				<li><a href='#'>...</a>
-	    		</li>";
-		}
-		for ($i = $Page - 3; $i <= $Page + 3; $i++)
-		{
-			// 页码在总页面范围
-			if ($i >= 1 && $i <= $PageNum)
+			
+			switch ($Res[$i][2])
 			{
-				$ret['PageLimit'] .= "
-					<li " . ($i === $Page ? "class='active'" : "") . "><a href='#'>" . $i . "</a>
-		    		</li>";
+				case '0':case 0:
+					$Type = '住户';
+					break;
+				case '1':case 1:
+					$Type = '住户-车辆混合';
+					break;
+				case '2':case 2:
+					$Type = '商铺';
+					break;
+				case '3':case 3:
+					$Type = '商铺-车辆混合';
+					break;
+				case '4':case 4:
+					$Type = '单独收费车辆';
+					break;
 			}
+			echo '"' . iconv("utf-8", "gb2312", str_replace('"', '""', $Res[$i][1])) . '",' . 
+				'"' . iconv("utf-8", "gb2312", str_replace('"', '""', $Type)) . '",' . 
+				'"' . iconv("utf-8", "gb2312", str_replace('"', '""', $Res[$i][3])) . '",' . 
+				'"' . iconv("utf-8", "gb2312", str_replace('"', '""', $Res[$i][4])) . '",' . 
+				'"' . iconv("utf-8", "gb2312", str_replace('"', '""', $Res[$i][5])) . '",' . 
+				'"' . iconv("utf-8", "gb2312", str_replace('"', '""', $Res[$i][6])) . '"' . "\r";
+			flush();
 		}
-		// 跳转到尾页之前插入省略号
-		if ($i - 1 < $PageNum)
-		{
-			$ret['PageLimit'] .= "
-				<li><a href='#'>...</a>
-	    		</li>";
-		}
-	    $ret['PageLimit'] .= "
-		    <li><a href='#'>&raquo;</a>
-		    </li>";
-        echo json_encode($ret);
 	}
 	// 未登录
 	else

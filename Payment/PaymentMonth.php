@@ -118,8 +118,11 @@
 			            </div>
 			        </div>
 			        <div class="row">
-						<div class="form-group col-lg-12">
+						<div class="form-group col-lg-6">
 			        		<button id="doquery_household" class="btn btn-success btn-block">查询</button>
+			        	</div>
+			        	<div class="form-group col-lg-6">
+			        		<button id="doexport_household" class="btn btn-primary btn-block">导出查询内容到CSV</button>
 			        	</div>
 			        </div>
 					<div class="table-responsive">
@@ -195,8 +198,11 @@
 			            </div>
 			        </div>
 			        <div class="row">
-						<div class="form-group col-lg-12">
+						<div class="form-group col-lg-6">
 			        		<button id="doquery_shop" class="btn btn-success btn-block">查询</button>
+			        	</div>
+			        	<div class="form-group col-lg-6">
+			        		<button id="doexport_shop" class="btn btn-primary btn-block">导出查询内容到CSV</button>
 			        	</div>
 			        </div>
 					<div class="table-responsive">
@@ -271,19 +277,22 @@
 			            </div>
 			        </div>
 			        <div class="row">
-						<div class="form-group col-lg-12">
+						<div class="form-group col-lg-6">
 			        		<button id="doquery_car" class="btn btn-success btn-block">查询</button>
+			        	</div>
+			        	<div class="form-group col-lg-6">
+			        		<button id="doexport_car" class="btn btn-primary btn-block">导出查询内容到CSV</button>
 			        	</div>
 			        </div>
 					<div class="table-responsive">
 					    <table class="table table-striped ">
 					        <thead>
 					            <tr>
+					                <th class="col-lg-2">时间</th>
 					                <th class="col-lg-2">楼盘名称</th>
-					                <th class="col-lg-2">车牌号</th>
-					                <th class="col-lg-3">车主姓名</th>
-					                <th class="col-lg-2">电话号码</th>
-					                <th class="col-lg-3">操作</th>
+					                <th class="col-lg-3">车牌号</th>
+					                <th class="col-lg-2">车主姓名</th>
+					                <th class="col-lg-3">电话号码</th>
 					            </tr>
 					        </thead>
 					        <tbody id="carlist" name="carlist">
@@ -352,6 +361,62 @@
 					SetHouseHoldListShow();
 				});
 			});
+		}
+		// 导出住户搜索结果到CSV文件
+		function ExportHouseHoldCSV(type)
+		{
+			var _form = $("<form></form>",{
+						'id':'tempForm',
+						'method':'post',
+						'action':'./Payment/ExportHouseHoldPMList.php',
+						'style':'display:none'
+						}).appendTo($("body"));
+			_form.append($("<input>",{'type':'hidden','name':'aid','value':search_AreaID_household}));
+			_form.append($("<input>",{'type':'hidden','name':'bid','value':search_BuildingID}));
+			_form.append($("<input>",{'type':'hidden','name':'roomcode','value':search_RoomCode}));
+			_form.append($("<input>",{'type':'hidden','name':'name','value':search_Name_household}));
+			_form.append($("<input>",{'type':'hidden','name':'tel','value':search_TEL_household}));
+			_form.append($("<input>",{'type':'hidden','name':'square','value':search_square}));
+			_form.append($("<input>",{'type':'hidden','name':'YearMonth','value':search_YearMonth_household}));
+			_form.append($("<input>",{'type':'hidden','name':'ShowPaid','value':search_ShowPaid_household}));
+			_form.trigger("submit");
+			_form.remove();
+		}
+		// 导出商铺搜索结果到CSV文件
+		function ExportShopCSV(type)
+		{
+			var _form = $("<form></form>",{
+						'id':'tempForm',
+						'method':'post',
+						'action':'./Payment/ExportShopPMList.php',
+						'style':'display:none'
+						}).appendTo($("body"));
+			_form.append($("<input>",{'type':'hidden','name':'aid','value':search_AreaID_shop}));
+			_form.append($("<input>",{'type':'hidden','name':'shopname','value':search_ShopName}));
+			_form.append($("<input>",{'type':'hidden','name':'name','value':search_Name_shop}));
+			_form.append($("<input>",{'type':'hidden','name':'tel','value':search_TEL_shop}));
+			_form.append($("<input>",{'type':'hidden','name':'YearMonth','value':search_YearMonth_shop}));
+			_form.append($("<input>",{'type':'hidden','name':'ShowPaid','value':search_ShowPaid_shop}));
+			_form.trigger("submit");
+			_form.remove();
+		}
+		// 导出车辆搜索结果到CSV文件
+		function ExportCarCSV(type)
+		{
+			var _form = $("<form></form>",{
+						'id':'tempForm',
+						'method':'post',
+						'action':'./Payment/ExportCarPMList.php',
+						'style':'display:none'
+						}).appendTo($("body"));
+			_form.append($("<input>",{'type':'hidden','name':'aid','value':search_AreaID_car}));
+			_form.append($("<input>",{'type':'hidden','name':'carcode','value':search_CarCode}));
+			_form.append($("<input>",{'type':'hidden','name':'name','value':search_Name_car}));
+			_form.append($("<input>",{'type':'hidden','name':'tel','value':search_TEL_car}));
+			_form.append($("<input>",{'type':'hidden','name':'YearMonth','value':search_YearMonth_car}));
+			_form.append($("<input>",{'type':'hidden','name':'ShowPaid','value':search_ShowPaid_car}));
+			_form.trigger("submit");
+			_form.remove();
 		}
 		// 住户列表查询按钮
 		$('#doquery_household').bind('click', function(){
@@ -486,6 +551,18 @@
 			search_YearMonth_car = $('#YearMonth_car').val();
 			search_ShowPaid_car = $('#ShowMode_car').val();
 			SetCarListShow();
+		});
+		// 住户缴费月份列表导出
+		$('#doexport_household').bind('click', function(){
+			ExportHouseHoldCSV(0);
+		});
+		// 商铺缴费月份列表导出
+		$('#doexport_shop').bind('click', function(){
+			ExportShopCSV(1);
+		});
+		// 车辆缴费月份列表导出
+		$('#doexport_car').bind('click', function(){
+			ExportCarCSV(2);
 		});
 		$(document).ready(function(){
 			var ret_arealist = $.ajax
