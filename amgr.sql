@@ -869,7 +869,7 @@ END$$
 
 DROP PROCEDURE IF EXISTS `GetHouseHoldPay`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `GetHouseHoldPay` (OUT `PMC` DOUBLE, OUT `PRSF` DOUBLE, OUT `TF` DOUBLE, IN `_HID` VARCHAR(30) CHARSET utf8, IN `_Count` INT)  BEGIN
-SELECT building.PMCU * _Count, building.PRSF, building.TF INTO PMC,PRSF,TF FROM household,building WHERE building.ID = household.BuildingID AND household.ID = _HID;
+SELECT building.PMCU * _Count * household.Square, building.PRSF * _Count, building.TF * _Count INTO PMC,PRSF,TF FROM household,building WHERE building.ID = household.BuildingID AND household.ID = _HID;
 END$$
 
 DROP PROCEDURE IF EXISTS `GetHouseHoldSumFee`$$
@@ -1159,7 +1159,7 @@ END$$
 
 DROP PROCEDURE IF EXISTS `GetShopPay`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `GetShopPay` (OUT `PMC` DOUBLE, OUT `ELE` DOUBLE, OUT `TF` DOUBLE, IN `_SID` VARCHAR(30) CHARSET utf8, IN `_Count` INT)  BEGIN
-SELECT shop.PMCU * _Count, shop.ELU * _Count, shop.TF INTO PMC,ELE,TF FROM shop WHERE shop.ID = _SID;
+SELECT shop.PMCU * _Count, shop.ELU * _Count, shop.TF * _Count INTO PMC,ELE,TF FROM shop WHERE shop.ID = _SID;
 END$$
 
 DROP PROCEDURE IF EXISTS `GetShopSumFee`$$
