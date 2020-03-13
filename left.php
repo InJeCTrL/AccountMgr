@@ -69,7 +69,14 @@
 		        </a>
 		        <ul id="systemSetting3" class="nav nav-list collapse secondmenu" style="height: 0px;">
 		            <li><a id="AccountList" href="#"><i class="glyphicon glyphicon-calendar"></i>账目清单</a></li>
+		    <?php
+            	if ($_SESSION['Type'] === '超级管理员' || $_SESSION['Type'] === '管理员')
+				{
+            ?>
 		            <li><a id="ImportTicket" href="#"><i class="glyphicon glyphicon-plus"></i>票据录入</a></li>
+		    <?php
+				}
+		    ?>
 		            <li><a id="PaymentMonth" href="#"><i class="glyphicon glyphicon-tags"></i>缴费月份</a></li>
 		        </ul>
 		    </li>
