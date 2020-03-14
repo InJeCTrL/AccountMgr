@@ -157,7 +157,7 @@
 		{
 			$Page = $PageNum;
 		}
-		else
+		else if ($Page === '...')
 		{
 			$Page = 1;
 		}
