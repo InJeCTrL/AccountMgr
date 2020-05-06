@@ -1,9 +1,0 @@
-$_SESSION表
-
-UserID			用户ID
-UID			身份证
-TEL			电话号码
-UserName		姓名
-Type			账号类别（字符串）
-Online			在线情况
-enResetPwd		允许重置密码的用户ID
